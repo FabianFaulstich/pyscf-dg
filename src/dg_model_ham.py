@@ -53,10 +53,10 @@ class dg_model_ham:
         self.cell_dg.ovl  = self.ovl_dg
         self.cell_dg.unit = 'B'
         
-        self.cell_dg      = self.cell_dg.build(ovl = self.ovl_dg)
-        self.cell_dg.ovl  = self.ovl_dg
+        self.cell_dg      = self.cell_dg.build()#ovl = self.ovl_dg)
+        #self.cell_dg.ovl  = self.ovl_dg
         
-        #self.cell_dg.pbc_intor = lambda *arg, **kwargs: self.ovl_dg
+        self.cell_dg.pbc_intor = lambda *arg, **kwargs: self.ovl_dg
         
         print("    Computing kinetic-energy matrix ...")
         start = time.time()

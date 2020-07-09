@@ -16,6 +16,7 @@ from sys import exit
 import time
 from pyscf.fci import direct_spin0, direct_spin1
 
+import dg_tools
 
 class dg_model_ham:
     def __init__(self, cell):
@@ -256,7 +257,7 @@ def get_eri(cell, coords, aoR, b_idx, exx=None):
     m = len(b_idx)**2
     eri_new = np.zeros((nao,nao,nao,nao))
     for i in range(m):
-        k, l  = unfold(i,len(b_idx))
+        k, l  = dg_tools.unfold(i,len(b_idx))
         idx_k = b_idx[k]
         idx_l = b_idx[l]
             
@@ -325,10 +326,10 @@ def get_eri(cell, coords, aoR, b_idx, exx=None):
     #print(eri_new[5,2,8,4]) 
     return eri_new
 
-def unfold(m,n):
-    l = m % n
-    k = (m-l)/n 
-    return int(l), int(k)
+#def unfold(m,n):
+#    l = m % n
+#    k = (m-l)/n 
+#    return int(l), int(k)
 
 
 def get_dg_gramm(cell,svd_tol=1e-3):

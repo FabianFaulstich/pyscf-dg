@@ -55,6 +55,8 @@ class dg_model_ham:
         
         self.cell_dg      = self.cell_dg.build()
         self.cell_dg.ovl  = self.ovl_dg
+
+        self.cell_dg.pbc_intor = lambda *arg, **kwargs: self.ovl_dg
         
         self.cell_dg.pbc_intor = lambda *arg, **kwargs: self.ovl_dg
                 

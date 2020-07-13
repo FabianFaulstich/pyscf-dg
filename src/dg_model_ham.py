@@ -53,18 +53,20 @@ class dg_model_ham:
         self.cell_dg.ovl  = self.ovl_dg
         self.cell_dg.unit = 'B'
         
-        self.cell_dg      = self.cell_dg.build()#ovl = self.ovl_dg)
-        #self.cell_dg.ovl  = self.ovl_dg
-                
+        self.cell_dg      = self.cell_dg.build()
+        self.cell_dg.ovl  = self.ovl_dg
+
         self.cell_dg.pbc_intor = lambda *arg, **kwargs: self.ovl_dg
         
+        self.cell_dg.pbc_intor = lambda *arg, **kwargs: self.ovl_dg
+                
         print("    Computing kinetic-energy matrix ...")
         start = time.time()
         self.kin_dg   = get_kin_numint_G(cell, self.coords, self.dg_gramm)
         end = time.time()
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
-
+        
         print("    Computing nucleon interaction ...")
         start = time.time()
         self.nuc_dg   = get_pp_numint(cell, self.coords, self.dg_gramm)
@@ -101,7 +103,7 @@ class dg_model_ham:
         self.mf_dg.get_ovlp  = lambda *args: self.ovl_dg
         self.mf_dg._eri      = ao2mo.restore(8, self.eri, self.nao)
         
-        self.mf_dg.kernel(dm0 = dm)
+        self.mf_dg.kernel(dm0 = dm, dump_chk=False)
         self.emf = self.mf_dg.e_tot
         return self.emf
 

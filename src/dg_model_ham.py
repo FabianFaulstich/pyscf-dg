@@ -251,45 +251,160 @@ def get_eri(cell, coords, aoR, b_idx, exx=None):
 
     # Careful! Check memory
 
-    print("        matricized loops ...")
+    print("        matricized loops with symmetry ...")
     start = time.time()
     
-    m = len(b_idx)**2
-    eri_new = np.zeros((nao,nao,nao,nao))
+    m = int(len(b_idx) * (len(b_idx) + 1)/2.0)
+    eri_new_sym = np.zeros((nao,nao,nao,nao))
     for i in range(m):
-        k, l  = dg_tools.unfold(i,len(b_idx))
+        print("            Computing compressed kl-tensor ...")
+        start_comp = time.time()
+        k, l  = dg_tools.unfold_sym(i)
         idx_k = b_idx[k]
         idx_l = b_idx[l]
-            
+    
+        # exploit symmetry in k:th block
+        idx_k_sym = dg_tools.get_red_idx(len(idx_k))
+
         # Solving Poisson eq. in k:th DG-block
         bl_k          = aoR[:,idx_k[0]:idx_k[-1]+1]
         bl_k_mat      = np.matlib.repmat(bl_k, 1, len(idx_k))
-        idx_k_perm    = [j * len(idx_k) + i for i in range(len(idx_k)) 
+        idx_k_perm    = [j * len(idx_k) + i for i in range(len(idx_k))
                           for j in range(len(idx_k))]
         bl_k_mat_perm = bl_k_mat[:,idx_k_perm]
-        bl_k_dens     = bl_k_mat * bl_k_mat_perm
+        
+        # exploiting symmerty before using poisson solver:
+        bl_k_dens     = bl_k_mat[:,idx_k_sym] * bl_k_mat_perm[:,idx_k_sym]
         bl_k_sol_pois = np.zeros_like(bl_k_dens)
-        for i in range(bl_k_dens.shape[1]):
-            coulG_k            = coulG * tools.fft(bl_k_dens[:,i], mesh) * dvol
-            bl_k_sol_pois[:,i] = tools.ifft(coulG_k, mesh).real / dvol    
-    
+        
+        for j in range(bl_k_dens.shape[1]):
+            coulG_k            = coulG * tools.fft(bl_k_dens[:,j], mesh) * dvol
+            bl_k_sol_pois[:,j] = tools.ifft(coulG_k, mesh).real / dvol
+        
+        # exploit symmetry in l:th block
+        idx_l_sym = dg_tools.get_red_idx(len(idx_l))
+        
         # Computing DG-basis product in l:th DG-block
         bl_l           = aoR[:,idx_l[0]:idx_l[-1]+1]
         bl_l_mat       = np.matlib.repmat(bl_l, 1, len(idx_l))
         idx_l_perm     = [j * len(idx_l) + i for i in range(len(idx_l))
                           for j in range(len(idx_l))]
         bl_l_mat_perm  = bl_l_mat[:,idx_l_perm]
-        bl_l_mat_prod  = bl_l_mat * bl_l_mat_perm
-        
-        # Compute integral Pois. part and product part
-        eri_kl  = np.dot(bl_l_mat_prod.T,bl_k_sol_pois) * dvol 
-        eri_tsr = np.reshape(eri_kl, (len(idx_l),len(idx_l),len(idx_k),len(idx_k)))
-        eri_new[idx_l[0]:idx_l[-1]+1,idx_l[0]:idx_l[-1]+1,
-                idx_k[0]:idx_k[-1]+1,idx_k[0]:idx_k[-1]+1] = eri_tsr
+        bl_l_mat_prod  = bl_l_mat[:,idx_l_sym] * bl_l_mat_perm[:,idx_l_sym]
 
+        # Compute integral Pois. part and product part
+        eri_kl  = np.dot(bl_l_mat_prod.T,bl_k_sol_pois) * dvol
+        end_comp = time.time()
+        print("            Done! Elapsed time: ", end_comp - start_comp, "sec.")
+        print()
+
+        # Creating full kl-tensor:
+        #   Recreating neglected and kept indices 
+        print("            writing compressed kl-tensor to full tensor ...")
+        start_wrt = time.time()
+
+        neg_k     = np.arange(len(idx_k)**2).reshape(int(len(idx_k)), int(len(idx_k)))
+        neg_k_per = np.copy(neg_k)
+        neg_k_per = np.transpose(neg_k_per)
+
+        neg_k     = np.tril(neg_k,-1).reshape(-1)
+        neg_k     = neg_k[neg_k != 0]
+        neg_k_per = np.tril(neg_k_per,-1).reshape(-1)
+        neg_k_per = neg_k_per[neg_k_per != 0]
+        kep_k     = np.delete(np.arange(int(len(idx_k)**2)), neg_k)
+        
+        neg_l     = np.arange(len(idx_l)**2).reshape(int(len(idx_l)), int(len(idx_l)))
+        neg_l_per = np.copy(neg_l)
+        neg_l_per = np.transpose(neg_l_per)
+
+        neg_l     = np.tril(neg_l,-1).reshape(-1)
+        neg_l     = neg_l[neg_l != 0]
+        neg_l_per = np.tril(neg_l_per,-1).reshape(-1)
+        neg_l_per = neg_l_per[neg_l_per != 0]
+        kep_l     = np.delete(np.arange(int(len(idx_l)**2)), neg_l) 
+
+        #   Generating mask for kept indices
+        kep_kl = [[x,y] for y in kep_l for x in kep_k]
+        mask = np.zeros((len(idx_k)**2, len(idx_l)**2), dtype=bool)
+        for idx in kep_kl:
+            mask[idx[0],idx[1]] = True
+        
+        eri_kl_full = np.zeros((len(idx_k)**2,len(idx_l)**2))
+        np.place(eri_kl_full, mask, eri_kl)
+        eri_kl_full[:,neg_k] = eri_kl_full[:,neg_k_per] 
+        eri_kl_full[neg_l,:] = eri_kl_full[neg_l_per,:]
+        
+        # store full kl-tensor 
+        eri_new_sym[idx_l[0]:idx_l[-1]+1,idx_l[0]:idx_l[-1]+1,
+                idx_k[0]:idx_k[-1]+1,idx_k[0]:idx_k[-1]+1] = eri_kl_full.reshape((len(idx_l),len(idx_l),len(idx_k),len(idx_k))) 
+        if k != l:
+            eri_new_sym[idx_k[0]:idx_k[-1]+1,idx_k[0]:idx_k[-1]+1,
+                    idx_l[0]:idx_l[-1]+1,idx_l[0]:idx_l[-1]+1] = np.transpose(eri_kl_full).reshape((len(idx_l),len(idx_l),len(idx_k),len(idx_k))) 
+        
+        end_wrt = time.time()
+        print("            Done! Elapsed time: ", end_wrt - start_wrt, "sec.")
+        print()
     end = time.time()
     print("        Done! Elapsed time: ", end - start, "sec.")
     print()
+
+
+    #print("        matricized loops ...")
+    #start = time.time()
+    
+    #m = len(b_idx)**2
+    #eri_new = np.zeros((nao,nao,nao,nao))
+    #for i in range(m):
+    #    k, l  = dg_tools.unfold(i,len(b_idx))
+    #    idx_k = b_idx[k]
+    #    idx_l = b_idx[l]
+    #        
+    #    # Solving Poisson eq. in k:th DG-block
+    #    bl_k          = aoR[:,idx_k[0]:idx_k[-1]+1]
+    #    bl_k_mat      = np.matlib.repmat(bl_k, 1, len(idx_k))
+    #    idx_k_perm    = [j * len(idx_k) + i for i in range(len(idx_k)) 
+    #                      for j in range(len(idx_k))]
+    #    bl_k_mat_perm = bl_k_mat[:,idx_k_perm]
+    #    bl_k_dens     = bl_k_mat * bl_k_mat_perm
+    #    bl_k_sol_pois = np.zeros_like(bl_k_dens)
+    #    for i in range(bl_k_dens.shape[1]):
+    #        coulG_k            = coulG * tools.fft(bl_k_dens[:,i], mesh) * dvol
+    #        bl_k_sol_pois[:,i] = tools.ifft(coulG_k, mesh).real / dvol    
+    #
+    #    # Computing DG-basis product in l:th DG-block
+    #    bl_l           = aoR[:,idx_l[0]:idx_l[-1]+1]
+    #    bl_l_mat       = np.matlib.repmat(bl_l, 1, len(idx_l))
+    #    idx_l_perm     = [j * len(idx_l) + i for i in range(len(idx_l))
+    #                      for j in range(len(idx_l))]
+    #    bl_l_mat_perm  = bl_l_mat[:,idx_l_perm]
+    #    bl_l_mat_prod  = bl_l_mat * bl_l_mat_perm
+    #    
+    #    # Compute integral Pois. part and product part
+    #    eri_kl  = np.dot(bl_l_mat_prod.T,bl_k_sol_pois) * dvol
+    #    eri_tsr = np.reshape(eri_kl, (len(idx_l),len(idx_l),len(idx_k),len(idx_k)))
+    #    eri_new[idx_l[0]:idx_l[-1]+1,idx_l[0]:idx_l[-1]+1,
+    #            idx_k[0]:idx_k[-1]+1,idx_k[0]:idx_k[-1]+1] = eri_tsr
+    #    
+    #end = time.time()
+    #print("        Done! Elapsed time: ", end - start, "sec.")
+    #print()
+
+    #print("comparing output")
+    #print("[0,0,0,0]:")
+    #print(eri_new_sym[0,0,0,0])
+    #print(eri_new[0,0,0,0])
+    #print("[1,0,0,0]")
+    #print(eri_new_sym[1,0,0,0])
+    #print(eri_new[1,0,0,0])
+    #print("[0,1,0,0]:")                                                         
+    #print(eri_new_sym[0,1,0,0])                                                         
+    #print(eri_new[0,1,0,0])                                                     
+    #print("[0,0,1,0]")                                                          
+    #print(eri_new_sym[0,0,1,0])                                                         
+    #print(eri_new[0,0,1,0]) 
+    #print("[5,2,8,4]")
+    #print(eri_new_sym[5,2,8,4])                                                         
+    #print(eri_new[5,2,8,4])
 
     #print("        primitive loops ...")
     #start = time.time()
@@ -324,7 +439,7 @@ def get_eri(cell, coords, aoR, b_idx, exx=None):
     #print("[5,2,8,4]")
     #print(eri[5,2,8,4])                                                         
     #print(eri_new[5,2,8,4]) 
-    return eri_new
+    return eri_new_sym
 
 #def unfold(m,n):
 #    l = m % n

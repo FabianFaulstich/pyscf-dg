@@ -67,7 +67,12 @@ if __name__ == '__main__':
         # DG calculations
         print("Creating  " + cell.basis +  "-DG Hamiltonian ...")
         start_dg = time.time()
-        cell_dg  = dg.dg_model_ham(cell) 
+        cell_dg  = dg.dg_model_ham(cell) # default setting dg_trunc = 'abs_tol', svd_tol = 1e-3
+        #cell_dg  = dg.dg_model_ham(cell, 'rel_tol', 0.01) 
+        #cell_dg  = dg.dg_model_ham(cell, 'abs_num', 4) # set svd_tol > 10 to provoke invalid request
+        #cell_dg  = dg.dg_model_ham(cell, 'rel_num', 0.8)
+        #cell_dg  = dg.dg_model_ham(cell, 'abs_cum', 35)
+        #cell_dg  = dg.dg_model_ham(cell, 'rel_cum', 2)
         end_dg   = time.time() 
         print("Done! Elapsed time: ", end_dg - start_dg, "sec.")
         print()

@@ -53,7 +53,7 @@ class dg_model_ham:
         self.cell_dg.ovl  = self.ovl_dg
         self.cell_dg.unit = 'B'
         
-        self.cell_dg      = self.cell_dg.build()#ovl = self.ovl_dg)
+        self.cell_dg      = self.cell_dg.build()ovl = self.ovl_dg)
         #self.cell_dg.ovl  = self.ovl_dg
         
         self.cell_dg.pbc_intor = lambda *arg, **kwargs: self.ovl_dg
@@ -449,6 +449,18 @@ def get_eri(cell, coords, aoR, b_idx, exx=None):
 
 def get_dg_gramm(cell, dg_trunc, svd_tol):
     '''Generate the Gramm matrix for fake-DG basis
+       Different SVD truncations are supported:
+       rel_tol:
+
+       abs_tol:
+
+       rel_num:
+
+       abs_num:
+
+       rel_cum:
+
+       abs_cum:
     '''
     print("        Performing DG-truncation: ", dg_trunc, " with tolerance: ", svd_tol)
     coords = cell.get_uniform_grids()
@@ -468,10 +480,10 @@ def get_dg_gramm(cell, dg_trunc, svd_tol):
         
     DG_cut = np.append(0, np.append( DG_cut, len(x_dp)))
     dvol = cell.vol / np.prod(cell.mesh)
-    return get_dg_basis(dvol, ao_values, DG_cut, svd_tol)
+    return get_dg_basis(dvol, ao_values, DG_cut, dg_trunc, svd_tol)
 
 
-def get_dg_basis(dvol, Gr_mat,DG_cut,svd_tol):
+def get_dg_basis(dvol, Gr_mat, DG_cut, dg_trunc, svd_tol):
     '''Creating (fake) DG basis
     '''
 
@@ -488,8 +500,8 @@ def get_dg_basis(dvol, Gr_mat,DG_cut,svd_tol):
         #U = U_Q
 
         # Basis compression
-        S    = S[::]
-        S_block = S[S > svd_tol]
+        S       = S[::]
+        S_block = SVD_trunc(S, dg_trunc, svd_tol)
         U_block = U[:,0:len(S_block)]
         
         # Storing block indices
@@ -502,3 +514,24 @@ def get_dg_basis(dvol, Gr_mat,DG_cut,svd_tol):
     U_out = 1/np.sqrt(dvol) * np.array(U_out[1:,:])
     return U_out, index_out
 
+def SVD_trunc(S, dg_trunc, svd_tol):
+    if dg_trunc == "abs_tol":
+        return S[S > svd_tol]
+    elif dg_trunc == "rel_tol":
+        return S[S/np.amax(S) > svd_tol]
+    elif dg_trunc == 'abs_num':
+        if svd_tol > len(S):
+            print("Requested to keep *too* many singular values!")
+            print("Kept maximal number possible: ", len(S))
+            return S
+        return S[:svd_tol]
+    elif dg_trunc == 'rel_num':
+        if svd_tol > 1 or svd_tol < 0:
+            print("Invalid request!")
+            print("Kept maximal number possible")
+            return S
+        return S[:int(np.ceil(len(S)*svd_tol))]
+    elif dg_trunc == 'abs_cum':
+        return S[np.cumsum(S) < svd_tol]
+    elif dg_trunc == 'rel_cum':
+        return S[np.cumsum(S/np.amax(S)) < svd_tol]

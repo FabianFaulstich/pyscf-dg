@@ -19,7 +19,7 @@ from pyscf.fci import direct_spin0, direct_spin1
 import dg_tools
 
 class dg_model_ham:
-    def __init__(self, cell):
+    def __init__(self, cell, dg_trunc = 'abs_tol', svd_tol = 1e-3):
         
         self.cell = cell
 
@@ -32,7 +32,7 @@ class dg_model_ham:
 
         print("    Computing DG-Gramm matrix ...")
         start = time.time()
-        self.dg_gramm, self.dg_idx = get_dg_gramm(self.cell)
+        self.dg_gramm, self.dg_idx = get_dg_gramm(self.cell, dg_trunc, svd_tol)
         end = time.time()
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
@@ -256,7 +256,7 @@ def get_eri(cell, coords, aoR, b_idx, exx=None):
     
     m = int(len(b_idx) * (len(b_idx) + 1)/2.0)
     eri_new_sym = np.zeros((nao,nao,nao,nao))
-    for i in range(m):
+    for i in range(1,m+1):
         print("            Computing compressed kl-tensor ...")
         start_comp = time.time()
         k, l  = dg_tools.unfold_sym(i)
@@ -324,12 +324,12 @@ def get_eri(cell, coords, aoR, b_idx, exx=None):
         kep_l     = np.delete(np.arange(int(len(idx_l)**2)), neg_l) 
 
         #   Generating mask for kept indices
-        kep_kl = [[x,y] for y in kep_l for x in kep_k]
-        mask = np.zeros((len(idx_k)**2, len(idx_l)**2), dtype=bool)
+        kep_kl = [[x,y] for y in kep_k for x in kep_l]
+        mask = np.zeros((len(idx_l)**2, len(idx_k)**2), dtype=bool)
         for idx in kep_kl:
             mask[idx[0],idx[1]] = True
         
-        eri_kl_full = np.zeros((len(idx_k)**2,len(idx_l)**2))
+        eri_kl_full = np.zeros((len(idx_l)**2,len(idx_k)**2))
         np.place(eri_kl_full, mask, eri_kl)
         eri_kl_full[:,neg_k] = eri_kl_full[:,neg_k_per] 
         eri_kl_full[neg_l,:] = eri_kl_full[neg_l_per,:]
@@ -339,7 +339,7 @@ def get_eri(cell, coords, aoR, b_idx, exx=None):
                 idx_k[0]:idx_k[-1]+1,idx_k[0]:idx_k[-1]+1] = eri_kl_full.reshape((len(idx_l),len(idx_l),len(idx_k),len(idx_k))) 
         if k != l:
             eri_new_sym[idx_k[0]:idx_k[-1]+1,idx_k[0]:idx_k[-1]+1,
-                    idx_l[0]:idx_l[-1]+1,idx_l[0]:idx_l[-1]+1] = np.transpose(eri_kl_full).reshape((len(idx_l),len(idx_l),len(idx_k),len(idx_k))) 
+                    idx_l[0]:idx_l[-1]+1,idx_l[0]:idx_l[-1]+1] = np.transpose(eri_kl_full).reshape((len(idx_k),len(idx_k),len(idx_l),len(idx_l))) 
         
         end_wrt = time.time()
         print("            Done! Elapsed time: ", end_wrt - start_wrt, "sec.")
@@ -447,10 +447,10 @@ def get_eri(cell, coords, aoR, b_idx, exx=None):
 #    return int(l), int(k)
 
 
-def get_dg_gramm(cell,svd_tol=1e-3):
+def get_dg_gramm(cell, dg_trunc, svd_tol):
     '''Generate the Gramm matrix for fake-DG basis
     '''
-
+    print("        Performing DG-truncation: ", dg_trunc, " with tolerance: ", svd_tol)
     coords = cell.get_uniform_grids()
     x_dp   = np.array([x[0] for x in coords])
 

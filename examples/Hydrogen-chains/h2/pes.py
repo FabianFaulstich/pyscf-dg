@@ -26,7 +26,8 @@ if __name__ == '__main__':
     start_pes = time.time()
 
     dgrid = [4]*3
-    bonds = np.array([[8e-1], [10e-1], [12e-1], [14e-1], [16e-1], [18e-1], [20e-1], [24e-1], [28e-1], [32e-1], [36e-1]])
+    bonds = np.array([[12e-1], [14e-1], [16e-1], [18e-1], [20e-1]])
+    #bonds = np.array([[8e-1], [10e-1], [12e-1], [14e-1], [16e-1], [18e-1], [20e-1], [24e-1], [28e-1], [32e-1], [36e-1]])
     bonds_max = np.max(bonds)
     offset = np.array([10., 6., 6.])
     X = np.array([int(np.ceil(offset[0] + bonds_max)), offset[1], offset[2]])
@@ -36,7 +37,10 @@ if __name__ == '__main__':
     cell.a = [[X[0],0.,0.],[0.,X[1],0],[0,0,X[2]]]
     cell.unit = 'B'
     cell.verbose = 3
-    cell.basis = 'gth-dzvp'
+    cell.basis = '321++g'
+    #cell.basis = 'gth-dzvp'
+    # potential speed up 
+    #cell.ke_cutoff = 100.0
     cell.pseudo = 'gth-pade'
     cell.mesh = np.array([int(d * x) for d, x in zip(dgrid, X)])
 

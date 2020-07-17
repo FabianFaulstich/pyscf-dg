@@ -19,9 +19,10 @@ from pyscf.fci import direct_spin0, direct_spin1
 import dg_tools
 
 class dg_model_ham:
-    def __init__(self, cell, dg_trunc = 'abs_tol', svd_tol = 1e-3):
+    def __init__(self, cell, dg_cuts = None, dg_trunc = 'abs_tol', svd_tol = 1e-3):
         
         self.cell = cell
+        print('Unit: ', self.cell.unit)
 
         print("    Fetching uniform grid ...")
         start = time.time()
@@ -32,7 +33,7 @@ class dg_model_ham:
 
         print("    Computing DG-Gramm matrix ...")
         start = time.time()
-        self.dg_gramm, self.dg_idx = get_dg_gramm(self.cell, dg_trunc, svd_tol)
+        self.dg_gramm, self.dg_idx = get_dg_gramm(self.cell, dg_cuts, dg_trunc, svd_tol)
         end = time.time()
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
@@ -50,12 +51,9 @@ class dg_model_ham:
         self.cell_dg      = gto.Cell()
         self.cell_dg.atom = cell.atom
         self.cell_dg.a    = cell.a
-        self.cell_dg.ovl  = self.ovl_dg
         self.cell_dg.unit = 'B'
         
-        self.cell_dg      = self.cell_dg.build()ovl = self.ovl_dg)
-        #self.cell_dg.ovl  = self.ovl_dg
-        
+        self.cell_dg      = self.cell_dg.build()
         self.cell_dg.pbc_intor = lambda *arg, **kwargs: self.ovl_dg
                 
         print("    Computing kinetic-energy matrix ...")
@@ -447,8 +445,10 @@ def get_eri(cell, coords, aoR, b_idx, exx=None):
 #    return int(l), int(k)
 
 
-def get_dg_gramm(cell, dg_trunc, svd_tol):
+def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol):
     '''Generate the Gramm matrix for fake-DG basis
+       Supports customized DG elements:
+       dg_cuts: quasi 1D cuts
        Different SVD truncations are supported:
        rel_tol:
 
@@ -468,11 +468,14 @@ def get_dg_gramm(cell, dg_trunc, svd_tol):
 
     # Fetching Gramm matrix
     ao_values = dft.numint.eval_ao(cell, coords, deriv=0) # change to eval_gto?
-
+    
+    
     # Determine ideal DG-cuts for quasi-1D system along z-axis
-    atom_pos = np.array([x[1][0] for x in cell.atom])
-
-    iDG_cut  = atom_pos[0:-1] + np.diff(atom_pos)/2.0
+    if dg_cuts is None:
+        atom_pos = np.unique(np.array([x[1][0] for x in cell.atom]))
+        iDG_cut  = atom_pos[0:-1] + np.diff(atom_pos)/2.0
+    else:
+        iDG_cut = dg_cuts
     DG_cut   = np.zeros(len(iDG_cut), dtype=int)
 
     for i in range(len(iDG_cut)):
@@ -501,7 +504,13 @@ def get_dg_basis(dvol, Gr_mat, DG_cut, dg_trunc, svd_tol):
 
         # Basis compression
         S       = S[::]
+        print("        Computed singular values:")
+        print(S)
+        print()
         S_block = SVD_trunc(S, dg_trunc, svd_tol)
+        print("        Kept singular values:")
+        print(S_block)
+        print()
         U_block = U[:,0:len(S_block)]
         
         # Storing block indices

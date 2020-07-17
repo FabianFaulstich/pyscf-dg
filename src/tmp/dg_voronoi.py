@@ -17,7 +17,8 @@ from pyscf import ao2mo
 
 if __name__ == '__main__':
     # an example of C2H4 molecul
-
+    print(pyscf.__version__)
+    
     Mol = [['H',[-2.4, -1.86, 0]], ['H',[-2.4, 1.86, 0]], ['C',[-1.34, 0, 0]], ['C',[1.34, 0, 0]],
                        ['H',[2.4,-1.86, 0]], ['H',[2.4,1.86,0 ]]]
 

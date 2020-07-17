@@ -58,7 +58,6 @@ if __name__ == '__main__':
 
         cell.atom = [[atom_spec, (Z[0], X[1]/2, X[2]/2)],
                      [atom_spec, (Z[1], X[1]/2, X[2]/2)]]
-
         cell.build()
 
         print("Computing H2: ",cell.atom)

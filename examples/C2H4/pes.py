@@ -68,13 +68,25 @@ if __name__ == '__main__':
         cell.a = [[X[0],0.,0.],[0.,X[1],0],[0,0,X[2]]]
         cell.unit    = 'bohr'
         cell.verbose = 3
-        cell.basis   = 'cc-pvdz' #gth-dzvp
+        cell.basis   = 'sto-3g' #gth-dzvp
         cell.pseudo  = 'gth-pade'
-        cell.ke_cutoff = 300.0
+        cell.ke_cutoff = 90000.0
         cell.mesh    = np.array([int(d * x) for d, x in zip(dgrid, X)])
         cell.atom    = Mol_box
         cell.build()
-            
+
+        
+        # HF
+        print("Computing HF in " + cell.basis +  " basis ...")
+        start_hf = time.time()
+        mf = scf.RHF(cell, exxdiv='ewald') # madelung correction
+        mf.kernel()
+        mfe[i] = mf.e_tot
+        end_hf   = time.time()
+        print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
+        print()
+
+        
         # DG calculations
         print("Creating  " + cell.basis +  "-DG Hamiltonian ...")
         start_dg = time.time()

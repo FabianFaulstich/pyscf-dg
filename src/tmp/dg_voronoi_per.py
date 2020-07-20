@@ -21,7 +21,19 @@ if __name__ == '__main__':
     
     Mol = [['H',[-2.4, -1.86, 0]], ['H',[-2.4, 1.86, 0]], ['C',[-1.34, 0, 0]], ['C',[1.34, 0, 0]],
                        ['H',[2.4,-1.86, 0]], ['H',[2.4,1.86,0 ]]]
+    atom_pos = np.array([atom[1] for atom in Mol])
+    atoms    = [atom[0] for atom in Mol]
+    Mol_size = np.array([np.amax(atom_pos[:,i])-np.amin(atom_pos[:,i]) for i in range(3)])
+    Mol_per  =  []
+    for i in [-6-Mol_size[0],0,6+Mol_size[0]]:
+        for atom in Mol:
+            Mol_per.append([atom[0],[atom[1][0]+i, atom[1][1], atom[1][2]]] )
+    Mol_cp = Mol_per.copy()
+    for i in [-6-Mol_size[1],0,6+Mol_size[1]]:
+        for atom in Mol_cp:
+            Mol_per.append([atom[0],[atom[1][0], atom[1][1]+i, atom[1][2]]] )
 
+    Mol = Mol_per
     atom_pos = np.array([atom[1] for atom in Mol])
     atoms    = [atom[0] for atom in Mol]
     Mol_size = np.array([np.amax(atom_pos[:,i])-np.amin(atom_pos[:,i]) for i in range(3)])
@@ -32,8 +44,6 @@ if __name__ == '__main__':
     atom_box = np.array([pos + atom_off for pos in atom_pos])
     Mol_box  = [[atoms[i],atom_box[i]] for i in range(len(atoms))] 
     
-    print(atom_box)
-
     dgrid = [4]*3
     
     cell = gto.Cell()

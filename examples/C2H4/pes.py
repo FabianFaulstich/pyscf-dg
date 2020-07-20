@@ -35,7 +35,7 @@ if __name__ == '__main__':
            ['C',[1.34, 0, 0]], ['H',[2.4,-1.86, 0]], ['H',[2.4,1.86,0 ]]]
     
     # dissociation in x-direction relative to the optimal geometry
-    rel_dis = np.array([ -1.8, -1.4, -.8, -.4, -.2, 0, .2, .4])
+    rel_dis = np.array([8, 10, 12, 14])
 
     mfe = np.zeros(len(rel_dis))                                                  
     emp = np.zeros(len(rel_dis))                                                  
@@ -62,7 +62,7 @@ if __name__ == '__main__':
         Mol_size = np.array([np.amax(atom_pos_max[:,i])-np.amin(atom_pos_max[:,i]) for i in range(3)])
         X        = np.array([int(np.ceil( off + bl)) for off, bl in zip(offset, Mol_size)])
    
-        dgrid = [4]*3
+        dgrid = [5]*3
 
         cell = gto.Cell()
         cell.a = [[X[0],0.,0.],[0.,X[1],0],[0,0,X[2]]]
@@ -70,21 +70,21 @@ if __name__ == '__main__':
         cell.verbose = 3
         cell.basis   = 'sto-3g' #gth-dzvp
         cell.pseudo  = 'gth-pade'
-        cell.ke_cutoff = 90000.0
+        #cell.ke_cutoff = 90000.0
         cell.mesh    = np.array([int(d * x) for d, x in zip(dgrid, X)])
         cell.atom    = Mol_box
         cell.build()
 
         
         # HF
-        print("Computing HF in " + cell.basis +  " basis ...")
-        start_hf = time.time()
-        mf = scf.RHF(cell, exxdiv='ewald') # madelung correction
-        mf.kernel()
-        mfe[i] = mf.e_tot
-        end_hf   = time.time()
-        print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
-        print()
+        #print("Computing HF in " + cell.basis +  " basis ...")
+        #start_hf = time.time()
+        #mf = scf.RHF(cell, exxdiv='ewald') # madelung correction: ewald
+        #mf.kernel()
+        #mfe[i] = mf.e_tot
+        #end_hf   = time.time()
+        #print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
+        #print()
 
         
         # DG calculations
@@ -93,7 +93,7 @@ if __name__ == '__main__':
         #cell_dg  = dg.dg_model_ham(cell) # default setting dg_trunc = 'abs_tol', svd_tol = 1e-3
         #cell_dg  = dg.dg_model_ham(cell, 'rel_tol', 0.01) 
         #cell_dg  = dg.dg_model_ham(cell, 'abs_num', 4) # set svd_tol > 10 to provoke invalid request
-        cell_dg  = dg.dg_model_ham(cell, None ,'rel_num', 0.7)
+        cell_dg  = dg.dg_model_ham(cell, None ,'rel_num', 0.95)
         #cell_dg  = dg.dg_model_ham(cell, 'abs_cum', 35)
         #cell_dg  = dg.dg_model_ham(cell, 'rel_cum', 2)
         end_dg   = time.time()

@@ -21,7 +21,7 @@ for i, diss in enumerate(rel_dis):
     Mol_box  = [[atoms[i],atoms_box[i]] for i in range(len(atoms))]
     
     mol = gto.M()
-    mol.basis = 'cc-pvdz'
+    mol.basis = 'sto-3g'
     mol.atom = Mol_box
     mol.unit = 'bohr'
     mol.build()

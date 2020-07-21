@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     start_pes = time.time()
 
-    dgrid = [4]*3
+    dgrid = [6]*3
     bonds = np.array([[22e-1], [24e-1], [26e-1], [28e-1], [30e-1], [32e-1], [34e-1], [36e-1], [38e-1], [40e-1]])
     bonds_max = np.max(bonds)
     offset = np.array([10., 6., 6.])
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     cell.a = [[X[0],0.,0.],[0.,X[1],0],[0,0,X[2]]]
     cell.unit = 'B'
     cell.verbose = 3
-    cell.basis = 'gth-dzvp'
+    cell.basis = 'cc-pvtz'
     cell.pseudo = 'gth-pade'
     cell.mesh = np.array([int(d * x) for d, x in zip(dgrid, X)])
 

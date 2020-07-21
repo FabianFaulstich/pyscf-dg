@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.spatial import Delaunay
 
 
 def unfold(m,n):
@@ -22,5 +23,14 @@ def get_red_idx(n):
         count = count + l;
     return idx_sym.astype(int)
 
+# for voronoi
+def in_hull(p, hull):
+    """
+    Test if points in p are in hull
+    """
+    if not isinstance(hull,Delaunay):
+        hull = Delaunay(hull)
+
+    return hull.find_simplex(p)>=0
 
 

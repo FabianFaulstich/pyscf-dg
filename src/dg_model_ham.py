@@ -19,7 +19,7 @@ from pyscf.fci import direct_spin0, direct_spin1
 import dg_tools
 
 class dg_model_ham:
-    def __init__(self, cell, dg_cuts = None, dg_trunc = 'abs_tol', svd_tol = 1e-3):
+    def __init__(self, cell, dg_cuts = None, dg_trunc = 'abs_tol', svd_tol = 1e-3, voronoi = False, v_cells = None):
         
         self.cell = cell
         print('Unit: ', self.cell.unit)
@@ -33,7 +33,7 @@ class dg_model_ham:
 
         print("    Computing DG-Gramm matrix ...")
         start = time.time()
-        self.dg_gramm, self.dg_idx = get_dg_gramm(self.cell, dg_cuts, dg_trunc, svd_tol)
+        self.dg_gramm, self.dg_idx = get_dg_gramm(self.cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells)
         end = time.time()
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
@@ -445,7 +445,7 @@ def get_eri(cell, coords, aoR, b_idx, exx=None):
 #    return int(l), int(k)
 
 
-def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol):
+def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells):
     '''Generate the Gramm matrix for fake-DG basis
        Supports customized DG elements:
        dg_cuts: quasi 1D cuts
@@ -469,21 +469,55 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol):
     # Fetching Gramm matrix
     ao_values = dft.numint.eval_ao(cell, coords, deriv=0) # change to eval_gto?
     
-    
-    # Determine ideal DG-cuts for quasi-1D system along z-axis
-    if dg_cuts is None:
-        atom_pos = np.unique(np.array([x[1][0] for x in cell.atom]))
-        iDG_cut  = atom_pos[0:-1] + np.diff(atom_pos)/2.0
-    else:
-        iDG_cut = dg_cuts
-    DG_cut   = np.zeros(len(iDG_cut), dtype=int)
+    if voronoi:
+        print("Voronoi-DG")
+        U_out     = []
+        index_out = []
+        offset    = 0
+        coords_2d = np.array([ x[0:2] for x in coords])# 2D for h4 example!
+        for k, vcell in enumerate(v_cells):
+            idx = dg_tools.in_hull(coords_2d, vcell)
+            U, S, _  = la.svd(ao_values[idx,:], full_matrices=False)
+            
+            # Basis compression
+            S       = S[::]
+            print("        Computed singular values:")
+            print(S)
+            print()
+            S_block = SVD_trunc(S, dg_trunc, svd_tol)
+            print("        Kept singular values:")
+            print(S_block)
+            print()
+            U_block = U[:,0:len(S_block)]
+            
+            # Storing block indices
+            index_out.append([offset + elem for elem in range(len(S_block))])
+            offset = index_out[-1][-1]+1
 
-    for i in range(len(iDG_cut)):
-        DG_cut[i] = np.argmin(np.absolute(x_dp - iDG_cut[i])) # check for min being unambiguous
-        
-    DG_cut = np.append(0, np.append( DG_cut, len(x_dp)))
-    dvol = cell.vol / np.prod(cell.mesh)
-    return get_dg_basis(dvol, ao_values, DG_cut, dg_trunc, svd_tol)
+            # "repermute" U_block
+            out_block = np.zeros_like(ao_values[:,0:len(S_block)+1])
+            out_block[idx,:] = U_block
+            if k == 0:
+                U_out = out_block
+            else:
+                U_out = np.hstack((U_out,out_block))
+        return U_out, index_out
+    else:
+        # Determine ideal DG-cuts for quasi-1D system along z-axis
+        if dg_cuts is None:
+            atom_pos = np.unique(np.array([x[1][0] for x in cell.atom]))
+            iDG_cut  = atom_pos[0:-1] + np.diff(atom_pos)/2.0
+        else:
+            iDG_cut = dg_cuts
+        print("Q-1D DG: ", iDG_cut)
+        DG_cut   = np.zeros(len(iDG_cut), dtype=int)
+
+        for i in range(len(iDG_cut)):
+            DG_cut[i] = np.argmin(np.absolute(x_dp - iDG_cut[i])) # check for min being unambiguous
+            
+        DG_cut = np.append(0, np.append( DG_cut, len(x_dp)))
+        dvol = cell.vol / np.prod(cell.mesh)
+        return get_dg_basis(dvol, ao_values, DG_cut, dg_trunc, svd_tol)
 
 
 def get_dg_basis(dvol, Gr_mat, DG_cut, dg_trunc, svd_tol):

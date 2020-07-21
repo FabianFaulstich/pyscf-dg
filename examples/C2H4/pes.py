@@ -35,7 +35,7 @@ if __name__ == '__main__':
            ['C',[1.34, 0, 0]], ['H',[2.4,-1.86, 0]], ['H',[2.4,1.86,0 ]]]
     
     # dissociation in x-direction relative to the optimal geometry
-    rel_dis = np.array([8, 10, 12, 14])
+    rel_dis = np.array([7, 7, 7, 7, 7, 7, 7, 8, 9, 10, 11, 12, 13, 14])
 
     mfe = np.zeros(len(rel_dis))                                                  
     emp = np.zeros(len(rel_dis))                                                  
@@ -50,7 +50,7 @@ if __name__ == '__main__':
         atom_pos = np.array([atom[1] for atom in Mol])
         atom_pos[int(len(atom_pos)/2):,0] += diss
         atoms    = [atom[0] for atom in Mol]
-        offset    = np.array([8,8,8])                                           
+        offset    = np.array([6,6,3]) #                                           
         atom_off  = np.array([offset[d]/2.0 - np.amin(atom_pos[:,d]) for d in range(3)])
         atoms_box = np.array([pos + atom_off for pos in atom_pos]) 
         atoms_box = np.array([pos + atom_off for pos in atom_pos])              
@@ -68,7 +68,7 @@ if __name__ == '__main__':
         cell.a = [[X[0],0.,0.],[0.,X[1],0],[0,0,X[2]]]
         cell.unit    = 'bohr'
         cell.verbose = 3
-        cell.basis   = 'sto-3g' #gth-dzvp
+        cell.basis   = 'gth-dzvp' #gth-dzvp
         cell.pseudo  = 'gth-pade'
         #cell.ke_cutoff = 90000.0
         cell.mesh    = np.array([int(d * x) for d, x in zip(dgrid, X)])
@@ -93,7 +93,7 @@ if __name__ == '__main__':
         #cell_dg  = dg.dg_model_ham(cell) # default setting dg_trunc = 'abs_tol', svd_tol = 1e-3
         #cell_dg  = dg.dg_model_ham(cell, 'rel_tol', 0.01) 
         #cell_dg  = dg.dg_model_ham(cell, 'abs_num', 4) # set svd_tol > 10 to provoke invalid request
-        cell_dg  = dg.dg_model_ham(cell, None ,'rel_num', 0.95)
+        cell_dg  = dg.dg_model_ham(cell, None ,'rel_num', 0.85)
         #cell_dg  = dg.dg_model_ham(cell, 'abs_cum', 35)
         #cell_dg  = dg.dg_model_ham(cell, 'rel_cum', 2)
         end_dg   = time.time()
@@ -108,13 +108,13 @@ if __name__ == '__main__':
         print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
         print()
         
-        # MP2
-        print("Computing MP2 in " + cell.basis +  "-DG basis ...")
-        start_mp = time.time()
-        emp_dg[i], _ = cell_dg.run_MP2()
-        end_mp   = time.time()
-        print("Done! Elapsed time: ", end_mp - start_mp, "sec.")
-        print()
+#        # MP2
+#        print("Computing MP2 in " + cell.basis +  "-DG basis ...")
+#        start_mp = time.time()
+#        emp_dg[i], _ = cell_dg.run_MP2()
+#        end_mp   = time.time()
+#        print("Done! Elapsed time: ", end_mp - start_mp, "sec.")
+#        print()
         
 #        # CCSD
 #        print("Computing CCSD in " + cell.basis +  "-DG basis ...")
@@ -178,7 +178,7 @@ if __name__ == '__main__':
     plt.plot(rel_dis + 2.68, mfe_dg, 'r-v', label =  'HF  (' + cell.basis + '-DG)')
 
 #    plt.plot(rel_dis + 2.68, mfe + emp      , 'b-^', label =  'MP2  (' + cell.basis + ')')
-    plt.plot(rel_dis + 2.68, mfe_dg + emp_dg, 'r-^', label =  'MP2  (' + cell.basis + '-DG)')
+#    plt.plot(rel_dis + 2.68, mfe_dg + emp_dg, 'r-^', label =  'MP2  (' + cell.basis + '-DG)')
 
 #    plt.plot(rel_dis + 2.68, mfe + ecc      , 'b-x', label =  'CCSD  (' + cell.basis + ')')
 #    plt.plot(rel_dis + 2.68, mfe_dg + ecc_dg, 'r-x', label =  'CCSD  (' + cell.basis + '-DG)')

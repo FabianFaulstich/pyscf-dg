@@ -15,6 +15,7 @@ import pyscf
 from pyscf import gto as gto_mol
 from pyscf import scf as scf_mol
 from pyscf import cc  as cc_mol
+from pyscf import mp  as mp_mol
 
 from pyscf import lib
 from pyscf.pbc import dft as dft
@@ -36,21 +37,19 @@ def in_hull(p, hull):
 
 if __name__ == '__main__':
     # an example of H4 molecul
-    print(pyscf.__version__)
-   
     Mol = [['H',[1, 1, 0]], ['H',[2, -1, 0]], ['H',[-.5, -1.5, 0]], ['H',[-1, .25, 0]]]
 
     atom_pos = np.array([atom[1] for atom in Mol])
     atoms    = [atom[0] for atom in Mol]
     Mol_size = np.array([np.amax(atom_pos[:,i])-np.amin(atom_pos[:,i]) for i in range(3)])
-    offset   = np.array([3,3,3])
+    offset   = np.array([6,6,6])
     atom_off = np.array([offset[d]/2.0 - np.amin(atom_pos[:,d]) for d in range(3)])
 
     X = np.array([int(np.ceil( off + bl)) for off, bl in zip(offset, Mol_size)])
     atom_box = np.array([pos + atom_off for pos in atom_pos])
     Mol_box  = [[atoms[i],atom_box[i]] for i in range(len(atoms))] 
     
-    dgrid = [6]*3
+    dgrid = [4]*3
     
     cell = gto.Cell()
     cell.a = [[X[0],0.,0.],[0.,X[1],0],[0,0,X[2]]]
@@ -70,21 +69,44 @@ if __name__ == '__main__':
     mol.unit = 'bohr'
     mol.build()
 
-    mf   = scf_mol.RHF(mol).run()
-    mfe  = mf.e_tot
-    mycc = cc_mol.CCSD(mf)
-    mycc.kernel()
-    ecc  = mycc.e_corr
+    #mf   = scf_mol.RHF(mol).run()
+    #mfe  = mf.e_tot
+
+    #df     = mp_mol.MP2(mf)
+    #emp, _ = df.kernel()
+    
+    #mycc = cc_mol.CCSD(mf)
+    #mycc.kernel()
+    #ecc  = mycc.e_corr
 
     # HF
-    #print("Computing HF in " + cell.basis +  " basis ...")
-    #start_hf = time.time()
-    #mf = scf.RHF(cell, exxdiv='None') # madelung correction: ewlad
-    #mf.kernel()
-    #mfe[i] = mf.e_tot
-    #end_hf   = time.time()
-    #print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
-    #print()
+    print("Computing HF in " + cell.basis +  " basis ...")
+    start_hf = time.time()
+    mf = scf.RHF(cell, exxdiv='None') # madelung correction: ewlad
+    mf.kernel(dump_chk=False)
+    mfe = mf.e_tot
+    end_hf   = time.time()
+    print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
+    print()
+
+    # MP2
+    print("Computing MP2 in " + cell.basis +  " basis ...")
+    start_mp = time.time()
+    emp, _ = mp.MP2(mf).kernel()
+    end_mp   = time.time()
+    print("Done! Elapsed time: ", end_mp - start_mp, "sec.")
+    print()
+
+    # CCSD
+    print("Computing CCSD in " + cell.basis +  " basis ...")
+    start_cc = time.time()
+    cc_builtin = cc.CCSD(mf)
+    cc_builtin.kernel()
+    ecc = cc_builtin.e_corr
+    end_cc   = time.time()
+    print("Done! Elapsed time: ", end_cc - start_cc, "sec.")
+    print()
+
 
     # Voronoi 3D:
     #vor_3d = Voronoi(atom_box)
@@ -208,18 +230,19 @@ if __name__ == '__main__':
     print()
 
     print("Meanfield results:")
-    print("Mol: ", mfe)
+    print("pbc: ", mfe)
     print("DG: " , mfe_dg)
     print("VDG: ", mfe_vdg)
     print()
     print("MP2 correlation energy:")
-    print("DG: " ,emp_dg)
-    print("VDG: ",emp_vdg)
+    print("pbc: ", emp)
+    print("DG: " , emp_dg)
+    print("VDG: ", emp_vdg)
     print()
     print("CCSD correlation energy:")
-    print("Mol: ", ecc)
-    print("DG: " ,ecc_dg)
-    print("VDG: ",ecc_vdg)
+    print("pbc: ", ecc)
+    print("DG: " , ecc_dg)
+    print("VDG: ", ecc_vdg)
 
 
     for vcell in voronoi_cells:

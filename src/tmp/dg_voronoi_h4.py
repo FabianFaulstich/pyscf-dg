@@ -25,6 +25,113 @@ from pyscf.pbc.df import FFTDF
 from pyscf.pbc import tools
 from pyscf import ao2mo
 
+def get_V_cells(V_net , atoms):
+    """
+    Only 2D
+    V_net:
+    atoms:
+    """
+    vert = np.array([elem[0] for elem in V_net])
+
+    for atom in atoms:
+
+
+        break
+
+
+
+
+def get_V_net(atoms, x_min, x_max, y_min, y_max):
+    """
+    Only 2D for now
+    atoms:
+    box parameters: 
+    """
+
+    # Get "innter" vertices from scipy
+    vor  = Voronoi(atoms)
+    edge = vor.ridge_vertices
+    vert = vor.vertices
+    
+    # Compute vertices on the boundary
+    center = atoms.mean(axis=0)
+    for j, (pointidx, rv) in enumerate(zip(vor.ridge_points, edge)):
+        rv = np.asarray(rv)
+        if np.any(rv < 0):
+            i = rv[rv >= 0][0]
+            t = atoms[pointidx[1]]- atoms[pointidx[0]]
+            t = t/np.linalg.norm(t)
+            n = np.array([-t[1],t[0]])
+            midpoint = atoms[pointidx].mean(axis=0)
+            normal = np.sign(np.dot(midpoint-center, n))*n
+            if normal[0] < 0 and normal[1] < 0:
+                dx = vert[i][0]-x_min
+                dy = vert[i][1]-y_min
+                scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
+            elif normal[0] > 0 and normal[1] > 0:
+                dx = x_max-vert[i][0]
+                dy = y_max-vert[i][1]
+                scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
+            elif normal[0] < 0 and normal[1] > 0:
+                dx = vert[i][0]-x_min
+                dy = y_max-vert[i][1]
+                scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
+            elif normal[0] > 0 and normal[1] < 0:
+                dx = x_max-vert[i][0]
+                dy = vert[i][1]-y_min
+                scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
+            #elif one of them is zero!!!
+            boundary_point = vert[i] + np.sign(np.dot(midpoint-center, n))*n*scalar
+            vert = np.vstack((vert, boundary_point))
+            edge[j][np.argmin(rv)] = len(vert) #only 2D for now        
+   
+    # Add boundary vertices and edges
+    vert = np.vstack((vert, np.array([x_min, y_min])))
+    vert = np.vstack((vert, np.array([x_max, y_min])))
+    vert_s = np.array([v for v in vert if v[1] == y_min])
+    vert_s = np.array(sorted(vert_s, key=lambda x: x[0]))
+    for i, v in enumerate(vert_s[1:]):
+        idx_0 = np.where((vert[:,0] == vert_s[i][0]) & (vert[:,1]== vert_s[i][1]))[0][0]
+        idx_1 = np.where((vert[:,0] == v[0]) & (vert[:,1]==v[1]))[0][0]
+        edge.append([idx_0, idx_1])
+
+    vert = np.vstack((vert, np.array([x_max, y_max])))
+    vert_s = np.array([v for v in vert if v[0] == x_max])
+    vert_s = np.array(sorted(vert_s, key=lambda x: x[1]))
+    for i, v in enumerate(vert_s[1:]):
+        idx_0 = np.where((vert[:,0] == vert_s[i][0]) & (vert[:,1]== vert_s[i][1]))[0][0]
+        idx_1 = np.where((vert[:,0] == v[0]) & (vert[:,1]==v[1]))[0][0]
+        edge.append([idx_0, idx_1])
+     
+    vert = np.vstack((vert, np.array([x_min, y_max])))
+    vert_s = np.array([v for v in vert if v[1] == y_max])
+    vert_s = np.array(sorted(vert_s, key=lambda x: x[0]))
+    for i, v in enumerate(vert_s[1:]):
+        idx_0 = np.where((vert[:,0] == vert_s[i][0]) & (vert[:,1]== vert_s[i][1]))[0][0]
+        idx_1 = np.where((vert[:,0] == v[0]) & (vert[:,1]==v[1]))[0][0]
+        edge.append([idx_0, idx_1])
+    
+    vert_s = np.array([v for v in vert if v[0] == x_min])
+    vert_s = np.array(sorted(vert_s, key=lambda x: x[1]))
+    for i, v in enumerate(vert_s[1:]):
+        idx_0 = np.where((vert[:,0] == vert_s[i][0]) & (vert[:,1]== vert_s[i][1]))[0][0]
+        idx_1 = np.where((vert[:,0] == v[0]) & (vert[:,1]==v[1]))[0][0]
+        edge.append([idx_0, idx_1])
+
+    # create Voronoi network
+    
+    edge_inv = [[e[1],e[0]] for e in edge]
+    edge = edge + [[e[1],e[0]] for e in edge]
+    edge = np.array(sorted(edge, key=lambda x: x[0]))
+    V_net = []
+    for j, v in enumerate(vert):
+        idx = np.where((edge[:,0] == j))[0]
+        V_net.append([v, edge[idx][:,1]])
+    
+    return V_net 
+
+
+
 def in_hull(p, hull):
     """
     Test if points in p are in hull
@@ -63,105 +170,22 @@ if __name__ == '__main__':
     cell.atom    = Mol_box
     cell.build()
    
-    mol = gto_mol.M()
-    mol.basis = 'sto-3g'
-    mol.atom = Mol_box
-    mol.unit = 'bohr'
-    mol.build()
+    # Voronoi 2D:
 
-    #mf   = scf_mol.RHF(mol).run()
-    #mfe  = mf.e_tot
-
-    #df     = mp_mol.MP2(mf)
-    #emp, _ = df.kernel()
-    
-    #mycc = cc_mol.CCSD(mf)
-    #mycc.kernel()
-    #ecc  = mycc.e_corr
-
-    # HF
-    print("Computing HF in " + cell.basis +  " basis ...")
-    start_hf = time.time()
-    mf = scf.RHF(cell, exxdiv='None') # madelung correction: ewlad
-    mf.kernel(dump_chk=False)
-    mfe = mf.e_tot
-    end_hf   = time.time()
-    print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
-    print()
-
-    # MP2
-    print("Computing MP2 in " + cell.basis +  " basis ...")
-    start_mp = time.time()
-    emp, _ = mp.MP2(mf).kernel()
-    end_mp   = time.time()
-    print("Done! Elapsed time: ", end_mp - start_mp, "sec.")
-    print()
-
-    # CCSD
-    print("Computing CCSD in " + cell.basis +  " basis ...")
-    start_cc = time.time()
-    cc_builtin = cc.CCSD(mf)
-    cc_builtin.kernel()
-    ecc = cc_builtin.e_corr
-    end_cc   = time.time()
-    print("Done! Elapsed time: ", end_cc - start_cc, "sec.")
-    print()
-
-
-    # Voronoi 3D:
-    #vor_3d = Voronoi(atom_box)
-    #print("3D Voronoi RV's:")
-    #print(vor_3d.ridge_vertices)
-
-
+    # 2D projection of atom position and grid:
     atoms_2d = np.array([atom[1][:2] for atom in Mol_box])
     mesh_2d  = np.unique(cell.get_uniform_grids()[:,:2], axis=0)
-    voronoi  = Voronoi(atoms_2d)
+    
+    # get Voronoi vertices + vertices on the boundary box (nonperiodic voronoi):
+    V_net = get_V_net(atoms_2d, np.amin(mesh_2d[:,0]), np.amax(mesh_2d[:,0]),
+                        np.amin(mesh_2d[:,1]), np.amax(mesh_2d[:,1]))
+    
+    #V_cells = get_V_cells(V_net, atoms_2d)
+    exit()
+    
+    print(vert)
+    # get Voronoi cells:
 
-    ''' vertices: list of lists
-        vertices of the Voronoi decomp.
-        ridge_vertices: list of lists
-        Connected vertices
-    '''
-    
-    # Determining voronoi cells
-    voronoi.vertices = np.vstack((voronoi.vertices, np.array([np.amin(mesh_2d[:,0]), np.amin(mesh_2d[:,1])])))
-    voronoi.vertices = np.vstack((voronoi.vertices, np.array([np.amax(mesh_2d[:,0]), np.amax(mesh_2d[:,1])])))
-    voronoi.vertices = np.vstack((voronoi.vertices, np.array([np.amin(mesh_2d[:,0]), np.amax(mesh_2d[:,1])])))
-    voronoi.vertices = np.vstack((voronoi.vertices, np.array([np.amax(mesh_2d[:,0]), np.amin(mesh_2d[:,1])]))) 
-    
-    # Compute vertices on the boundary
-    center = atoms_2d.mean(axis=0)
-    for pointidx, rv in zip(voronoi.ridge_points, voronoi.ridge_vertices):
-        rv = np.asarray(rv)
-        if np.any(rv < 0):
-            i = rv[rv >= 0][0]
-            t = atoms_2d[pointidx[1]]- atoms_2d[pointidx[0]]
-            t = t/np.linalg.norm(t)
-            n = np.array([-t[1],t[0]])
-            midpoint = atoms_2d[pointidx].mean(axis=0)
-            normal = np.sign(np.dot(midpoint-center, n))*n 
-            if normal[0] < 0 and normal[1] < 0:
-                dx = voronoi.vertices[i][0]-np.amin(mesh_2d[:,0])
-                dy = voronoi.vertices[i][1]-np.amin(mesh_2d[:,1])
-                scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )    
-            elif normal[0] > 0 and normal[1] > 0:
-                dx = np.amax(mesh_2d[:,0])-voronoi.vertices[i][0]
-                dy = np.amax(mesh_2d[:,1])-voronoi.vertices[i][1]
-                scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
-            elif normal[0] < 0 and normal[1] > 0:
-                dx = voronoi.vertices[i][0]-np.amin(mesh_2d[:,0])
-                dy = np.amax(mesh_2d[:,1])-voronoi.vertices[i][1]
-                scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
-            elif normal[0] > 0 and normal[1] < 0:
-                dx = np.amax(mesh_2d[:,0])-voronoi.vertices[i][0]
-                dy = voronoi.vertices[i][1]-np.amin(mesh_2d[:,1])
-                scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
-            #elif one of them is zero!!!
-            far_point = voronoi.vertices[i] + np.sign(np.dot(midpoint-center, n))*n*scalar 
-            voronoi.vertices = np.vstack((voronoi.vertices, far_point))
-    
-    vert = voronoi.vertices
 
     voronoi_cells = []
     voronoi_cells.append(np.array([vert[2], vert[7], vert[1], vert[0], vert[6]]))
@@ -169,6 +193,9 @@ if __name__ == '__main__':
     voronoi_cells.append(np.array([vert[8], vert[0], vert[1], vert[9], vert[3]]))
     voronoi_cells.append(np.array([vert[1], vert[9], vert[5], vert[7]]))
 
+
+
+    exit()
     # DG vs VDG calculations
     print("Creating  " + cell.basis +  "-VDG Hamiltonian ...")
     start_dg = time.time()
@@ -229,6 +256,37 @@ if __name__ == '__main__':
     print("Done! Elapsed time: ", end_cc - start_cc, "sec.")
     print()
 
+
+    # HF
+    print("Computing HF in " + cell.basis +  " basis ...")
+    start_hf = time.time()
+    mf = scf.RHF(cell, exxdiv='None') # madelung correction: ewlad
+    mf.kernel(dump_chk=False)
+    mfe = mf.e_tot
+    end_hf   = time.time()
+    print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
+    print()
+
+    # MP2
+    print("Computing MP2 in " + cell.basis +  " basis ...")
+    start_mp = time.time()
+    emp, _ = mp.MP2(mf).kernel()
+    end_mp   = time.time()
+    print("Done! Elapsed time: ", end_mp - start_mp, "sec.")
+    print()
+
+    # CCSD
+    print("Computing CCSD in " + cell.basis +  " basis ...")
+    start_cc = time.time()
+    cc_builtin = cc.CCSD(mf)
+    cc_builtin.kernel()
+    ecc = cc_builtin.e_corr
+    end_cc   = time.time()
+    print("Done! Elapsed time: ", end_cc - start_cc, "sec.")
+    print()
+
+
+    
     print("Meanfield results:")
     print("pbc: ", mfe)
     print("DG: " , mfe_dg)
@@ -259,7 +317,7 @@ if __name__ == '__main__':
 
     plt.plot(mesh_2d[:,0], mesh_2d[:,1], ',')
     plt.plot(atoms_2d[:,0], atoms_2d[:,1], 'bo')
-    plt.plot(voronoi.vertices[:,0], voronoi.vertices[:,1],'ro')  # poltting voronoi vertices
+    plt.plot(vert[:,0], vert[:,1],'ro')  # poltting voronoi vertices
  
     plt.xlim(np.amin(mesh_2d[:,0]) -1.5,np.amax(mesh_2d[:,0]) +1.5)
     plt.ylim(np.amin(mesh_2d[:,1]) -1.5,np.amax(mesh_2d[:,1]) +1.5)

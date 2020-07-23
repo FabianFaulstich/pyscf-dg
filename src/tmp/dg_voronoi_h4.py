@@ -25,21 +25,51 @@ from pyscf.pbc.df import FFTDF
 from pyscf.pbc import tools
 from pyscf import ao2mo
 
+import math
+
 def get_V_cells(V_net , atoms):
     """
     Only 2D
     V_net:
     atoms:
     """
-    vert = np.array([elem[0] for elem in V_net])
+    voronoi_cells = []
+    for i, atom in enumerate(atoms):
+        cell = []
+        cell.append(get_cell(atom, V_net))
 
-    for atom in atoms:
-
+        exit()
 
         break
 
+def get_cell(atom, V_net):
+    
+    verts = np.array([elem[0] for elem in V_net])
+    idx   = np.argmin((np.sum(np.abs(verts-atom)**2,axis=-1)**(1./2)))
+    vert  = verts[idx]
+    con   = V_net[idx][1] 
+    
+    get_angle(atom, vert, V_net[con[0]][0])
 
+def get_angle(atom, vert, vert_1):
+    """
+    Returns clockwise measured angle
+    """
+    print("atom: ", atom)
+    print("Vertex: ", vert)
+    print("Connected Vertex: ", vert_1)
 
+    v_0 = atom - vert
+    v_1 = vert_1 - vert
+
+    v_dot = np.dot(v_0,v_1)
+    v_det = v_0[0]*v_1[1]-v_0[1]*v_1[0]
+    # clockwise angle
+    angle = math.atan2(v_det,v_dot)*180/np.pi
+
+    print(v_0)
+    print(v_1)
+    print(angle)
 
 def get_V_net(atoms, x_min, x_max, y_min, y_max):
     """
@@ -180,22 +210,23 @@ if __name__ == '__main__':
     V_net = get_V_net(atoms_2d, np.amin(mesh_2d[:,0]), np.amax(mesh_2d[:,0]),
                         np.amin(mesh_2d[:,1]), np.amax(mesh_2d[:,1]))
     
-    #V_cells = get_V_cells(V_net, atoms_2d)
-    exit()
     
-    print(vert)
+    #V_cells = get_V_cells(V_net, atoms_2d)
+    vert = np.array([elem[0] for elem in V_net])    
+    #print(vert)
     # get Voronoi cells:
 
 
+    
+
     voronoi_cells = []
-    voronoi_cells.append(np.array([vert[2], vert[7], vert[1], vert[0], vert[6]]))
-    voronoi_cells.append(np.array([vert[6], vert[0], vert[8], vert[4]]))
-    voronoi_cells.append(np.array([vert[8], vert[0], vert[1], vert[9], vert[3]]))
-    voronoi_cells.append(np.array([vert[1], vert[9], vert[5], vert[7]]))
+    voronoi_cells.append(np.array([vert[6], vert[3], vert[1], vert[0], vert[2]]))
+    voronoi_cells.append(np.array([vert[2], vert[0], vert[4], vert[9]]))
+    voronoi_cells.append(np.array([vert[4], vert[0], vert[1], vert[5], vert[8]]))
+    voronoi_cells.append(np.array([vert[1], vert[5], vert[7], vert[3]]))
 
 
 
-    exit()
     # DG vs VDG calculations
     print("Creating  " + cell.basis +  "-VDG Hamiltonian ...")
     start_dg = time.time()
@@ -288,19 +319,19 @@ if __name__ == '__main__':
 
     
     print("Meanfield results:")
-    print("pbc: ", mfe)
-    print("DG: " , mfe_dg)
-    print("VDG: ", mfe_vdg)
+    print(cell.basis+ ": ", mfe)
+    print(cell.basis+ "-DG: " , mfe_dg)
+    print(cell.basis+ "-VDG: ", mfe_vdg)
     print()
     print("MP2 correlation energy:")
-    print("pbc: ", emp)
-    print("DG: " , emp_dg)
-    print("VDG: ", emp_vdg)
+    print(cell.basis+": ", emp)
+    print(cell.basis+ "-DG: " , emp_dg)
+    print(cell.basis+ "-VDG: ", emp_vdg)
     print()
     print("CCSD correlation energy:")
-    print("pbc: ", ecc)
-    print("DG: " , ecc_dg)
-    print("VDG: ", ecc_vdg)
+    print(cell.basis+ ": ", ecc)
+    print(cell.basis+ "-DG: " , ecc_dg)
+    print(cell.basis+ "-VDG: ", ecc_vdg)
 
 
     for vcell in voronoi_cells:

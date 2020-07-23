@@ -468,7 +468,7 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells):
 
     # Fetching Gramm matrix
     ao_values = dft.numint.eval_ao(cell, coords, deriv=0) # change to eval_gto?
-    
+    dvol = cell.vol / np.prod(cell.mesh)
     if voronoi:
         print("Voronoi-DG")
         U_out     = []
@@ -501,6 +501,7 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells):
                 U_out = out_block
             else:
                 U_out = np.hstack((U_out,out_block))
+        U_out *= 1./np.sqrt(dvol)
         return U_out, index_out
     else:
         # Determine ideal DG-cuts for quasi-1D system along z-axis
@@ -516,7 +517,6 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells):
             DG_cut[i] = np.argmin(np.absolute(x_dp - iDG_cut[i])) # check for min being unambiguous
             
         DG_cut = np.append(0, np.append( DG_cut, len(x_dp)))
-        dvol = cell.vol / np.prod(cell.mesh)
         return get_dg_basis(dvol, ao_values, DG_cut, dg_trunc, svd_tol)
 
 

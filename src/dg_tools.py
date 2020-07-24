@@ -54,30 +54,35 @@ def get_cell(atom, V_net):
     idx   = np.argmin((np.sum(np.abs(verts-atom)**2,axis=-1)**(1./2)))
     vert  = verts[idx]
     con   = V_net[idx][1] 
-    
+    print(V_net)
+    print(idx)
+
+    for c in con:
+        print("Atom: ",atom)
+        print("Vertex: ", vert)
+        print("C-Vert: ", V_net[c][0])
+
+        print(get_angle(atom, vert, V_net[c][0]))
+    exit()
     get_angle(atom, vert, V_net[con[0]][0])
 
 def get_angle(atom, vert, vert_1):
     """ 
-    Returns clockwise measured angle
+    Returns angle between atom-vert and vert-vert_1
     """
-    #print("atom: ", atom)
-    #print("Vertex: ", vert)
-    #print("Connected Vertex: ", vert_1)
-
     v_0 = atom - vert
     v_1 = vert_1 - vert
+    
+    print("v_0: ", v_0)
+    print("v_1: ", v_1)
 
     v_dot = np.dot(v_0,v_1)
     v_det = v_0[0]*v_1[1]-v_0[1]*v_1[0]
-    # clockwise angle
+    #angle
     angle = math.atan2(v_det,v_dot)*180/np.pi
     if angle < 0:
         angle = 360 + angle
     return angle
-    #print(v_0)
-    #print(v_1)
-    #print(angle)
 
 
 def get_V_net(atoms, x_min, x_max, y_min, y_max):
@@ -132,10 +137,9 @@ def get_V_net(atoms, x_min, x_max, y_min, y_max):
             elif normal[0] > 0 and normal[1] == 0:
                 dx = x_max-vert[i][0]
                 scalar = np.sign(normal[0])*dx/normal[0]
-
             boundary_point = vert[i] + np.sign(np.dot(midpoint-center, n))*n*scalar
             vert = np.vstack((vert, boundary_point))
-            edge[j][np.argmin(rv)] = len(vert) #only 2D for now
+            edge[j][np.argmin(rv)] = len(vert)-1 #only 2D for now
 
     # Add boundary vertices and edges
     vert = np.vstack((vert, np.array([x_min, y_min])))

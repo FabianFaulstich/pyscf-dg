@@ -1,3 +1,4 @@
+import math
 import numpy as np
 from scipy.spatial import Delaunay, Voronoi
 
@@ -31,6 +32,52 @@ def in_hull(p, hull):
         hull = Delaunay(hull)
 
     return hull.find_simplex(p)>=0
+
+def get_V_cells(V_net , atoms):
+    """ 
+    Only 2D
+    V_net:
+    atoms:
+    """
+    voronoi_cells = []
+    for i, atom in enumerate(atoms):
+        cell = []
+        cell.append(get_cell(atom, V_net))
+
+        exit()
+
+        break
+
+def get_cell(atom, V_net):
+    
+    verts = np.array([elem[0] for elem in V_net])
+    idx   = np.argmin((np.sum(np.abs(verts-atom)**2,axis=-1)**(1./2)))
+    vert  = verts[idx]
+    con   = V_net[idx][1] 
+    
+    get_angle(atom, vert, V_net[con[0]][0])
+
+def get_angle(atom, vert, vert_1):
+    """ 
+    Returns clockwise measured angle
+    """
+    #print("atom: ", atom)
+    #print("Vertex: ", vert)
+    #print("Connected Vertex: ", vert_1)
+
+    v_0 = atom - vert
+    v_1 = vert_1 - vert
+
+    v_dot = np.dot(v_0,v_1)
+    v_det = v_0[0]*v_1[1]-v_0[1]*v_1[0]
+    # clockwise angle
+    angle = math.atan2(v_det,v_dot)*180/np.pi
+    if angle < 0:
+        angle = 360 + angle
+    return angle
+    #print(v_0)
+    #print(v_1)
+    #print(angle)
 
 
 def get_V_net(atoms, x_min, x_max, y_min, y_max):

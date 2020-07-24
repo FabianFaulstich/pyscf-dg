@@ -39,32 +39,46 @@ def get_V_cells(V_net , atoms):
     V_net:
     atoms:
     """
+
     voronoi_cells = []
     for i, atom in enumerate(atoms):
-        cell = []
-        cell.append(get_cell(atom, V_net))
-
-        exit()
-
-        break
+        voronoi_cells.append(get_cell(atom, V_net))
+    return np.array(voronoi_cells)   
 
 def get_cell(atom, V_net):
     
     verts = np.array([elem[0] for elem in V_net])
     idx   = np.argmin((np.sum(np.abs(verts-atom)**2,axis=-1)**(1./2)))
     vert  = verts[idx]
-    con   = V_net[idx][1] 
-    print(V_net)
-    print(idx)
+    con   = V_net[idx][1]
+    cell  = [vert]
 
+    idx_new, vert_new = get_next_vert(atom, idx, V_net)
+    cell.append(vert_new)
+    es = 0
+
+    # small systems, no more than 100 vertices!
+    while (cell[-1][0] != vert[0] or cell[-1][1] != vert[1]) and es < 100:
+        idx_new, vert_new = get_next_vert(cell[-2], idx_new, V_net)
+        cell.append(vert_new)
+        es += 1
+
+    return np.array(cell)
+
+def get_next_vert(atom, idx,V_net):
+    vert = V_net[idx][0]
+    con  = V_net[idx][1]
+    angle = []
+    vertex = []
+    cc = []
     for c in con:
-        print("Atom: ",atom)
-        print("Vertex: ", vert)
-        print("C-Vert: ", V_net[c][0])
-
-        print(get_angle(atom, vert, V_net[c][0]))
-    exit()
-    get_angle(atom, vert, V_net[con[0]][0])
+        if atom[0] != V_net[c][0][0] and atom[1] != V_net[c][0][1]:
+            angle.append(get_angle(atom, vert, V_net[c][0]))
+            vertex.append(V_net[c][0])
+            cc.append(c) 
+    angle = np.array(angle)
+    idx_min = np.argmin(angle)
+    return cc[idx_min], vertex[idx_min]
 
 def get_angle(atom, vert, vert_1):
     """ 
@@ -73,9 +87,6 @@ def get_angle(atom, vert, vert_1):
     v_0 = atom - vert
     v_1 = vert_1 - vert
     
-    print("v_0: ", v_0)
-    print("v_1: ", v_1)
-
     v_dot = np.dot(v_0,v_1)
     v_det = v_0[0]*v_1[1]-v_0[1]*v_1[0]
     #angle
@@ -108,7 +119,6 @@ def get_V_net(atoms, x_min, x_max, y_min, y_max):
             n = np.array([-t[1],t[0]])
             midpoint = atoms[pointidx].mean(axis=0)
             normal = np.sign(np.dot(midpoint-center, n))*n
-            print(normal)
             if normal[0] < 0 and normal[1] < 0:
                 dx = vert[i][0]-x_min
                 dy = vert[i][1]-y_min

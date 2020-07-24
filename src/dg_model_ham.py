@@ -4,6 +4,9 @@ from numpy import linalg as la
 from scipy.linalg import block_diag
 import scipy
 
+import matplotlib
+import matplotlib.pyplot as plt
+
 import pyscf
 from pyscf import lib
 from pyscf.pbc import dft as dft
@@ -38,7 +41,14 @@ class dg_model_ham:
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
 
-        self.nao      = self.dg_gramm.shape[1]
+        M=np.dot(self.dg_gramm.T, self.dg_gramm)/64-np.eye(68)
+        la.norm(M)
+        plt.pcolor(M);plt.show()
+        
+        U=self.dg_gramm
+        plt.plot(U[:,20]*U[:,40]);plt.show()
+
+        self.nao = self.dg_gramm.shape[1]
         
         print("    Computing overlap matrix ...")
         start = time.time()
@@ -485,7 +495,7 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells):
             print(S)
             print()
             S_block = SVD_trunc(S, dg_trunc, svd_tol)
-            print("        Kept singular values:")
+            print("        Kept singular values: (", len(S_block) , ")" )
             print(S_block)
             print()
             U_block = U[:,0:len(S_block)]
@@ -495,13 +505,14 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells):
             offset = index_out[-1][-1]+1
 
             # "repermute" U_block
-            out_block = np.zeros_like(ao_values[:,0:len(S_block)+1])
+            out_block = np.zeros((np.size(ao_values,0),len(S_block)))
+            #out_block = np.zeros_like(ao_values[:,0:len(S_block)+1])
             out_block[idx,:] = U_block
             if k == 0:
                 U_out = out_block
             else:
                 U_out = np.hstack((U_out,out_block))
-        U_out *= 1./np.sqrt(dvol)
+        U_out *= 1/np.sqrt(dvol)
         return U_out, index_out
     else:
         # Determine ideal DG-cuts for quasi-1D system along z-axis
@@ -542,7 +553,7 @@ def get_dg_basis(dvol, Gr_mat, DG_cut, dg_trunc, svd_tol):
         print(S)
         print()
         S_block = SVD_trunc(S, dg_trunc, svd_tol)
-        print("        Kept singular values:")
+        print("        Kept singular values:(", len(S_block) , ")")
         print(S_block)
         print()
         U_block = U[:,0:len(S_block)]

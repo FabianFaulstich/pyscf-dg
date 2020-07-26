@@ -41,12 +41,12 @@ class dg_model_ham:
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
 
-        M=np.dot(self.dg_gramm.T, self.dg_gramm)/64-np.eye(68)
-        la.norm(M)
-        plt.pcolor(M);plt.show()
+        #M=np.dot(self.dg_gramm.T, self.dg_gramm)/64-np.eye(80)
+        #la.norm(M)
+        #plt.pcolor(M);plt.show()
         
-        U=self.dg_gramm
-        plt.plot(U[:,20]*U[:,40]);plt.show()
+        #U=self.dg_gramm
+        #plt.plot(U[:,20]*U[:,40]);plt.show()
 
         self.nao = self.dg_gramm.shape[1]
         
@@ -480,40 +480,7 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells):
     ao_values = dft.numint.eval_ao(cell, coords, deriv=0) # change to eval_gto?
     dvol = cell.vol / np.prod(cell.mesh)
     if voronoi:
-        print("Voronoi-DG")
-        U_out     = []
-        index_out = []
-        offset    = 0
-        coords_2d = np.array([ x[0:2] for x in coords])# 2D for h4 example!
-        for k, vcell in enumerate(v_cells):
-            idx = dg_tools.in_hull(coords_2d, vcell)
-            U, S, _  = la.svd(ao_values[idx,:], full_matrices=False)
-            
-            # Basis compression
-            S       = S[::]
-            print("        Computed singular values:")
-            print(S)
-            print()
-            S_block = SVD_trunc(S, dg_trunc, svd_tol)
-            print("        Kept singular values: (", len(S_block) , ")" )
-            print(S_block)
-            print()
-            U_block = U[:,0:len(S_block)]
-            
-            # Storing block indices
-            index_out.append([offset + elem for elem in range(len(S_block))])
-            offset = index_out[-1][-1]+1
-
-            # "repermute" U_block
-            out_block = np.zeros((np.size(ao_values,0),len(S_block)))
-            #out_block = np.zeros_like(ao_values[:,0:len(S_block)+1])
-            out_block[idx,:] = U_block
-            if k == 0:
-                U_out = out_block
-            else:
-                U_out = np.hstack((U_out,out_block))
-        U_out *= 1/np.sqrt(dvol)
-        return U_out, index_out
+        return get_vdg_basis(dvol, ao_values, coords, v_cells, dg_trunc, svd_tol)
     else:
         # Determine ideal DG-cuts for quasi-1D system along z-axis
         if dg_cuts is None:
@@ -530,6 +497,66 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells):
         DG_cut = np.append(0, np.append( DG_cut, len(x_dp)))
         return get_dg_basis(dvol, ao_values, DG_cut, dg_trunc, svd_tol)
 
+def get_vdg_basis(dvol, ao_values, coords, v_cells, dg_trunc, svd_tol):
+    '''Creating (fake) DG basis based on a 
+        given voronoi decomposition 
+    '''
+    print("Voronoi-DG")
+    U_out     = []
+    #U_out_o   = []
+    index_out = []
+    offset    = 0
+    coords_2d = np.array([ x[0:2] for x in coords])# 2D for h4 example!
+    idx_mat = []
+    for vcell in v_cells:
+        idx_mat.append(dg_tools.in_hull(coords_2d, vcell))
+    idx_mat = np.array(idx_mat).transpose()
+
+    print(idx_mat.shape)
+    # Asigning boundary values to a cell
+    for i, elem in enumerate(idx_mat):
+        if len(elem[elem == True]) > 1 or len(elem[elem == True]) == 0:
+            elem_n = np.zeros_like(elem, dtype = bool)
+            elem_n[np.where(elem == True)[0][0]] = True
+            idx_mat[i,:] = elem_n
+            if len(elem[elem == True]) == 0:
+                print("Index not asigned!")
+    
+    for k, idx in enumerate(idx_mat.transpose()):
+        U, S, _  = la.svd(ao_values[idx,:], full_matrices=False)
+
+        # Basis compression
+        S       = S[::]
+        print("        Computed singular values:")
+        print(S)
+        print()
+        S_block = SVD_trunc(S, dg_trunc, svd_tol)
+        print("        Kept singular values: (", len(S_block) , ")" )
+        print(S_block)
+        print()
+        U_block = U[:,0:len(S_block)]
+
+        # Storing block indices
+        index_out.append([offset + elem for elem in range(len(S_block))])
+        offset = index_out[-1][-1]+1
+
+        # "repermute" U_block
+        out_block = np.zeros((np.size(ao_values,0),len(S_block)))
+        out_block[idx,:] = U_block
+        if k == 0:
+            U_out = out_block
+        else:
+            U_out = np.hstack((U_out, out_block))
+    U_out *= 1/np.sqrt(dvol)
+
+        # Storing on block-diagonal form
+        # change to U_out = [U_block(1),...]
+        # U_out = block_diag(U_out, U_block)
+    #U_out = 1/np.sqrt(dvol) * np.array(U_out[1:,:])
+    #print(ao_values.shape)
+    #print(U_out.shape)
+    #print(U_out_o.shape)
+    return U_out, index_out
 
 def get_dg_basis(dvol, Gr_mat, DG_cut, dg_trunc, svd_tol):
     '''Creating (fake) DG basis

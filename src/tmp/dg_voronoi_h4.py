@@ -76,23 +76,6 @@ if __name__ == '__main__':
     #voronoi_cells.append(np.array([vert[4], vert[0], vert[1], vert[5], vert[8]]))
     #voronoi_cells.append(np.array([vert[1], vert[5], vert[7], vert[3]]))
 
-    for vcell in voronoi_cells:
-        hull = ConvexHull(vcell)
-        for simplex in hull.simplices:
-            plt.plot(vcell[simplex, 0],vcell[simplex, 1], 'k-')
-
-    plt.plot(mesh_2d[:,0], mesh_2d[:,1], ',')
-    plt.plot(atoms_2d[:,0], atoms_2d[:,1], 'bo')
-    plt.plot(vert[:,0], vert[:,1],'ro')  # poltting voronoi vertices
-
-    plt.xlim(np.amin(mesh_2d[:,0]) -1.5,np.amax(mesh_2d[:,0]) +1.5)
-    plt.ylim(np.amin(mesh_2d[:,1]) -1.5,np.amax(mesh_2d[:,1]) +1.5)
-    plt.show()
-    
-    
-    dg_tools.get_V_cells(V_net , atoms_2d)
-    exit()
-
 
     # DG vs VDG calculations
     print("Creating  " + cell.basis +  "-VDG Hamiltonian ...")
@@ -208,7 +191,7 @@ if __name__ == '__main__':
     
     color_code = ['gx','bx','mx','yx']
     for k, vcell in enumerate(voronoi_cells):
-        mesh = in_hull(mesh_2d, vcell)
+        mesh = dg_tools.in_hull(mesh_2d, vcell)
         for i, point in enumerate(mesh_2d):
             if mesh[i]:
                 plt.plot(point[0], point[1], color_code[k])

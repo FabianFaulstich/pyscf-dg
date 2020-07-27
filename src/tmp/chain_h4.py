@@ -98,25 +98,25 @@ if __name__ == '__main__':
         voronoi_cells.append(np.array([vert[3], vert[1], vert[4], vert[5]]))
         voronoi_cells.append(np.array([vert[3], vert[1], vert[5], vert[8], vert[7]]))
 
-        for vcell in voronoi_cells:
-            hull = ConvexHull(vcell)
-            for simplex in hull.simplices:
-                plt.plot(vcell[simplex, 0],vcell[simplex, 1], 'k-')
+        #for vcell in voronoi_cells:
+        #    hull = ConvexHull(vcell)
+        #    for simplex in hull.simplices:
+        #        plt.plot(vcell[simplex, 0],vcell[simplex, 1], 'k-')
 
-        color_code = ['gx','bx','mx','yx']
-        for k, vcell in enumerate(voronoi_cells):
-            mesh = dg_tools.in_hull(mesh_2d, vcell)
-            for i, point in enumerate(mesh_2d):
-                if mesh[i]:
-                    plt.plot(point[0], point[1], color_code[k])
+        #color_code = ['gx','bx','mx','yx']
+        #for k, vcell in enumerate(voronoi_cells):
+        #    mesh = dg_tools.in_hull(mesh_2d, vcell)
+        #    for i, point in enumerate(mesh_2d):
+        #        if mesh[i]:
+        #            plt.plot(point[0], point[1], color_code[k])
 
-        plt.plot(mesh_2d[:,0], mesh_2d[:,1], ',')
-        plt.plot(atoms_2d[:,0], atoms_2d[:,1], 'bo')
-        plt.plot(vert[:,0], vert[:,1],'ro')  # poltting voronoi vertices
+        #plt.plot(mesh_2d[:,0], mesh_2d[:,1], ',')
+        #plt.plot(atoms_2d[:,0], atoms_2d[:,1], 'bo')
+        #plt.plot(vert[:,0], vert[:,1],'ro')  # poltting voronoi vertices
 
-        plt.xlim(np.amin(mesh_2d[:,0]) -1.5,np.amax(mesh_2d[:,0]) +1.5)
-        plt.ylim(np.amin(mesh_2d[:,1]) -1.5,np.amax(mesh_2d[:,1]) +1.5)
-        plt.show()
+        #plt.xlim(np.amin(mesh_2d[:,0]) -1.5,np.amax(mesh_2d[:,0]) +1.5)
+        #plt.ylim(np.amin(mesh_2d[:,1]) -1.5,np.amax(mesh_2d[:,1]) +1.5)
+        #plt.show()
         #exit()        
         
         # DG vs VDG calculations

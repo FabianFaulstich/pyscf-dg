@@ -230,6 +230,8 @@ def get_boundary_point(vert, atom_0, atom_1, center, x_min, x_max, y_min, y_max,
     elif normal[0] > 0 and normal[1] == 0:
         dx = x_max-vert[0]
         scalar = np.sign(normal[0])*dx/normal[0]
+    else:
+        scalar = 0
     if inv:
         scalar *= -1
     return vert + np.sign(np.dot(midpoint-center, n))*n*scalar

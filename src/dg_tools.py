@@ -138,14 +138,101 @@ def tile_atoms(atoms, Dx, Dy):
     
     return atoms_per
 
-def get_v_net_per(atoms, x_min, x_max, y_min, y_max):
+def get_V_net_per(atoms, x_min, x_max, y_min, y_max):
     """Only 2D for now
     atoms:
     box parameters:
     """
 
     # tiling atoms:
+    atoms = tile_atoms(atoms,x_max - x_min, y_max - y_min)
+    vor   = Voronoi(atoms)
+    edge  = np.array(vor.ridge_vertices)
+    center = atoms.mean(axis=0)
+    V_net = []
+    for k, v in enumerate(vor.vertices):
+        if x_min <= v[0] <= x_max and y_min <= v[1] <= y_max:
+            vert =[] 
+            vert.append(k)
+            vert.append(v.tolist())
+            c = []
+            for j, v_n in enumerate(V_net):
+                if any(np.equal([v_n[0],k],edge).all(1)):
+                    c.append(j)
+                    v_n[2].append(len(V_net))
+                elif any(np.equal([k,v_n[0]],edge).all(1)):
+                    c.append(j)
+                    v_n[2].append(len(V_net))
+            vert.append(c)
+            V_net.append(vert)
     
+    V_net_per = [[vert[1],vert[2]] for vert in V_net]
+    for j, v in enumerate(V_net):
+        if np.count_nonzero(edge == v[0]) != len(v[2]):
+            # Add boundary points:
+            # computing connections out of the simulation box (c)
+            c = edge[edge[:,0] == v[0]]
+            c = np.vstack((c,edge[edge[:,1] == v[0]]))
+            for k in v[2]:
+                c = c[c[:,0] != V_net[k][0]]
+                c = c[c[:,1] != V_net[k][0]]
+            for outer in c:
+                # computing boundary point
+                e_idx = np.where((edge[:,0] == outer[0]) & (edge[:,1]== outer[1]))[0][0]
+                v_out = vor.vertices[outer[outer != v[0]]][0]
+                a_idx = vor.ridge_points[e_idx]
+                bp = get_boundary_point(v[1], atoms[a_idx[0]],atoms[a_idx[1]], center, x_min, x_max, y_min, y_max, v_out)
+                V_net_per.append([bp.tolist(),[j]])
+                V_net_per[j][1].append(len(V_net_per)-1)
+
+    return V_net_per
+
+def get_boundary_point(vert, atom_0, atom_1, center, x_min, x_max, y_min, y_max, vert_out = None):
+    t = atom_1- atom_0
+    t = t/np.linalg.norm(t)
+    n = np.array([-t[1],t[0]])
+    midpoint =np.array([atom_0,atom_1]).mean(axis=0)
+    normal = np.sign(np.dot(midpoint-center, n))*n
+
+    inv = False
+    if vert_out is not None:
+        pt = vert_out - vert
+        if np.sign(normal[0]) != np.sign(pt[0]) or np.sign(normal[0]) != np.sign(pt[0]):
+            normal[0] = np.sign(pt[0])*np.abs(normal[0])  
+            normal[1] = np.sign(pt[1])*np.abs(normal[1])
+            inv = True
+
+    if normal[0] < 0 and normal[1] < 0:
+        dx = vert[0]-x_min
+        dy = vert[1]-y_min
+        scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
+    elif normal[0] > 0 and normal[1] > 0:
+        dx = x_max-vert[0]
+        dy = y_max-vert[1]
+        scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
+    elif normal[0] < 0 and normal[1] > 0:
+        dx = vert[0]-x_min
+        dy = y_max-vert[1]
+        scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
+    elif normal[0] > 0 and normal[1] < 0:
+        dx = x_max-vert[0]
+        dy = vert[1]-y_min
+        scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
+    elif normal[0] == 0 and normal[1] < 0:
+        dy = vert[1]-y_min
+        scalar = np.sign(normal[1])*dy/normal[1]
+    elif normal[0] == 0 and normal[1] > 0:
+        dy = y_max-vert[1]
+        scalar = np.sign(normal[1])*dy/normal[1]
+    elif normal[0] < 0 and normal[1] == 0:
+        dx = vert[0]-x_min
+        scalar = np.sign(normal[0])*dx/normal[0]
+    elif normal[0] > 0 and normal[1] == 0:
+        dx = x_max-vert[0]
+        scalar = np.sign(normal[0])*dx/normal[0]
+    if inv:
+        scalar *= -1
+    return vert + np.sign(np.dot(midpoint-center, n))*n*scalar
 
 def get_V_net(atoms, x_min, x_max, y_min, y_max):
     """
@@ -165,41 +252,47 @@ def get_V_net(atoms, x_min, x_max, y_min, y_max):
         rv = np.asarray(rv)
         if np.any(rv < 0):
             i = rv[rv >= 0][0]
-            t = atoms[pointidx[1]]- atoms[pointidx[0]]
-            t = t/np.linalg.norm(t)
-            n = np.array([-t[1],t[0]])
-            midpoint = atoms[pointidx].mean(axis=0)
-            normal = np.sign(np.dot(midpoint-center, n))*n
-            if normal[0] < 0 and normal[1] < 0:
-                dx = vert[i][0]-x_min
-                dy = vert[i][1]-y_min
-                scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
-            elif normal[0] > 0 and normal[1] > 0:
-                dx = x_max-vert[i][0]
-                dy = y_max-vert[i][1]
-                scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
-            elif normal[0] < 0 and normal[1] > 0:
-                dx = vert[i][0]-x_min
-                dy = y_max-vert[i][1]
-                scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
-            elif normal[0] > 0 and normal[1] < 0:
-                dx = x_max-vert[i][0]
-                dy = vert[i][1]-y_min
-                scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
-            elif normal[0] == 0 and normal[1] < 0:
-                dy = vert[i][1]-y_min
-                scalar = np.sign(normal[1])*dy/normal[1] 
-            elif normal[0] == 0 and normal[1] > 0:
-                dy = y_max-vert[i][1]
-                scalar = np.sign(normal[1])*dy/normal[1] 
-            elif normal[0] < 0 and normal[1] == 0:
-                dx = vert[i][0]-x_min
-                scalar = np.sign(normal[0])*dx/normal[0] 
-            elif normal[0] > 0 and normal[1] == 0:
-                dx = x_max-vert[i][0]
-                scalar = np.sign(normal[0])*dx/normal[0]
-            boundary_point = vert[i] + np.sign(np.dot(midpoint-center, n))*n*scalar
-            vert = np.vstack((vert, boundary_point))
+
+            bp = get_boundary_point(vert[i], atoms[pointidx[0]], atoms[pointidx[1]], center, x_min, x_max, y_min, y_max)
+           
+            #i = rv[rv >= 0][0]
+            #t = atoms[pointidx[1]]- atoms[pointidx[0]]
+            #t = t/np.linalg.norm(t)
+            #n = np.array([-t[1],t[0]])
+            #midpoint = atoms[pointidx].mean(axis=0)
+            #normal = np.sign(np.dot(midpoint-center, n))*n
+            #if normal[0] < 0 and normal[1] < 0:
+            #    dx = vert[i][0]-x_min
+            #    dy = vert[i][1]-y_min
+            #    scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
+            #elif normal[0] > 0 and normal[1] > 0:
+            #    dx = x_max-vert[i][0]
+            #    dy = y_max-vert[i][1]
+            #    scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
+            #elif normal[0] < 0 and normal[1] > 0:
+            #    dx = vert[i][0]-x_min
+            #    dy = y_max-vert[i][1]
+            #    scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
+            #elif normal[0] > 0 and normal[1] < 0:
+            #    dx = x_max-vert[i][0]
+            #    dy = vert[i][1]-y_min
+            #    scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
+            #elif normal[0] == 0 and normal[1] < 0:
+            #    dy = vert[i][1]-y_min
+            #    scalar = np.sign(normal[1])*dy/normal[1] 
+            #elif normal[0] == 0 and normal[1] > 0:
+            #    dy = y_max-vert[i][1]
+            #    scalar = np.sign(normal[1])*dy/normal[1] 
+            #elif normal[0] < 0 and normal[1] == 0:
+            #    dx = vert[i][0]-x_min
+            #    scalar = np.sign(normal[0])*dx/normal[0] 
+            #elif normal[0] > 0 and normal[1] == 0:
+            #    dx = x_max-vert[i][0]
+            #    scalar = np.sign(normal[0])*dx/normal[0]
+            #boundary_point = vert[i] + np.sign(np.dot(midpoint-center, n))*n*scalar
+            #vert = np.vstack((vert, boundary_point))
+            
+            vert = np.vstack((vert, bp))
             edge[j][np.argmin(rv)] = len(vert)-1 #only 2D for now
 
     # Add boundary vertices and edges

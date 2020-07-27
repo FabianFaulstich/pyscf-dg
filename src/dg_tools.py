@@ -95,6 +95,57 @@ def get_angle(atom, vert, vert_1):
         angle = 360 + angle
     return angle
 
+def tile_atoms(atoms, Dx, Dy):
+    """Only 2D for now
+    """
+    N = len(atoms)
+    atoms_per = np.zeros((9*N,2))
+    # upper left 
+    atoms_per[:N, 0] = atoms[:,0] - Dx 
+    atoms_per[:N, 1] = atoms[:,1] + Dy
+
+    # upper mid
+    atoms_per[N:2*N, 0] = atoms[:,0]
+    atoms_per[N:2*N, 1] = atoms[:,1] + Dy
+
+    # upper right
+    atoms_per[2*N:3*N, 0] = atoms[:,0] + Dx
+    atoms_per[2*N:3*N, 1] = atoms[:,1] + Dy
+
+    # left 
+    atoms_per[3*N:4*N, 0] = atoms[:,0] - Dx
+    atoms_per[3*N:4*N, 1] = atoms[:,1]
+
+    # mid
+    atoms_per[4*N:5*N, 0] = atoms[:,0]
+    atoms_per[4*N:5*N, 1] = atoms[:,1]
+
+    # right
+    atoms_per[5*N:6*N, 0] = atoms[:,0] + Dx
+    atoms_per[5*N:6*N, 1] = atoms[:,1]
+
+    # lower left 
+    atoms_per[6*N:7*N,0] = atoms[:,0] - Dx
+    atoms_per[6*N:7*N,1] = atoms[:,1] - Dy
+
+    # lower mid
+    atoms_per[7*N:8*N,0] = atoms[:,0] 
+    atoms_per[7*N:8*N,1] = atoms[:,1] - Dy
+
+    # lower right
+    atoms_per[8*N:9*N, 0] = atoms[:,0] + Dx
+    atoms_per[8*N:9*N, 1] = atoms[:,1] - Dy
+    
+    return atoms_per
+
+def get_v_net_per(atoms, x_min, x_max, y_min, y_max):
+    """Only 2D for now
+    atoms:
+    box parameters:
+    """
+
+    # tiling atoms:
+    
 
 def get_V_net(atoms, x_min, x_max, y_min, y_max):
     """

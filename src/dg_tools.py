@@ -150,6 +150,10 @@ def get_V_net_per(atoms, x_min, x_max, y_min, y_max):
     edge  = np.array(vor.ridge_vertices)
     center = atoms.mean(axis=0)
     V_net = []
+
+    # fetch inner points
+    # Rounding to ensure to captur all vertices (C2H4)
+    vor.vertices = np.around(vor.vertices, decimals=8)
     for k, v in enumerate(vor.vertices):
         if x_min <= v[0] <= x_max and y_min <= v[1] <= y_max:
             vert =[] 
@@ -167,6 +171,8 @@ def get_V_net_per(atoms, x_min, x_max, y_min, y_max):
             V_net.append(vert)
     
     V_net_per = [[vert[1],vert[2]] for vert in V_net]
+
+    # Adding points on boundary
     for j, v in enumerate(V_net):
         if np.count_nonzero(edge == v[0]) != len(v[2]):
             # Add boundary points:
@@ -182,10 +188,65 @@ def get_V_net_per(atoms, x_min, x_max, y_min, y_max):
                 v_out = vor.vertices[outer[outer != v[0]]][0]
                 a_idx = vor.ridge_points[e_idx]
                 bp = get_boundary_point(v[1], atoms[a_idx[0]],atoms[a_idx[1]], center, x_min, x_max, y_min, y_max, v_out)
-                V_net_per.append([bp.tolist(),[j]])
-                V_net_per[j][1].append(len(V_net_per)-1)
+                if not any(np.equal(bp,[v[0] for v in V_net_per]).all(1)):
+                    V_net_per.append([bp.tolist(),[j]])
+                    V_net_per[j][1].append(len(V_net_per)-1)
+    
+    # Add boundary vertices and edges
 
-    return V_net_per
+    if not any(np.equal([x_min,y_min],[v[0] for v in V_net_per]).all(1)):
+        V_net_per.append([[x_min, y_min],[]])
+    if not any(np.equal([x_max,y_min],[v[0] for v in V_net_per]).all(1)):
+        V_net_per.append([[x_max, y_min],[]])
+
+    vert   = np.array([v[0] for v in V_net_per])
+    vert_s = np.array([v for v in vert if v[1] == y_min])
+    vert_s = np.array(sorted(vert_s, key=lambda x: x[0]))
+   
+    for i, v in enumerate(vert_s[1:]):
+        idx_0 = np.where((vert[:,0] == vert_s[i][0]) & (vert[:,1]== vert_s[i][1]))[0][0]
+        idx_1 = np.where((vert[:,0] == v[0]) & (vert[:,1]==v[1]))[0][0]
+        V_net_per[idx_0][1].append(idx_1)
+        V_net_per[idx_1][1].append(idx_0)
+    
+    if not any(np.equal([x_max,y_max],[v[0] for v in V_net_per]).all(1)):
+        V_net_per.append([[x_max, y_max],[]])
+
+    vert   = np.array([v[0] for v in V_net_per])
+    vert_s = np.array([v for v in vert if v[0] == x_max])
+    vert_s = np.array(sorted(vert_s, key=lambda x: x[1]))
+
+    for i, v in enumerate(vert_s[1:]):
+        idx_0 = np.where((vert[:,0] == vert_s[i][0]) & (vert[:,1]== vert_s[i][1]))[0][0]
+        idx_1 = np.where((vert[:,0] == v[0]) & (vert[:,1]==v[1]))[0][0]
+        V_net_per[idx_0][1].append(idx_1)
+        V_net_per[idx_1][1].append(idx_0)
+    
+    if not any(np.equal([x_min,y_max],[v[0] for v in V_net_per]).all(1)):
+        V_net_per.append([[x_min, y_max],[]])
+
+    vert = np.array([v[0] for v in V_net_per])
+    vert_s = np.array([v for v in vert if v[1] == y_max])
+    vert_s = np.array(sorted(vert_s, key=lambda x: x[0]))
+
+    for i, v in enumerate(vert_s[1:]):
+        idx_0 = np.where((vert[:,0] == vert_s[i][0]) & (vert[:,1]== vert_s[i][1]))[0][0]
+        idx_1 = np.where((vert[:,0] == v[0]) & (vert[:,1]==v[1]))[0][0]
+        V_net_per[idx_0][1].append(idx_1)
+        V_net_per[idx_1][1].append(idx_0)
+
+
+    vert_s = np.array([v for v in vert if v[0] == x_min])
+    vert_s = np.array(sorted(vert_s, key=lambda x: x[1]))
+
+    for i, v in enumerate(vert_s[1:]):
+        idx_0 = np.where((vert[:,0] == vert_s[i][0]) & (vert[:,1]== vert_s[i][1]))[0][0]
+        idx_1 = np.where((vert[:,0] == v[0]) & (vert[:,1]==v[1]))[0][0]
+        V_net_per[idx_0][1].append(idx_1)
+        V_net_per[idx_1][1].append(idx_0)
+   
+    V_out = [[np.array(v[0]),np.unique(np.array(v[1]))] for v in V_net_per]
+    return V_out
 
 def get_boundary_point(vert, atom_0, atom_1, center, x_min, x_max, y_min, y_max, vert_out = None):
     t = atom_1- atom_0

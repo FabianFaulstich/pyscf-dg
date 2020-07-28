@@ -207,11 +207,52 @@ def test_chain_H4(detail = False):
     plt.ylim(y_min-(y_max-y_min),y_max+(y_max-y_min))
     plt.show()
 
+def test_chain_H2(detail = False):
 
+    atoms = np.array([[-1, 0], [1, 0]])
+
+    x_max =  3
+    x_min = -3
+    y_max =  3
+    y_min = -3
+
+    atoms = dg.tile_atoms(atoms,x_max - x_min, y_max - y_min)
+    voronoi  = Voronoi(atoms)
+  
+    # plotting conections between two voronoi vertices:
+    for rv in voronoi.ridge_vertices:
+        rv = np.asarray(rv)
+        if np.all(rv >= 0):
+            plt.plot(voronoi.vertices[rv,0], voronoi.vertices[rv,1], 'k-')
+
+    # plotting connextions from box limit with voronoi
+    center = atoms.mean(axis=0)
+    plt.plot(center[0],center[1],'r+')
+    for pointidx, rv in zip(voronoi.ridge_points, voronoi.ridge_vertices):
+        rv = np.asarray(rv)
+        if np.any(rv < 0):
+            i = rv[rv >= 0][0]
+            t = atoms[pointidx[1]]- atoms[pointidx[0]]
+            t = t/np.linalg.norm(t)
+            n = np.array([-t[1],t[0]])
+            midpoint = atoms[pointidx].mean(axis=0)
+            far_point = voronoi.vertices[i] + np.sign(np.dot(midpoint-center, n)) * n * 100
+            plt.plot([voronoi.vertices[i,0],far_point[0]], [voronoi.vertices[i,1], far_point[1]], 'k-')
+
+    # plotting voronoi vertices:
+    plt.plot(voronoi.vertices[:,0], voronoi.vertices[:,1],'D')  # poltting voronoi vertices
+    plt.plot(atoms[:,0], atoms[:,1], 'bo')
+    plt.plot([[x_min,y_min],[x_min,y_max],[y_max,x_max],[x_max,y_min]],[[x_min,y_max],[y_max,x_max],[x_max,y_min],[x_min,y_min]],'r-')
+    plt.xlim(x_min-(x_max-x_min),x_max+(x_max-x_min))
+    plt.ylim(y_min-(y_max-y_min),y_max+(y_max-y_min))
+    plt.show()
 
 
 if __name__ == '__main__':
 
+    # Testing H2
+    test_chain_H2()
+    
     # Testing quasi 1D systems
     test_chain_H4()
 

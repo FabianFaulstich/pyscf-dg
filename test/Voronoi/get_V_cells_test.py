@@ -15,7 +15,7 @@ def test_cube(detail = False):
     y_max =  3
     y_min = -3
 
-    V_net   = dg.get_V_net(atoms, x_min, x_max, y_min, y_max)
+    V_net   = dg.get_V_net_per(atoms, x_min, x_max, y_min, y_max)
     V_cells = dg.get_V_cells(V_net, atoms)    
     
     vert = np.array([elem[0] for elem in V_net])
@@ -48,7 +48,7 @@ def test_d_cube(detail=False):
     y_max =  3
     y_min = -3
     
-    V_net   = dg.get_V_net(atoms, x_min, x_max, y_min, y_max)
+    V_net   = dg.get_V_net_per(atoms, x_min, x_max, y_min, y_max)
     V_cells = dg.get_V_cells(V_net, atoms)
 
     vert = np.array([elem[0] for elem in V_net])
@@ -82,7 +82,7 @@ def test_C2H4(detail=False):
     y_max =  6
     y_min = -6
 
-    V_net   = dg.get_V_net(atoms, x_min, x_max, y_min, y_max)
+    V_net   = dg.get_V_net_per(atoms, x_min, x_max, y_min, y_max)
     V_cells = dg.get_V_cells(V_net, atoms)
 
     vert = np.array([elem[0] for elem in V_net])
@@ -111,15 +111,84 @@ def test_C2H4(detail=False):
 
 def test_chain_H4(detail = False):
 
-    atoms = np.array([[-3, .1], [-1, -.1],
-                      [1, .2], [3, -.2]])
+    atoms = np.array([[-3, 0], [-1, 0],
+                      [1, 0], [3, 0]])
 
     x_max =  6
     x_min = -6
     y_max =  6
     y_min = -6
 
-    V_net   = dg.get_V_net(atoms, x_min, x_max, y_min, y_max)
+    V_net   = dg.get_V_net_per(atoms, x_min, x_max, y_min, y_max)
+    V_cells = dg.get_V_cells(V_net, atoms)
+
+    vert = np.array([elem[0] for elem in V_net])
+
+    plt.plot(atoms[:,0], atoms[:,1], 'bo')
+    plt.plot(vert[:,0], vert[:,1],'ro')
+
+    for vcell in V_cells:
+        for i in range(len(vcell)-1):
+            plt.plot([vcell[i][0],vcell[i+1][0]],[vcell[i][1],vcell[i+1][1]], 'k-')
+    plt.xlim(x_min -1.5,x_max +1.5)
+    plt.ylim(x_min -1.5,x_max +1.5)
+    plt.show()
+
+    if detail == True:
+        for vcell in V_cells:
+            plt.plot(atoms[:,0], atoms[:,1], 'bo')
+            plt.plot(vert[:,0], vert[:,1],'ro')
+            for i in range(len(vcell)-1):
+                plt.plot([vcell[i][0],vcell[i+1][0]],[vcell[i][1],vcell[i+1][1]], 'k-')
+            plt.xlim(x_min -1.5,x_max +1.5)
+            plt.ylim(x_min -1.5,x_max +1.5)
+            plt.show()
+
+def test_d_chain_H4(detail = False):
+
+    atoms = np.array([[-3, .3], [-1, -.1],
+                      [1, .2], [3, -.4]])
+
+    x_max =  6
+    x_min = -6
+    y_max =  6
+    y_min = -6
+
+    V_net = dg.get_V_net_per(atoms, x_min, x_max, y_min, y_max)
+    V_cells = dg.get_V_cells(V_net, atoms)
+
+    vert = np.array([elem[0] for elem in V_net])
+
+    plt.plot(atoms[:,0], atoms[:,1], 'bo')
+    plt.plot(vert[:,0], vert[:,1],'ro')
+
+    for vcell in V_cells:
+        for i in range(len(vcell)-1):
+            plt.plot([vcell[i][0],vcell[i+1][0]],[vcell[i][1],vcell[i+1][1]], 'k-')
+    plt.xlim(x_min -1.5,x_max +1.5)
+    plt.ylim(x_min -1.5,x_max +1.5)
+    plt.show()
+
+    if detail == True:
+        for vcell in V_cells:
+            plt.plot(atoms[:,0], atoms[:,1], 'bo')
+            plt.plot(vert[:,0], vert[:,1],'ro')
+            for i in range(len(vcell)-1):
+                plt.plot([vcell[i][0],vcell[i+1][0]],[vcell[i][1],vcell[i+1][1]], 'k-')
+            plt.xlim(x_min -1.5,x_max +1.5)
+            plt.ylim(x_min -1.5,x_max +1.5)
+            plt.show()
+
+def test_chain_H2(detail = False):
+
+    atoms = np.array([[-1, 0], [1, 0]])
+
+    x_max =  3
+    x_min = -3
+    y_max =  3
+    y_min = -3
+
+    V_net = dg.get_V_net_per(atoms, x_min, x_max, y_min, y_max)
     V_cells = dg.get_V_cells(V_net, atoms)
 
     vert = np.array([elem[0] for elem in V_net])
@@ -145,17 +214,22 @@ def test_chain_H4(detail = False):
             plt.show()
 
 
-
 if __name__ == '__main__':
 
-    # Testing periodic quasi 1D systems
-    #test_chain_H4() TBD!
+    # Testing H2
+    test_chain_H2(True)
+
+    # Testing periodic quasi 1D system
+    #test_chain_H4(True)
+
+    # Testing periodic distorted 1D system
+    test_d_chain_H4(True)
 
     # Testing cubical symmetry 
     test_cube()
 
     # Testing distorted cubical symmetry
-    test_d_cube(True)
+    test_d_cube()
 
     # Testing Ethylene symmetry
-    test_C2H4()
+    test_C2H4(True)

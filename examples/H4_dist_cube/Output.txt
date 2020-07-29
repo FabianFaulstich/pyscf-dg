@@ -1,0 +1,12 @@
+Meanfield results:
+gth-dzvp: -1.4227499835261117
+gth-dzvp-DG: -2.104894531198278
+gth-dzvp-VDG: -2.104527204436873
+MP2 correlation energy:
+gth-dzvp: -0.10564396001310031
+gth-dzvp-DG: -0.06946709780935431
+gth-dzvp-VDG: -0.06978660536701765
+CCSD correlation energy:
+gth-dzvp: -0.09652088169425545
+gth-dzvp-DG: -0.09991192921990653
+gth-dzvp-VDG: -0.10054270064510674

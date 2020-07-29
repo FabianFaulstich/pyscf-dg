@@ -1,6 +1,8 @@
 import math
 import numpy as np
 from scipy.spatial import Delaunay, Voronoi
+import matplotlib.pyplot as plt
+from numpy import linalg as la
 
 def unfold(m,n):
     l = m % n
@@ -402,3 +404,95 @@ def get_V_net(atoms, x_min, x_max, y_min, y_max):
         V_net.append([v, edge[idx][:,1]])
 
     return V_net
+
+def get_cmap(n, name='hsv'):
+    '''coloring for visualize'''
+    return plt.cm.get_cmap(name, n)
+
+def visualize(mat,coords, sl):
+    print(mat.shape)
+
+    cmap = get_cmap(mat.shape[1]+1)
+    for i, col in enumerate(mat.transpose()):
+        for k, point in enumerate(col):
+            if point and coords[k][2] == sl:
+                plt.plot(coords[k][0],coords[k][1], color =cmap(i) , marker='x')
+    plt.show()
+
+def get_dist_atom(atoms, dx, dy, point): 
+    k_out = -1
+    dist = 0
+    for k, atom in enumerate(atoms):
+        #d = la.norm(atom - point)
+        d = per_dist(atom, point, dx, dy)
+        if k == 0:
+            dist = d
+            k_out = k
+        elif d < dist:
+            dist = d
+            k_out = k
+    return k_out
+
+def per_dist(atom, point, dx, dy):
+
+    # upper left 
+    dist = la.norm(point - [atom[0] -dx ,atom[1]+dy, atom[2]])
+    
+    # upper mid
+    d = la.norm(point - [atom[0],atom[1]+dy, atom[2]])
+    if d < dist:
+        dist = d
+
+    # upper right
+    d = la.norm(point - [atom[0]+dx,atom[1]+dy, atom[2]])
+    if d < dist:
+        dist = d
+
+    # left 
+    d = la.norm(point - [atom[0]-dx,atom[1], atom[2]])
+    if d < dist:
+        dist = d
+
+    # mid
+    d = la.norm(point - [atom[0],atom[1], atom[2]])
+    if d < dist:
+        dist = d
+
+    # right
+    d = la.norm(point - [atom[0]+dx,atom[1], atom[2]])
+    if d < dist:
+        dist = d
+
+    # lower left 
+    d = la.norm(point - [atom[0]-dx,atom[1]-dy, atom[2]])
+    if d < dist:
+        dist = d
+
+    # lower mid
+    d = la.norm(point - [atom[0],atom[1]-dy, atom[2]])
+    if d < dist:
+        dist = d
+
+    # lower right
+    d = la.norm(point - [atom[0]+dx,atom[1]-dy, atom[2]])
+    if d < dist:
+        dist = d
+
+    return dist
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

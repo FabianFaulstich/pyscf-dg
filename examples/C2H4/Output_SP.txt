@@ -1,0 +1,4 @@
+Meanfield results:
+gth-dzvp: -13.235980757752303
+gth-dzvp-DG: -12.67066298569661
+gth-dzvp-VDG: -12.699829309696142

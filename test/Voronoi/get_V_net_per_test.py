@@ -215,12 +215,12 @@ if __name__ == '__main__':
     test_cube()
 
     # Testing quasi 1D systems
-    test_chain_H4(True)
+    test_chain_H4()
 
     # Testing distorted quasi 1D systems
     test_d_chain_H4()
 
     # Testing Ethylene symmetry
-    test_C2H4(True)
+    test_C2H4()
 
 

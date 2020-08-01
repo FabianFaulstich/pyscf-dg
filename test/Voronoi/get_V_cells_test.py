@@ -181,12 +181,12 @@ def test_d_chain_H4(detail = False):
 
 def test_chain_H2(detail = False):
 
-    atoms = np.array([[-1, 0], [1, 0]])
+    atoms = np.array([[5.4, 3], [6.6, 3]])
 
-    x_max =  3
-    x_min = -3
-    y_max =  3
-    y_min = -3
+    x_max = 12
+    x_min = 0
+    y_max = 6 
+    y_min = 0
 
     V_net = dg.get_V_net_per(atoms, x_min, x_max, y_min, y_max)
     V_cells = dg.get_V_cells(V_net, atoms)

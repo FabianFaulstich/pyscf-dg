@@ -409,14 +409,23 @@ def get_cmap(n, name='hsv'):
     '''coloring for visualize'''
     return plt.cm.get_cmap(name, n)
 
-def visualize(mat,coords, sl):
-    print(mat.shape)
-
+def visualize(mat,coords, sl, v_net, atoms):
     cmap = get_cmap(mat.shape[1]+1)
     for i, col in enumerate(mat.transpose()):
         for k, point in enumerate(col):
             if point and coords[k][2] == sl:
                 plt.plot(coords[k][0],coords[k][1], color =cmap(i) , marker='x')
+    
+    vert = np.array([elem[0] for elem in v_net])
+    
+    atom = np.array([[a[0],a[1]] for a in atoms])
+    plt.plot(atom[:,0], atom[:,1], 'bo')
+    plt.plot(vert[:,0], vert[:,1],'ro')
+    for v in v_net:
+        for c in v[1]:
+            plt.plot([v[0][0],v_net[c][0][0]],[v[0][1],v_net[c][0][1]],'k-')
+    #plt.xlim(x_min -1.5,x_max +1.5)
+    #plt.ylim(x_min -1.5,x_max +1.5)
     plt.show()
 
 def get_dist_atom(atoms, dx, dy, point): 

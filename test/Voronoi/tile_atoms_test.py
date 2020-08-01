@@ -40,7 +40,7 @@ def test_cube():
     # plotting voronoi vertices:
     plt.plot(voronoi.vertices[:,0], voronoi.vertices[:,1],'D')  # poltting voronoi vertices
     plt.plot(atoms[:,0], atoms[:,1], 'bo')
-    plt.plot([[x_min,y_min],[x_min,y_max],[y_max,x_max],[x_max,y_min]],[[x_min,y_max],[y_max,x_max],[x_max,y_min],[x_min,y_min]],'r-')
+    plt.plot([[x_min,x_min],[x_min,x_max],[x_max,x_max],[x_max,x_min]],[[y_min,y_max],[y_max,y_max],[y_max,y_min],[y_min,y_min]],'r-')
     plt.xlim(x_min-(x_max-x_min),x_max+(x_max-x_min))
     plt.ylim(y_min-(y_max-y_min),y_max+(y_max-y_min))
     plt.show()
@@ -79,7 +79,7 @@ def test_d_cube():
     # plotting voronoi vertices:
     plt.plot(voronoi.vertices[:,0], voronoi.vertices[:,1],'D')  # poltting voronoi vertices
     plt.plot(atoms[:,0], atoms[:,1], 'bo')
-    plt.plot([[x_min,y_min],[x_min,y_max],[y_max,x_max],[x_max,y_min]],[[x_min,y_max],[y_max,x_max],[x_max,y_min],[x_min,y_min]],'r-')
+    plt.plot([[x_min,x_min],[x_min,x_max],[x_max,x_max],[x_max,x_min]],[[y_min,y_max],[y_max,y_max],[y_max,y_min],[y_min,y_min]],'r-')
     plt.xlim(x_min-(x_max-x_min),x_max+(x_max-x_min))
     plt.ylim(y_min-(y_max-y_min),y_max+(y_max-y_min))
     plt.show()
@@ -119,7 +119,7 @@ def test_C2H4(detail=False):
     # plotting voronoi vertices:
     plt.plot(voronoi.vertices[:,0], voronoi.vertices[:,1],'D')  # poltting voronoi vertices
     plt.plot(atoms[:,0], atoms[:,1], 'bo')
-    plt.plot([[x_min,y_min],[x_min,y_max],[y_max,x_max],[x_max,y_min]],[[x_min,y_max],[y_max,x_max],[x_max,y_min],[x_min,y_min]],'r-')
+    plt.plot([[x_min,x_min],[x_min,x_max],[x_max,x_max],[x_max,x_min]],[[y_min,y_max],[y_max,y_max],[y_max,y_min],[y_min,y_min]],'r-')
     plt.xlim(x_min-(x_max-x_min),x_max+(x_max-x_min))
     plt.ylim(y_min-(y_max-y_min),y_max+(y_max-y_min))
     plt.show()
@@ -161,7 +161,7 @@ def test_d_chain_H4(detail = False):
     # plotting voronoi vertices:
     plt.plot(voronoi.vertices[:,0], voronoi.vertices[:,1],'D')  # poltting voronoi vertices
     plt.plot(atoms[:,0], atoms[:,1], 'bo')
-    plt.plot([[x_min,y_min],[x_min,y_max],[y_max,x_max],[x_max,y_min]],[[x_min,y_max],[y_max,x_max],[x_max,y_min],[x_min,y_min]],'r-')
+    plt.plot([[x_min,x_min],[x_min,x_max],[x_max,x_max],[x_max,x_min]],[[y_min,y_max],[y_max,y_max],[y_max,y_min],[y_min,y_min]],'r-')
     plt.xlim(x_min-(x_max-x_min),x_max+(x_max-x_min))
     plt.ylim(y_min-(y_max-y_min),y_max+(y_max-y_min))
     plt.show()
@@ -202,19 +202,20 @@ def test_chain_H4(detail = False):
     # plotting voronoi vertices:
     plt.plot(voronoi.vertices[:,0], voronoi.vertices[:,1],'D')  # poltting voronoi vertices
     plt.plot(atoms[:,0], atoms[:,1], 'bo')
-    plt.plot([[x_min,y_min],[x_min,y_max],[y_max,x_max],[x_max,y_min]],[[x_min,y_max],[y_max,x_max],[x_max,y_min],[x_min,y_min]],'r-')
+    plt.plot([[x_min,x_min],[x_min,x_max],[x_max,x_max],[x_max,x_min]],[[y_min,y_max],[y_max,y_max],[y_max,y_min],[y_min,y_min]],'r-')
     plt.xlim(x_min-(x_max-x_min),x_max+(x_max-x_min))
     plt.ylim(y_min-(y_max-y_min),y_max+(y_max-y_min))
     plt.show()
 
 def test_chain_H2(detail = False):
 
-    atoms = np.array([[-1, 0], [1, 0]])
 
-    x_max =  3
-    x_min = -3
-    y_max =  3
-    y_min = -3
+    atoms = np.array([[5.4, 3], [6.6, 3]])
+
+    x_max = 12
+    x_min = 0
+    y_max = 6
+    y_min = 0
 
     atoms = dg.tile_atoms(atoms,x_max - x_min, y_max - y_min)
     voronoi  = Voronoi(atoms)
@@ -242,7 +243,7 @@ def test_chain_H2(detail = False):
     # plotting voronoi vertices:
     plt.plot(voronoi.vertices[:,0], voronoi.vertices[:,1],'D')  # poltting voronoi vertices
     plt.plot(atoms[:,0], atoms[:,1], 'bo')
-    plt.plot([[x_min,y_min],[x_min,y_max],[y_max,x_max],[x_max,y_min]],[[x_min,y_max],[y_max,x_max],[x_max,y_min],[x_min,y_min]],'r-')
+    plt.plot([[x_min,x_min],[x_min,x_max],[x_max,x_max],[x_max,x_min]],[[y_min,y_max],[y_max,y_max],[y_max,y_min],[y_min,y_min]],'r-')
     plt.xlim(x_min-(x_max-x_min),x_max+(x_max-x_min))
     plt.ylim(y_min-(y_max-y_min),y_max+(y_max-y_min))
     plt.show()

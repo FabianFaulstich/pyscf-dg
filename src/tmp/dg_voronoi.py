@@ -115,11 +115,6 @@ if __name__ == '__main__':
     voronoi_cells.append(np.array([vert[2], vert[1], vert[3]]))
     voronoi_cells.append(np.array([vert[4], vert[11], vert[7], vert[1], vert[2]]))
     print(voronoi_cells)
-  
-    
-
-
-
 
     for vcell in voronoi_cells:
         hull = ConvexHull(vcell)

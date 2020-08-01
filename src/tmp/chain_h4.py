@@ -84,19 +84,14 @@ if __name__ == '__main__':
         #exit()
 
         # get Voronoi vertices + vertices on the boundary box (nonperiodic voronoi):
-        V_net = dg_tools.get_V_net(atoms_2d, np.amin(mesh_2d[:,0]), np.amax(mesh_2d[:,0]),
+        V_net = dg_tools.get_V_net_per(atoms_2d, np.amin(mesh_2d[:,0]), np.amax(mesh_2d[:,0]),
                             np.amin(mesh_2d[:,1]), np.amax(mesh_2d[:,1]))
         
         
         vert = np.array([elem[0] for elem in V_net])    
         # get Voronoi cells:
 
-        #voronoi_cells = dg_tools.get_V_cells(V_net, atoms_2d)
-        voronoi_cells = []
-        voronoi_cells.append(np.array([vert[6], vert[4], vert[2], vert[9]]))
-        voronoi_cells.append(np.array([vert[2], vert[4], vert[1], vert[3]]))
-        voronoi_cells.append(np.array([vert[3], vert[1], vert[4], vert[5]]))
-        voronoi_cells.append(np.array([vert[3], vert[1], vert[5], vert[8], vert[7]]))
+        voronoi_cells = dg_tools.get_V_cells(V_net, atoms_2d)
 
         #for vcell in voronoi_cells:
         #    hull = ConvexHull(vcell)
@@ -174,7 +169,7 @@ if __name__ == '__main__':
 
         print("Computing CCSD in " + cell.basis +  "-DG basis ...")
         start_cc = time.time()
-        ecc_dg[j], _ = cell_dg.run_CC()
+        #ecc_dg[j], _ = cell_dg.run_CC()
         end_cc   = time.time()
         print("Done! Elapsed time: ", end_cc - start_cc, "sec.")
         print()
@@ -203,9 +198,9 @@ if __name__ == '__main__':
         # CCSD
         print("Computing CCSD in " + cell.basis +  " basis ...")
         start_cc = time.time()
-        cc_builtin = cc.CCSD(mf)
-        cc_builtin.kernel()
-        ecc[j] = cc_builtin.e_corr
+        #cc_builtin = cc.CCSD(mf)
+        #cc_builtin.kernel()
+        #ecc[j] = cc_builtin.e_corr
         end_cc   = time.time()
         print("Done! Elapsed time: ", end_cc - start_cc, "sec.")
         print()
@@ -217,14 +212,17 @@ if __name__ == '__main__':
     print("Meanfield results:")
     print("Builtin: ",mfe)
     print("DG: ", mfe_dg)
+    print("VDG: ",mfe_vdg)
     print()
     print("MP2 correlation energy:")
     print("Builtin: ",emp)
     print("DG: ",emp_dg)
+    print("VDG: ",emp_vdg)
     print()
     print("CCSD correlation energy:")
     print("Builtin: ",ecc)
     print("DG: ",ecc_dg)
+    print("VDG: ",ecc_vdg)
 
     np.savetxt('Energies.txt',(mfe,emp,ecc,mfe_dg,emp_dg,ecc_dg))
 
@@ -238,9 +236,9 @@ if __name__ == '__main__':
     plt.plot(bonds_plt, mfe_vdg + emp_vdg, 'g-^', label =  'MP2  (' + cell.basis + '-VDG)')
     plt.plot(bonds_plt, mfe_dg + emp_dg, 'r-^', label =  'MP2  (' + cell.basis + '-DG)')
 
-    plt.plot(bonds_plt, mfe + ecc      , 'b-x', label =  'CCSD  (' + cell.basis + ')')
-    plt.plot(bonds_plt, mfe_vdg + ecc_vdg, 'g-x', label =  'CCSD  (' + cell.basis + '-VDG)')
-    plt.plot(bonds_plt, mfe_dg + ecc_dg, 'r-x', label =  'CCSD  (' + cell.basis + '-DG)')
+    #plt.plot(bonds_plt, mfe + ecc      , 'b-x', label =  'CCSD  (' + cell.basis + ')')
+    #plt.plot(bonds_plt, mfe_vdg + ecc_vdg, 'g-x', label =  'CCSD  (' + cell.basis + '-VDG)')
+    #plt.plot(bonds_plt, mfe_dg + ecc_dg, 'r-x', label =  'CCSD  (' + cell.basis + '-DG)')
     plt.legend()
     plt.show()
     

@@ -93,7 +93,7 @@ if __name__ == '__main__':
         cell.a = [[X[0],0.,0.],[0.,X[1],0],[0,0,X[2]]]
         cell.unit    = 'B'
         cell.verbose = 3
-        cell.basis   = 'dzp' #gth-dzvp, tzp
+        cell.basis   = 'tzp' #gth-dzvp, tzp
         cell.pseudo  = 'gth-pade'
         # potential speed up 
         #cell.ke_cutoff = 40.0

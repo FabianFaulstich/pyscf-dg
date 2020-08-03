@@ -69,7 +69,7 @@ if __name__ == '__main__':
 
         # Placing Molecule in the box (Oxigen in the center!) :
 
-        offset    = np.array([6,6,3])
+        offset    = np.array([10,10,3])
         atom_pos  = np.array([atom[1] for atom in Mol])
         atoms     = [atom[0] for atom in Mol]
         atom_off  = [3,3,1.5]
@@ -84,10 +84,10 @@ if __name__ == '__main__':
         cell.a = [[X[0],0.,0.],[0.,X[1],0],[0,0,X[2]]]
         cell.unit    = 'B'
         cell.verbose = 3
-        cell.basis   = 'qzp' #gth-dzvp, tzp
+        cell.basis   = 'tzp' #gth-dzvp, tzp
         cell.pseudo  = 'gth-pade'
         # potential speed up 
-        cell.ke_cutoff = 200.0
+        cell.ke_cutoff = 40.0
         cell.mesh    = np.array([int(d * x) for d, x in zip(dgrid, X)])
         cell.atom    = Mol_box
         cell.build()

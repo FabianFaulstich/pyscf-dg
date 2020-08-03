@@ -17,11 +17,11 @@ if __name__ == '__main__':
         -22.66485495])
 
 
-    #plt.plot(angles*180/np.pi, mfe   , 'b-v', label =  'HF  ')
+    #plt.plot(33.129 +2* angles*180/np.pi, mfe   , 'b-v', label =  'HF  ')
     #plt.legend()
     #plt.show()
 
-    plt.plot(angles*180/np.pi, mfe_dg, 'r-v', label =  'HF  qzp-DG)')
-    plt.plot(angles*180/np.pi, mfe_vdg, 'g--v', label =  'HF  qzp-VDG)')
+    plt.plot(33.129 +2* angles*180/np.pi, mfe_dg, 'r-v', label =  'HF  dzp-DG)')
+    plt.plot(33.129 +2* angles*180/np.pi, mfe_vdg, 'g--v', label =  'HF  dzp-VDG)')
     plt.legend()
     plt.show()

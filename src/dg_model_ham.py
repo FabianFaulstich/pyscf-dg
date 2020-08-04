@@ -93,7 +93,8 @@ class dg_model_ham:
         # appear elsewhere in the total energy etc.
         print("    Computing ERI ...")
         start = time.time()
-        self.eri = get_eri(cell, self.coords, self.dg_gramm, self.dg_idx, exx=None)
+        #self.eri = get_eri(cell, self.coords, self.dg_gramm, self.dg_idx, exx=None)
+        self.eri = get_eri_old(cell, self.coords, self.dg_gramm, self.dg_idx, exx=None)
         end = time.time()
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
@@ -233,6 +234,40 @@ def get_pp_numint(cell, coords, aoR):
         return vpp.real
     else:
         return vpp
+
+def get_eri_old(cell, coords, aoR, b_idx, exx=None):
+
+    mesh = cell.mesh
+    vol = cell.vol
+    ngrids = np.prod(mesh)
+    assert ngrids == aoR.shape[0]
+    dvol = vol / ngrids
+    nao = aoR.shape[1]
+
+    eri = np.zeros((nao,nao,nao,nao))
+    vcoulR_pairs = np.zeros((ngrids,nao,nao))
+
+    coulG = tools.get_coulG(cell, mesh=mesh, exx=exx)
+
+    assert aoR.dtype == np.double
+
+    print("        primitive loops ...")
+    start = time.time()
+    for q in range(nao):
+        for s in range(nao):
+            aoR_qs = aoR[:,q] * aoR[:,s]
+            aoG_qs = tools.fft(aoR_qs, mesh) * dvol
+            vcoulG_qs = coulG * aoG_qs
+            vcoulR_pairs[:,q,s] = tools.ifft(vcoulG_qs, mesh).real / dvol
+    end = time.time()
+    print("        Done! Elapsed time: ", end - start, "sec.")
+    print()
+    print("        primitive loops, eneter contractions ...")
+    start = time.time()
+    eri = np.einsum('xp,xr,xqs->prqs', aoR, aoR, vcoulR_pairs) * dvol
+    end = time.time()
+    print("        Done! Elapsed time: ", end - start, "sec.")
+    print()
 
 
 def get_eri(cell, coords, aoR, b_idx, exx=None):

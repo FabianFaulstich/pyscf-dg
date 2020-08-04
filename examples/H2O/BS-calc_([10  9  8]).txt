@@ -1,0 +1,84 @@
+Computing poential barrier of H20 for different dis. boxes
+Unterlying basis:
+tzp
+Box-size:
+10 x 10 x 10
+In optimal geometry, 104.5 deg
+Elapsed time to create VDG-Ham: 579.2161283493042
+Elapsed time to create DG-Ham: 318.63149094581604
+Elapsed time to compute HF in VDG: 8.007629871368408
+Elapsed time to compute HF in DG: 8.570905923843384
+Elapsed time to compute HF: 218.10421633720398
+On top of pes barrier, 180 deg
+Elapsed time to create VDG-Ham: 333.9837453365326
+Elapsed time to create DG-Ham: 315.4288809299469
+Elapsed time to compute HF in VDG: 7.966227054595947
+Elapsed time to compute HF in DG: 8.532581090927124
+Elapsed time to compute HF: 201.72209215164185
+Meanfield results:
+  Builtin: [-16.57024535 -16.49505746]
+  Minimum: -16.570245349832867
+  Maximum: -16.495057457581133
+  abs diff: 0.0751878922517335
+  DG: [-17.020164   -16.99766926]
+  Minimum: -17.0201639960112
+  Maximum: -16.997669264361857
+  abs diff: 0.022494731649342015
+  VDG: [-17.03870293 -17.00465769]
+  Minimum: -17.038702929043364
+  Maximum: -17.004657691402528
+  abs diff: 0.03404523764083578
+Box-size:
+9 x 9 x 9
+In optimal geometry, 104.5 deg
+Elapsed time to create VDG-Ham: 271.37350511550903
+Elapsed time to create DG-Ham: 252.49315404891968
+Elapsed time to compute HF in VDG: 8.030193090438843
+Elapsed time to compute HF in DG: 7.959461212158203
+Elapsed time to compute HF: 185.76748037338257
+On top of pes barrier, 180 deg
+Elapsed time to create VDG-Ham: 294.3664846420288
+Elapsed time to create DG-Ham: 334.78172183036804
+Elapsed time to compute HF in VDG: 8.743162155151367
+Elapsed time to compute HF in DG: 8.80179214477539
+Elapsed time to compute HF: 345.0892424583435
+Meanfield results:
+  Builtin: [-16.58858404 -16.75306145]
+  Minimum: -16.75306144659309
+  Maximum: -16.588584042179164
+  abs diff: 0.1644774044139261
+  DG: [-18.33670188 -18.31654931]
+  Minimum: -18.33670187695499
+  Maximum: -18.31654931040063
+  abs diff: 0.020152566554358486
+  VDG: [-18.34464401 -18.31361436]
+  Minimum: -18.3446440102405
+  Maximum: -18.31361436369739
+  abs diff: 0.0310296465431108
+Box-size:
+8 x 8 x 8
+In optimal geometry, 104.5 deg
+Elapsed time to create VDG-Ham: 293.3254406452179
+Elapsed time to create DG-Ham: 375.72515535354614
+Elapsed time to compute HF in VDG: 12.734881162643433
+Elapsed time to compute HF in DG: 13.196532249450684
+Elapsed time to compute HF: 397.5649106502533
+On top of pes barrier, 180 deg
+Elapsed time to create VDG-Ham: 431.5564708709717
+Elapsed time to create DG-Ham: 315.5496337413788
+Elapsed time to compute HF in VDG: 7.925456762313843
+Elapsed time to compute HF in DG: 7.940978527069092
+Elapsed time to compute HF: 122.25909161567688
+Meanfield results:
+  Builtin: [-16.6056801  -16.84394778]
+  Minimum: -16.843947775213408
+  Maximum: -16.605680099864806
+  abs diff: 0.23826767534860238
+  DG: [-19.75329702 -19.73116155]
+  Minimum: -19.75329701532589
+  Maximum: -19.731161546463973
+  abs diff: 0.02213546886191864
+  VDG: [-19.75410603 -19.73543453]
+  Minimum: -19.754106026815577
+  Maximum: -19.73543452657338
+  abs diff: 0.0186715002421991

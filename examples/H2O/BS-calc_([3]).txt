@@ -1,0 +1,28 @@
+Computing poential barrier of H20 for different dis. boxes
+Unterlying basis:
+dzp
+Box-size:
+3 x 3 x 3
+In optimal geometry, 104.5 degElapsed time to create VDG-Ham: 6.429616928100586
+Elapsed time to create DG-Ham: 4.716455459594727
+Elapsed time to compute HF in VDG: 6.962341785430908
+Elapsed time to compute HF in DG: 6.942637920379639
+Elapsed time to compute HF: 2.962543487548828
+On top of pes barrier, 180 degElapsed time to create VDG-Ham: 6.256260871887207
+Elapsed time to create DG-Ham: 4.683305740356445
+Elapsed time to compute HF in VDG: 5.830537796020508
+Elapsed time to compute HF in DG: 5.196197509765625
+Elapsed time to compute HF: 2.957939863204956
+Meanfield results:
+  Builtin: [-13.82621884 -21.32146337]
+  Minimum: -21.32146337342175
+  Maximum: -13.826218835861187
+  abs diff: 7.495244537560563
+  DG: [-24.98500644 -24.5491551 ]
+  Minimum: -24.98500644275608
+  Maximum: -24.549155100882544
+  abs diff: 0.435851341873537
+  VDG: [-24.992754  -24.5575819]
+  Minimum: -24.992753996905094
+  Maximum: -24.557581896552914
+  abs diff: 0.43517210035217957

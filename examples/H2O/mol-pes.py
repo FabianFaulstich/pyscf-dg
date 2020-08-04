@@ -49,11 +49,14 @@ if __name__ == '__main__':
 
     # Optimal geometry taken from cccbdb
     #Mol  = [['H',[1.43, -.89, 0]], ['O',[0,0,0]], ['H',[-1.43,-.89,0 ]]]
-    Mol  = [['H',[.480191,-1.614439, 0]], ['O',[0,0,0]], ['H',[-.480191,-1.614439,0 ]]]
+    Mol  = [['H',[0,-1.684338648, 0]], ['O',[0,0,0]], ['H',[0,-1.684338648,0 ]]]
     Mol1 = copy.deepcopy(Mol)
 
-    angles = np.linspace(0, np.pi, num=20)
-    angles = angles[0:16]
+    #angles = np.linspace(0, np.pi, num=20)
+    #angles = angles[0:16]
+    # 104.476/2 *pi/180 = 0.911725...
+    #
+    angles = np.array([0.9117250946567979, np.pi/2.0])
 
     mfe_dzp = np.zeros(len(angles))
     mfe_tzp = np.zeros(len(angles))
@@ -110,20 +113,21 @@ if __name__ == '__main__':
 
     print("Mean field in dzp:")
     print("  Minimum:", np.amin(mfe_dzp))
-    print("  Maximum:", np.amax(mfe_dzp[5:-6]))
-    print("  abs diff:", np.abs(np.amin(mfe_dzp) - np.amax(mfe_dzp[5:-6])))
+    print("  Maximum:", np.amax(mfe_dzp))
+    print("  abs diff:", np.abs(np.amin(mfe_dzp) - np.amax(mfe_dzp)))
     print("Mean field in tzp:")
     print("  Maximum:", np.amin(mfe_tzp))
-    print("  Minimum:", np.amax(mfe_tzp[5:-6]))
-    print("  Abs diff:", np.abs(np.amin(mfe_tzp) - np.amax(mfe_tzp[5:-6])))
+    print("  Minimum:", np.amax(mfe_tzp))
+    print("  Abs diff:", np.abs(np.amin(mfe_tzp) - np.amax(mfe_tzp)))
     print("Mean field in qzp:")
     print("  Maximum:", np.amin(mfe_qzp))
-    print("  Minimum", np.amax(mfe_qzp[5:-6]))
-    print("  Abs diff:", np.abs(np.amin(mfe_qzp) - np.amax(mfe_qzp[5:-6])))
+    print("  Minimum", np.amax(mfe_qzp))
+    print("  Abs diff:", np.abs(np.amin(mfe_qzp) - np.amax(mfe_qzp)))
 
-    plt.plot(33.129 +2* angles*180/np.pi , mfe_dzp, 'b-v', label =  'HF  (dzp)')
-    plt.plot(33.129 +2* angles*180/np.pi , mfe_tzp, 'r-v', label =  'HF  (tzp)')
-    plt.plot(33.129 +2* angles*180/np.pi , mfe_qzp, 'g-v', label =  'HF  (qzp)')
+    # old angle offset: 33.129
+    plt.plot(2* angles*180/np.pi , mfe_dzp, 'b-v', label =  'HF  (dzp)')
+    plt.plot(2* angles*180/np.pi , mfe_tzp, 'r-v', label =  'HF  (tzp)')
+    plt.plot(2* angles*180/np.pi , mfe_qzp, 'g-v', label =  'HF  (qzp)')
     plt.legend()
     plt.show()
 

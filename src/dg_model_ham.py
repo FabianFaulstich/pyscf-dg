@@ -93,15 +93,30 @@ class dg_model_ham:
         # appear elsewhere in the total energy etc.
         print("    Computing ERI ...")
         start = time.time()
-        #self.eri = get_eri(cell, self.coords, self.dg_gramm, self.dg_idx, exx=None)
-        self.eri = get_eri_old(cell, self.coords, self.dg_gramm, self.dg_idx, exx=None)
+        self.eri = get_eri(cell, self.coords, self.dg_gramm, self.dg_idx, exx=None)
+        #self.eri = get_eri_old(cell, self.coords, self.dg_gramm, self.dg_idx, exx=None)
         end = time.time()
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
 
+    def run_DFT(self, xc = 'pbe'):
+
+        self.dft_dg    = dft.RKS(self.cell_dg)
+        self.dft_dg.xc = xc
+
+        dm = np.zeros((self.nao,self.nao))
+        
+        self.dft_dg.get_hcore = lambda *args: self.hcore_dg
+        self.dft_dg.get_ovlp  = lambda *args: self.ovl_dg
+        self.dft_dg._eri      = ao2mo.restore(8, self.eri, self.nao)
+
+        self.dft_dg.kernel(dm0 = dm)
+        self.edft = self.dft_dg.e_tot
+        return self.edft
+
     def run_RHF(self):
         
-        self.mf_dg         = scf.RHF(self.cell_dg, exxdiv='ewald')
+        self.mf_dg         = scf.RHF(self.cell_dg, exxdiv='None') # 'ewald'
         self.mf_dg.verbose = 3 #5
         
         dm = np.zeros((self.nao,self.nao))
@@ -264,10 +279,11 @@ def get_eri_old(cell, coords, aoR, b_idx, exx=None):
     print()
     print("        primitive loops, eneter contractions ...")
     start = time.time()
-    eri = np.einsum('xp,xr,xqs->prqs', aoR, aoR, vcoulR_pairs) * dvol
+    eri = np.einsum('xp,xr,xqs->prqs', aoR, aoR, vcoulR_pairs, optimize=True) * dvol
     end = time.time()
     print("        Done! Elapsed time: ", end - start, "sec.")
     print()
+    return eri
 
 
 def get_eri(cell, coords, aoR, b_idx, exx=None):

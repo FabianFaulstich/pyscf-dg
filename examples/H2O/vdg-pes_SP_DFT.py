@@ -88,52 +88,30 @@ if __name__ == '__main__':
     end_dg   = time.time()
     print("Done! Elapsed time: ", end_dg - start_dg, "sec.")
     print()
-    
-    # HF
-    #print("Computing HF in " + cell.basis +  "-VDG basis ...")
-    #start_hf = time.time()
-    #mfe_vdg = cell_vdg.run_RHF()
-    #end_hf   = time.time()
-    #print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
-    #print()
-
-    #print("Computing HF in " + cell.basis +  "-DG basis ...")
-    #start_hf = time.time()
-    #mfe_dg = cell_dg.run_RHF()
-    #end_hf   = time.time()
-    #print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
-    #print()
-
-    #print("Computing HF in " + cell.basis +  " basis ...")
-    #start_hf = time.time()
-    #mf = scf.RHF(cell, exxdiv='None') # madelung correction: ewlad
-    #mf.kernel(dump_chk=False)
-    #mfe = mf.e_tot
-    #end_hf   = time.time()
-    #print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
-    #print()
 
     # DFT
-    #print("Computing HF in " + cell.basis +  "-VDG basis ...")
-    #start_hf = time.time()
-    #mfe_vdg = cell_vdg.run_RHF()
-    #end_hf   = time.time()
-    #print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
-    #print()
-
-    #print("Computing HF in " + cell.basis +  "-DG basis ...")
-    #start_hf = time.time()
-    #mfe_dg = cell_dg.run_RHF()
-    #end_hf   = time.time()
-    #print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
-    #print()
-
-    print("Computing HF in " + cell.basis +  " basis ...")
+    print("Computing DFT in " + cell.basis +  "-VDG basis ...")
     start_hf = time.time()
-    mf = scf.RHF(cell, exxdiv='None') # madelung correction: ewlad
+    mfe_vdg = cell_vdg.run_DFT()
+    end_hf   = time.time()
+    print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
+    print()
+
+    print("Computing DFT in " + cell.basis +  "-DG basis ...")
+    start_hf = time.time()
+    mfe_dg = cell_dg.run_DFT()
+    end_hf   = time.time()
+    print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
+    print()
+
+    print("Computing DFT-PBE in " + cell.basis +  " basis ...")
+    start_hf = time.time()
+    mf = dft.RKS(cell)
+    mf.xc = 'pbe'
     mf.kernel(dump_chk=False)
     mfe = mf.e_tot
     end_hf   = time.time()
     print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
     print()
-
+    
+    print(mfe)

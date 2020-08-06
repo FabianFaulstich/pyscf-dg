@@ -1,0 +1,6 @@
+Computing poential barrier of H20 for different dis. boxes
+Unterlying basis:
+tzp
+Box-size:
+10 x 10 x 10
+In optimal geometry, 104.5 deg

@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../../src')
+sys.path.append('../../../src')
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -54,9 +54,9 @@ if __name__ == '__main__':
     Mol1 = copy.deepcopy(Mol)
 
     angles    = np.array([0.9117250946567979, np.pi/2])
-    #box_sizes = np.array([12,11,10,9,8]) 
-    box_sizes = np.array([6])
-    basis = 'qzp'
+    box_sizes = np.array([10,9,8,7,6,5]) 
+    #box_sizes = np.array([3])
+    basis = 'tzp'
 
     mfe     = np.zeros(len(angles))
     mfe_dg  = np.zeros(len(angles))
@@ -84,10 +84,10 @@ if __name__ == '__main__':
 
             # Placing Molecule in the box (Oxigen in the center!) :
 
-            offset    = np.array([bs,bs,bs])
+            offset    = np.array([bs,bs,3])
             atom_pos  = np.array([atom[1] for atom in Mol])
             atoms     = [atom[0] for atom in Mol]
-            atom_off  = [bs/2,bs/2,bs/2]
+            atom_off  = [bs/2,bs/2,1.5]
             atoms_box = np.array([pos + atom_off for pos in atom_pos])
             Mol_box   = [[atoms[i],atoms_box[i]] for i in range(len(atoms))]
             Mol_size = np.array([0,0,0])
@@ -105,19 +105,7 @@ if __name__ == '__main__':
             cell.mesh    = np.array([int(d * x) for d, x in zip(dgrid, X)])
             cell.atom    = Mol_box
             cell.build()
-           
-            print("Computing HF in " + cell.basis +  " basis ...")
-            start_hf = time.time()
-            cell.verbose = 5
-            mf = scf.RHF(cell, exxdiv='ewald') # madelung correction: ewlad
-            mf.kernel(dump_chk=False)
-            mfe[k] = mf.e_tot
-            end_hf = time.time()
-            f.write("Elapsed time to compute HF: " + str(end_hf - start_hf) + "\n")
-            print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
-            print()
-
-           # Voronoi 2D:
+            # Voronoi 2D:
 
             # 2D projection of atom position and grid:
             atoms_2d = np.array([atom[1][:2] for atom in Mol_box])
@@ -126,8 +114,7 @@ if __name__ == '__main__':
             # get Voronoi vertices + vertices on the boundary box (periodic voronoi):
             V_net = dg_tools.get_V_net_per(atoms_2d, np.amin(mesh_2d[:,0]), np.amax(mesh_2d[:,0]),
                                 np.amin(mesh_2d[:,1]), np.amax(mesh_2d[:,1]))
-
-
+            
             #voronoi_cells = dg_tools.get_V_cells(V_net, atoms_2d)
             voronoi_cells = None
             vert = np.array([elem[0] for elem in V_net])
@@ -136,7 +123,7 @@ if __name__ == '__main__':
             # DG vs VDG calculations
             print("Creating  " + cell.basis +  "-VDG Hamiltonian ...")
             start_dg = time.time()
-            cell_vdg  = dg.dg_model_ham(cell, None ,'rel_num', 0.5, True, voronoi_cells, V_net)
+            cell_vdg  = dg.dg_model_ham(cell, None ,'rel_num', 0.8, True, voronoi_cells, V_net)
             end_dg   = time.time()
             f.write("Elapsed time to create VDG-Ham: " + str(end_dg - start_dg) + "\n")
             print("Done! Elapsed time: ", end_dg - start_dg, "sec.")
@@ -144,9 +131,9 @@ if __name__ == '__main__':
 
             print("Creating  " + cell.basis +  "-DG Hamiltonian ...")
             start_dg = time.time()
-            cell_dg  = dg.dg_model_ham(cell, None ,'rel_num', 0.5)
+            cell_dg  = dg.dg_model_ham(cell, None ,'rel_num', 0.8)
             end_dg   = time.time()
-            f.write("Elapsed time to create DG-Ham: " + str(end_dg - start_dg)+"\n")
+            f.write("Elapsed time to create DG-Ham: " + str(end_dg - start_dg) + "\n")
             print("Done! Elapsed time: ", end_dg - start_dg, "sec.")
             print()
             
@@ -155,7 +142,7 @@ if __name__ == '__main__':
             start_hf   = time.time()
             mfe_vdg[k] = cell_vdg.run_RHF()
             end_hf     = time.time()
-            f.write("Elapsed time to compute HF in VDG: " + str(end_hf - start_hf) + "\n")
+            f.write("Elapsed time to compute HF in VDG: " + str(end_hf - start_hf)+ "\n")
             print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
             print()
 
@@ -163,7 +150,18 @@ if __name__ == '__main__':
             start_hf  = time.time()
             mfe_dg[k] = cell_dg.run_RHF()
             end_hf    = time.time()
-            f.write("Elapsed time to compute HF in DG: " + str(end_hf - start_hf) + "\n")
+            f.write("Elapsed time to compute HF in DG: " + str(end_hf - start_hf)+ "\n")
+            print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
+            print()
+
+            print("Computing HF in " + cell.basis +  " basis ...")
+            start_hf = time.time()
+            cell.verbose = 5
+            mf = scf.RHF(cell, exxdiv='ewald') # madelung correction: ewlad
+            mf.kernel(dump_chk=False)
+            mfe[k] = mf.e_tot
+            end_hf = time.time()
+            f.write("Elapsed time to compute HF: " + str(end_hf - start_hf) + "\n")
             print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
             print()
 

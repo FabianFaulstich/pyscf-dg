@@ -84,7 +84,7 @@ if __name__ == '__main__':
 
     print("Creating  " + cell.basis +  "-DG Hamiltonian ...")
     start_dg = time.time()
-    cell_dg  = dg.dg_model_ham(cell, None ,'rel_num', 0.95)
+    #cell_dg  = dg.dg_model_ham(cell, None ,'rel_num', 0.95)
     end_dg   = time.time()
     print("Done! Elapsed time: ", end_dg - start_dg, "sec.")
     print()

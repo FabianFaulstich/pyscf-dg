@@ -1,0 +1,165 @@
+Computing poential barrier of H20 for different dis. boxes
+Unterlying basis:
+tzp
+Box-size:
+10 x 10 x 10
+In optimal geometry, 104.5 deg
+Elapsed time to create VDG-Ham: 235.6858263015747
+Elapsed time to create DG-Ham: 213.10942912101746
+Elapsed time to compute HF in VDG: 6.662444829940796
+Elapsed time to compute HF in DG: 6.668376207351685
+Elapsed time to compute HF: 183.44347524642944
+On top of pes barrier, 180 deg
+Elapsed time to create VDG-Ham: 230.25859928131104
+Elapsed time to create DG-Ham: 207.87694001197815
+Elapsed time to compute HF in VDG: 5.90136456489563
+Elapsed time to compute HF in DG: 5.901362895965576
+Elapsed time to compute HF: 164.37302660942078
+Meanfield results:
+  Builtin: [-16.57024535 -16.49505746]
+  Minimum: -16.57024534983286
+  Maximum: -16.49505745758114
+  abs diff: 0.07518789225171929
+  DG: [-16.56146001 -16.48914229]
+  Minimum: -16.56146000772952
+  Maximum: -16.48914228833536
+  abs diff: 0.07231771939416021
+  VDG: [-16.56145906 -16.49081581]
+  Minimum: -16.56145906005457
+  Maximum: -16.49081581491744
+  abs diff: 0.0706432451371306
+Box-size:
+9 x 9 x 9
+In optimal geometry, 104.5 deg
+Elapsed time to create VDG-Ham: 184.95072221755981
+Elapsed time to create DG-Ham: 169.20322823524475
+Elapsed time to compute HF in VDG: 6.542936086654663
+Elapsed time to compute HF in DG: 6.495838642120361
+Elapsed time to compute HF: 150.54716873168945
+On top of pes barrier, 180 deg
+Elapsed time to create VDG-Ham: 186.75494694709778
+Elapsed time to create DG-Ham: 169.09345197677612
+Elapsed time to compute HF in VDG: 6.008929014205933
+Elapsed time to compute HF in DG: 6.032626628875732
+Elapsed time to compute HF: 137.1754665374756
+Meanfield results:
+  Builtin: [-16.58858404 -16.75306145]
+  Minimum: -16.753061446593076
+  Maximum: -16.58858404217917
+  abs diff: 0.1644774044139048
+  DG: [-16.58318319 -16.50834148]
+  Minimum: -16.583183189250526
+  Maximum: -16.508341476387145
+  abs diff: 0.07484171286338182
+  VDG: [-16.58228976 -16.50767311]
+  Minimum: -16.58228976153087
+  Maximum: -16.507673105298526
+  abs diff: 0.07461665623234381
+Box-size:
+8 x 8 x 8
+In optimal geometry, 104.5 deg
+Elapsed time to create VDG-Ham: 156.24740481376648
+Elapsed time to create DG-Ham: 142.06140685081482
+Elapsed time to compute HF in VDG: 6.577931880950928
+Elapsed time to compute HF in DG: 6.574054002761841
+Elapsed time to compute HF: 110.5280978679657
+On top of pes barrier, 180 deg
+Elapsed time to create VDG-Ham: 155.71546077728271
+Elapsed time to create DG-Ham: 141.77353382110596
+Elapsed time to compute HF in VDG: 6.431058168411255
+Elapsed time to compute HF in DG: 6.4498467445373535
+Elapsed time to compute HF: 100.82021689414978
+Meanfield results:
+  Builtin: [-16.6056801  -16.84394778]
+  Minimum: -16.843947775213405
+  Maximum: -16.605680099864806
+  abs diff: 0.23826767534859883
+  DG: [-16.59697507 -16.51982965]
+  Minimum: -16.59697506977927
+  Maximum: -16.519829653988083
+  abs diff: 0.07714541579118617
+  VDG: [-16.59648387 -16.52127867]
+  Minimum: -16.5964838746739
+  Maximum: -16.52127866914072
+  abs diff: 0.07520520553318022
+Box-size:
+7 x 7 x 7
+In optimal geometry, 104.5 deg
+Elapsed time to create VDG-Ham: 119.67829942703247
+Elapsed time to create DG-Ham: 109.38597106933594
+Elapsed time to compute HF in VDG: 7.172251224517822
+Elapsed time to compute HF in DG: 7.177259683609009
+Elapsed time to compute HF: 88.88085579872131
+On top of pes barrier, 180 deg
+Elapsed time to create VDG-Ham: 119.60996294021606
+Elapsed time to create DG-Ham: 109.01840400695801
+Elapsed time to compute HF in VDG: 6.5693199634552
+Elapsed time to compute HF in DG: 6.703459024429321
+Elapsed time to compute HF: 81.47878170013428
+Meanfield results:
+  Builtin: [-16.8931131  -16.98556826]
+  Minimum: -16.985568261636875
+  Maximum: -16.893113104493743
+  abs diff: 0.09245515714313157
+  DG: [-16.61647797 -16.52832277]
+  Minimum: -16.61647796709274
+  Maximum: -16.52832277317306
+  abs diff: 0.08815519391968252
+  VDG: [-16.61457053 -16.52721092]
+  Minimum: -16.61457053461059
+  Maximum: -16.52721092137426
+  abs diff: 0.08735961323633035
+Box-size:
+6 x 6 x 6
+In optimal geometry, 104.5 deg
+Elapsed time to create VDG-Ham: 94.83361291885376
+Elapsed time to create DG-Ham: 86.97404193878174
+Elapsed time to compute HF in VDG: 7.302412748336792
+Elapsed time to compute HF in DG: 7.199896335601807
+Elapsed time to compute HF: 63.47067356109619
+On top of pes barrier, 180 deg
+Elapsed time to create VDG-Ham: 94.95350646972656
+Elapsed time to create DG-Ham: 87.72674536705017
+Elapsed time to compute HF in VDG: 6.217369556427002
+Elapsed time to compute HF in DG: 6.3008503913879395
+Elapsed time to compute HF: 55.266029834747314
+Meanfield results:
+  Builtin: [-17.01726651 -17.11366708]
+  Minimum: -17.113667081260708
+  Maximum: -17.017266508540242
+  abs diff: 0.09640057272046576
+  DG: [-16.60140174 -17.12999191]
+  Minimum: -17.12999190978114
+  Maximum: -16.60140173899018
+  abs diff: 0.5285901707909595
+  VDG: [-16.59831451 -17.13152174]
+  Minimum: -17.131521739894055
+  Maximum: -16.59831450910492
+  abs diff: 0.5332072307891345
+Box-size:
+5 x 5 x 5
+In optimal geometry, 104.5 deg
+Elapsed time to create VDG-Ham: 70.57381820678711
+Elapsed time to create DG-Ham: 65.24077224731445
+Elapsed time to compute HF in VDG: 6.382331848144531
+Elapsed time to compute HF in DG: 6.36397647857666
+Elapsed time to compute HF: 40.3358519077301
+On top of pes barrier, 180 deg
+Elapsed time to create VDG-Ham: 71.0606279373169
+Elapsed time to create DG-Ham: 64.89360117912292
+Elapsed time to compute HF in VDG: 6.273715019226074
+Elapsed time to compute HF in DG: 6.305801868438721
+Elapsed time to compute HF: 40.42999339103699
+Meanfield results:
+  Builtin: [-17.06176418 -17.11843968]
+  Minimum: -17.11843968059973
+  Maximum: -17.061764180594988
+  abs diff: 0.05667550000474364
+  DG: [-17.06156839 -17.1196353 ]
+  Minimum: -17.119635301815332
+  Maximum: -17.061568392838232
+  abs diff: 0.058066908977099985
+  VDG: [-17.06109217 -17.11936201]
+  Minimum: -17.11936201069419
+  Maximum: -17.061092165129125
+  abs diff: 0.058269845565064315

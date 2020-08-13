@@ -3,6 +3,7 @@ import numpy.matlib
 from numpy import linalg as la
 from scipy.linalg import block_diag
 import scipy
+import copy
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -24,12 +25,12 @@ import dg_tools
 class dg_model_ham:
     def __init__(self, cell, dg_cuts = None, dg_trunc = 'abs_tol', svd_tol = 1e-3, voronoi = False, v_cells = None, v_net = None):
         
-        self.cell = cell
+        self.cell = copy.copy(cell)
         print('Unit: ', self.cell.unit)
 
         print("    Fetching uniform grid ...")
         start = time.time()
-        self.coords   = cell.get_uniform_grids()
+        self.coords   = copy.copy(cell.get_uniform_grids())
         end = time.time()
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
@@ -41,31 +42,67 @@ class dg_model_ham:
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
 
+
+        #print("##################") 
+        #M=np.dot(self.dg_gramm.T, self.dg_gramm)#/64-np.eye(self.dg_gramm.shape[1])
+        #plt.pcolor(M);plt.colorbar();plt.show()
+
         #M=np.dot(self.dg_gramm.T, self.dg_gramm)/64-np.eye(self.dg_gramm.shape[1])
-        #la.norm(M)
-        #plt.pcolor(M);plt.show()
-        
+        #print("Norm-diff. to identity: ",la.norm(M))
+        #plt.pcolor(M);plt.colorbar();plt.show()
+
         #U=self.dg_gramm
-        #plt.plot(U[:,int(U.shape[1]/2.)]*U[:,int(U.shape[1]/4.*3)]);plt.show()
+        #for i in range(int(U.shape[1]/2)):
+        #    for j in range(int(U.shape[1]/2)):
+        #        if ~np.all((U[:,i]*U[:,j+int(U.shape[1]/2)] == 0)):
+        #            print('Here:')
+        #            print(i)
+        #            print(j)
+        #            plt.plot(U[:,i]*U[:,j]);plt.show()
+        #print("inner product:", np.sum(U[:,int(U.shape[1]/2.-4)]*U[:,int(U.shape[1]/4.*3)]))    
+        #print("##################")
+        #print()
 
         self.nao = self.dg_gramm.shape[1]
         
         print("    Computing overlap matrix ...")
         start = time.time()
         self.ovl_dg   = np.einsum('xi,xj->ij', self.dg_gramm,
-                                  self.dg_gramm) * cell.vol / np.prod(cell.mesh)
+                                  self.dg_gramm, optimize = True) * cell.vol / np.prod(cell.mesh)
         end = time.time()
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
         
+        print("Initializing cell object:")
+        print()
+
         self.cell_dg      = gto.Cell()
         self.cell_dg.atom = cell.atom
+        print("cell_dg.atom: ", self.cell_dg.atom)
+
         self.cell_dg.a    = cell.a
+        print("cell_dg.a: ", self.cell_dg.a)
+
+        print("Number of electrons before build: ", self.cell_dg.nelectron)
+
         self.cell_dg.unit = 'B'
+        self.cell_dg.pseudo = self.cell.pseudo
         
         self.cell_dg      = self.cell_dg.build()
+        print("Number of electrons: ", self.cell_dg.nelectron)
+        print("Number of electrons original cell: ", self.cell.nelectron)
+        
+ 
         self.cell_dg.pbc_intor = lambda *arg, **kwargs: self.ovl_dg
-                
+        # over writing eval_gto
+        #self.cell_dg.pbc_eval_gto = lambda *arg, **kwargs: [self.dg_gramm]
+
+        #print("overloaded pbc_eval_gto:")
+        #test = self.cell_dg.pbc_eval_gto()
+        #print(test[0].shape)
+        #exit()
+
+
         print("    Computing kinetic-energy matrix ...")
         start = time.time()
         self.kin_dg   = get_kin_numint_G(cell, self.coords, self.dg_gramm)
@@ -93,19 +130,20 @@ class dg_model_ham:
         # appear elsewhere in the total energy etc.
         print("    Computing ERI ...")
         start = time.time()
-        self.eri = get_eri(cell, self.coords, self.dg_gramm, self.dg_idx, exx=None)
-        #self.eri = get_eri_old(cell, self.coords, self.dg_gramm, self.dg_idx, exx=None)
+        self.eri = get_eri(cell, self.coords, self.dg_gramm, self.dg_idx, exx='False')
+        #self.eri = get_eri_old(cell, self.coords, self.dg_gramm, self.dg_idx, exx=False)
         end = time.time()
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
 
     def run_DFT(self, xc = 'pbe'):
 
-        self.dft_dg    = dft.RKS(self.cell_dg)
-        self.dft_dg.xc = xc
+        self.dft_dg    = dft.RKS(self.cell_dg, exxdiv='ewald')
+        self.dft_dg.xc = 'pbe'#xc
+        self.dft_dg.verbose = 5
 
         dm = np.zeros((self.nao,self.nao))
-        
+       
         self.dft_dg.get_hcore = lambda *args: self.hcore_dg
         self.dft_dg.get_ovlp  = lambda *args: self.ovl_dg
         self.dft_dg._eri      = ao2mo.restore(8, self.eri, self.nao)
@@ -116,7 +154,10 @@ class dg_model_ham:
 
     def run_RHF(self):
         
-        self.mf_dg         = scf.RHF(self.cell_dg, exxdiv='None') # 'ewald'
+        self.mf_dg         = scf.RHF(self.cell_dg, exxdiv='ewald') # 'ewald'
+        self.madelung      = tools.pbc.madelung(self.cell_dg, [self.mf_dg.kpt])
+        print("No. of electrons (VDG): ", self.cell_dg.nelectron)
+        self.tes           = self.madelung * self.cell_dg.nelectron * -0.5
         self.mf_dg.verbose = 3 #5
         
         dm = np.zeros((self.nao,self.nao))
@@ -124,7 +165,7 @@ class dg_model_ham:
         self.mf_dg.get_hcore = lambda *args: self.hcore_dg
         self.mf_dg.get_ovlp  = lambda *args: self.ovl_dg
         self.mf_dg._eri      = ao2mo.restore(8, self.eri, self.nao)
-        
+
         self.mf_dg.kernel(dm0 = dm, dump_chk=False)
         self.emf = self.mf_dg.e_tot
         return self.emf
@@ -165,10 +206,10 @@ def get_kin_numint_G(cell, coords, aoR):
         aoG[:,i] = tools.fft(aoR[:,i], cell.mesh) * dvol
 
     Gv = cell.get_Gv(cell.mesh)
-    absG2 = np.einsum('gi,gi->g', Gv, Gv)
+    absG2 = np.einsum('gi,gi->g', Gv, Gv, optimize = True)
 
     # kinetic energy in Fourier
-    kin = 0.5 * np.einsum('gi,g,gj->ij', aoG.conj(), absG2, aoG) / vol
+    kin = 0.5 * np.einsum('gi,g,gj->ij', aoG.conj(), absG2, aoG, optimize = True) / vol
 
     if aoR.dtype == np.double:
         return kin.real
@@ -197,7 +238,7 @@ def get_pp_numint(cell, coords, aoR):
     SI = cell.get_SI()
     Gv = cell.get_Gv(mesh)
     vpplocG = pseudo.get_vlocG(cell, Gv)
-    vpplocG = -np.einsum('ij,ij->j', SI, vpplocG)
+    vpplocG = -np.einsum('ij,ij->j', SI, vpplocG, optimize = True)
 
     # vpploc evaluated in real-space. 
     # NOTE: the convention of ifft is 1/N_g. By replacing the correct
@@ -211,7 +252,7 @@ def get_pp_numint(cell, coords, aoR):
     vpplocR = tools.ifft(vpplocG, mesh).real / dvol
 
     # local part evaluated in real space
-    vpploc = np.einsum('xi,x,xj->ij', aoR, vpplocR, aoR) * dvol
+    vpploc = np.einsum('xi,x,xj->ij', aoR, vpplocR, aoR, optimize = True) * dvol
 
     # nonlocal part evaluated in reciprocal space
     # this follows pbc/gto/pseudo/test/test_pp.py
@@ -237,12 +278,12 @@ def get_pp_numint(cell, coords, aoR):
                 for i in range(nl):
                     SPG_lmi = SI[ia,:] * projG_ia[l][m][i]
                     # NOTE: each quadrarture in the G basis should have a 1/vol factor 
-                    SPG_lm_aoG[i,:] = np.einsum('g,gp->p', SPG_lmi.conj(), aoG) / vol
+                    SPG_lm_aoG[i,:] = np.einsum('g,gp->p', SPG_lmi.conj(), aoG, optimize = True) / vol
                 for i in range(nl):
                     for j in range(nl):
                         vppnl += h[i,j]*np.einsum('p,q->pq',
                                                    SPG_lm_aoG[i,:].conj(),
-                                                   SPG_lm_aoG[j,:])
+                                                   SPG_lm_aoG[j,:], optimize = True)
 
     vpp = vpploc + vppnl
     if aoR.dtype == np.double:
@@ -250,7 +291,7 @@ def get_pp_numint(cell, coords, aoR):
     else:
         return vpp
 
-def get_eri_old(cell, coords, aoR, b_idx, exx=None):
+def get_eri_old(cell, coords, aoR, b_idx, exx=False):
 
     mesh = cell.mesh
     vol = cell.vol
@@ -286,14 +327,15 @@ def get_eri_old(cell, coords, aoR, b_idx, exx=None):
     return eri
 
 
-def get_eri(cell, coords, aoR, b_idx, exx=None):
+def get_eri(cell, coords, aoR, b_idx, exx=False):
     '''Generate the ERI tensor
 
-    This does not consider the 8-fold symmetry.
+    This does consider symmetry.
     
     This is only a proof of principle and the implementation is not 
     efficient in terms of either memory or speed
     '''
+    print("    Treating EXX:", exx)
     mesh = cell.mesh
     vol = cell.vol
     ngrids = np.prod(mesh)
@@ -557,7 +599,7 @@ def get_vdg_basis(atoms, dx, dy, dvol, ao_values, coords, v_cells, dg_trunc, svd
     '''Creating (fake) DG basis based on a 
         given voronoi decomposition 
     '''
-    print("Voronoi-DG")
+    print("            Computing voronoi-DG...")
     print()
 
     U_out     = []
@@ -591,7 +633,7 @@ def get_vdg_basis(atoms, dx, dy, dvol, ao_values, coords, v_cells, dg_trunc, svd
     #        elem_n[np.where(elem == True)[0][0]] = True
     #        idx_mat[i,:] = elem_n
     #vend = time.time()
-    #print("Computational time for mixed voronoi: ", vend - vstart)
+    #print("            Done! Elapsed time for mixed voronoi: ", vend - vstart)
     #dg_tools.visualize(idx_mat, coords, atoms[0][2], v_net, atoms)  
 
     for k, idx in enumerate(idx_mat.transpose()):
@@ -599,13 +641,13 @@ def get_vdg_basis(atoms, dx, dy, dvol, ao_values, coords, v_cells, dg_trunc, svd
 
         # Basis compression
         S       = S[::]
-        print("        Computed singular values:")
-        print(S)
-        print()
+        #print("        Computed singular values:")
+        #print(S)
+        #print()
         S_block = SVD_trunc(S, dg_trunc, svd_tol)
-        print("        Kept singular values: (", len(S_block) , ")" )
-        print(S_block)
-        print()
+        #print("        Kept singular values: (", len(S_block) , ")" )
+        #print(S_block)
+        #print()
         U_block = U[:,0:len(S_block)]
 
         # Storing block indices
@@ -648,13 +690,13 @@ def get_dg_basis(dvol, Gr_mat, DG_cut, dg_trunc, svd_tol):
 
         # Basis compression
         S       = S[::]
-        print("        Computed singular values:")
-        print(S)
-        print()
+        #print("        Computed singular values:")
+        #print(S)
+        #print()
         S_block = SVD_trunc(S, dg_trunc, svd_tol)
-        print("        Kept singular values:(", len(S_block) , ")")
-        print(S_block)
-        print()
+        #print("        Kept singular values:(", len(S_block) , ")")
+        #print(S_block)
+        #print()
         U_block = U[:,0:len(S_block)]
         
         # Storing block indices

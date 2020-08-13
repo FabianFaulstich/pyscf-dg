@@ -68,6 +68,8 @@ def get_cell(atom, V_net):
     return np.array(cell)
 
 def get_next_vert(atom, idx,V_net):
+    print(np.array(V_net))
+    print()
     vert = V_net[idx][0]
     con  = V_net[idx][1]
     angle = []
@@ -173,7 +175,7 @@ def get_V_net_per(atoms, x_min, x_max, y_min, y_max):
             V_net.append(vert)
     
     V_net_per = [[vert[1],vert[2]] for vert in V_net]
-
+    
     # Adding points on boundary
     for j, v in enumerate(V_net):
         if np.count_nonzero(edge == v[0]) != len(v[2]):
@@ -297,7 +299,7 @@ def get_boundary_point(vert, atom_0, atom_1, center, x_min, x_max, y_min, y_max,
         scalar = 0
     if inv:
         scalar *= -1
-    return vert + np.sign(np.dot(midpoint-center, n))*n*scalar
+    return np.around(vert + np.sign(np.dot(midpoint-center, n))*n*scalar, decimals=8)
 
 def get_V_net(atoms, x_min, x_max, y_min, y_max):
     """
@@ -320,43 +322,6 @@ def get_V_net(atoms, x_min, x_max, y_min, y_max):
 
             bp = get_boundary_point(vert[i], atoms[pointidx[0]], atoms[pointidx[1]], center, x_min, x_max, y_min, y_max)
            
-            #i = rv[rv >= 0][0]
-            #t = atoms[pointidx[1]]- atoms[pointidx[0]]
-            #t = t/np.linalg.norm(t)
-            #n = np.array([-t[1],t[0]])
-            #midpoint = atoms[pointidx].mean(axis=0)
-            #normal = np.sign(np.dot(midpoint-center, n))*n
-            #if normal[0] < 0 and normal[1] < 0:
-            #    dx = vert[i][0]-x_min
-            #    dy = vert[i][1]-y_min
-            #    scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
-            #elif normal[0] > 0 and normal[1] > 0:
-            #    dx = x_max-vert[i][0]
-            #    dy = y_max-vert[i][1]
-            #    scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
-            #elif normal[0] < 0 and normal[1] > 0:
-            #    dx = vert[i][0]-x_min
-            #    dy = y_max-vert[i][1]
-            #    scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
-            #elif normal[0] > 0 and normal[1] < 0:
-            #    dx = x_max-vert[i][0]
-            #    dy = vert[i][1]-y_min
-            #    scalar = min(np.sign(normal[0])*dx/normal[0] ,np.sign(normal[1])*dy/normal[1] )
-            #elif normal[0] == 0 and normal[1] < 0:
-            #    dy = vert[i][1]-y_min
-            #    scalar = np.sign(normal[1])*dy/normal[1] 
-            #elif normal[0] == 0 and normal[1] > 0:
-            #    dy = y_max-vert[i][1]
-            #    scalar = np.sign(normal[1])*dy/normal[1] 
-            #elif normal[0] < 0 and normal[1] == 0:
-            #    dx = vert[i][0]-x_min
-            #    scalar = np.sign(normal[0])*dx/normal[0] 
-            #elif normal[0] > 0 and normal[1] == 0:
-            #    dx = x_max-vert[i][0]
-            #    scalar = np.sign(normal[0])*dx/normal[0]
-            #boundary_point = vert[i] + np.sign(np.dot(midpoint-center, n))*n*scalar
-            #vert = np.vstack((vert, boundary_point))
-            
             vert = np.vstack((vert, bp))
             edge[j][np.argmin(rv)] = len(vert)-1 #only 2D for now
 

@@ -93,7 +93,7 @@ if __name__ == '__main__':
             Mol_size = np.array([0,0,0])
             X = np.array([int(np.ceil( off + bl)) for off, bl in zip(offset, Mol_size)])
             
-            dgrid = [7]*3
+            dgrid = [6]*3
 
             cell = gto.Cell()
             cell.a = [[X[0],0.,0.],[0.,X[1],0],[0,0,X[2]]]
@@ -115,15 +115,16 @@ if __name__ == '__main__':
             V_net = dg_tools.get_V_net_per(atoms_2d, np.amin(mesh_2d[:,0]), np.amax(mesh_2d[:,0]),
                                 np.amin(mesh_2d[:,1]), np.amax(mesh_2d[:,1]))
             
-            #voronoi_cells = dg_tools.get_V_cells(V_net, atoms_2d)
-            voronoi_cells = None
+            voronoi_cells = dg_tools.get_V_cells(V_net, atoms_2d)
+            #voronoi_cells = None
             vert = np.array([elem[0] for elem in V_net])
             # get Voronoi cells:
+
 
             # DG vs VDG calculations
             print("Creating  " + cell.basis +  "-VDG Hamiltonian ...")
             start_dg = time.time()
-            cell_vdg  = dg.dg_model_ham(cell, None ,'rel_num', 0.8, True, voronoi_cells, V_net)
+            cell_vdg  = dg.dg_model_ham(cell, None ,'rel_num', 0.98, True, voronoi_cells, V_net)
             end_dg   = time.time()
             f.write("Elapsed time to create VDG-Ham: " + str(end_dg - start_dg) + "\n")
             print("Done! Elapsed time: ", end_dg - start_dg, "sec.")
@@ -131,7 +132,7 @@ if __name__ == '__main__':
 
             print("Creating  " + cell.basis +  "-DG Hamiltonian ...")
             start_dg = time.time()
-            cell_dg  = dg.dg_model_ham(cell, None ,'rel_num', 0.8)
+            cell_dg  = dg.dg_model_ham(cell, None ,'rel_num', 0.98)
             end_dg   = time.time()
             f.write("Elapsed time to create DG-Ham: " + str(end_dg - start_dg) + "\n")
             print("Done! Elapsed time: ", end_dg - start_dg, "sec.")

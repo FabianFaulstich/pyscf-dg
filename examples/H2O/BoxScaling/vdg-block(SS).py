@@ -56,7 +56,7 @@ if __name__ == '__main__':
     angles    = np.array([0.9117250946567979, np.pi/2])
     #box_sizes = np.array([12,11,10,9,8]) 
     box_sizes = np.array([9])
-    basis = 'tzp'
+    basis = 'gth-dzvp'
 
     mfe     = np.zeros(len(angles))
     mfe_dg  = np.zeros(len(angles))
@@ -93,7 +93,7 @@ if __name__ == '__main__':
             Mol_size = np.array([0,0,0])
             X = np.array([int(np.ceil( off + bl)) for off, bl in zip(offset, Mol_size)])
             
-            dgrid = [7]*3
+            dgrid = [4]*3
 
             cell = gto.Cell()
             cell.a = [[X[0],0.,0.],[0.,X[1],0],[0,0,X[2]]]

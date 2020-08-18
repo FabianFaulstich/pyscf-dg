@@ -36,12 +36,15 @@ if __name__ == '__main__':
     mfe     = np.zeros(len(offsets))
     mfe_ew  = np.zeros(len(offsets))
     mfe_vdg = np.zeros(len(offsets))
+    mfe_ndg = np.zeros(len(offsets))
     
     mf_mad     = np.zeros(len(offsets))
     mf_vdg_mad = np.zeros(len(offsets))
+    mf_ndg_mad = np.zeros(len(offsets))
 
     mf_tes     = np.zeros(len(offsets))
     mf_vdg_tes = np.zeros(len(offsets))
+    mf_ndg_tes = np.zeros(len(offsets))
 
     for k, off in enumerate(offsets):
 
@@ -60,17 +63,11 @@ if __name__ == '__main__':
         Mol_box  = [[atoms[i],atoms_box[i]] for i in range(len(atoms))]
         print(Mol_box)
         
-        dgrid = [4]*3
-        print("initializing cell object")
-        print()
-
+        dgrid = [6]*3
+        
         cell = gto.Cell()
         cell.atom    = Mol_box
-        print("cell.atom: ", cell.atom)
-
         cell.a = [[X[0],0.,0.],[0.,X[1],0],[0,0,X[2]]]
-        print("cell.a: ", cell.a)
-         
         cell.unit    = 'B'
         cell.verbose = 3
         
@@ -96,7 +93,14 @@ if __name__ == '__main__':
         vert = np.array([elem[0] for elem in V_net])
         # get Voronoi cells:
 
-        # DG vs VDG calculations
+        # DG vs VDG vs None calculations
+        print("Creating  " + cell.basis +  "-None-DG Hamiltonian ...")
+        start_dg = time.time()
+        cell_ndg  = dg.dg_model_ham(cell, None ,'rel_num', 0.95, True, voronoi_cells, V_net, False)
+        end_dg   = time.time()
+        print("Done! Elapsed time: ", end_dg - start_dg, "sec.")
+        print()
+        
         print("Creating  " + cell.basis +  "-VDG Hamiltonian ...")
         start_dg = time.time()
         cell_vdg  = dg.dg_model_ham(cell, None ,'rel_num', 0.95, True, voronoi_cells, V_net)
@@ -139,6 +143,29 @@ if __name__ == '__main__':
         print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
         print()
         
+        print("Computing HF in " + cell.basis +  "-None-DG basis ...")
+        start_hf = time.time()
+        mfe_ndg[k] = cell_ndg.run_RHF(None)
+        mf_ndg_mad[k] = cell_ndg.madelung
+        mf_ndg_tes[k] = cell_ndg.tes
+        print("Madelung const:", mf_ndg_mad[k])
+        print("Total enegy shift:", mf_ndg_tes[k])
+        end_hf   = time.time()
+        print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
+        print()
+
+
+        print("Computing HF in " + cell.basis +  "-None-DG basis ...")
+        start_hf = time.time()
+        mfe_ndg[k] = cell_ndg.run_RHF()
+        mf_ndg_mad[k] = cell_ndg.madelung
+        mf_ndg_tes[k] = cell_ndg.tes
+        print("Madelung const:", mf_ndg_mad[k])
+        print("Total enegy shift:", mf_ndg_tes[k])
+        end_hf   = time.time()
+        print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
+        print()
+
         print("Computing HF in " + cell.basis +  "-VDG basis ...")
         start_hf = time.time()
         mfe_vdg[k] = cell_vdg.run_RHF()

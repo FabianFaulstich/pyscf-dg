@@ -23,7 +23,8 @@ from pyscf.fci import direct_spin0, direct_spin1
 import dg_tools
 
 class dg_model_ham:
-    def __init__(self, cell, dg_cuts = None, dg_trunc = 'abs_tol', svd_tol = 1e-3, voronoi = False, v_cells = None, v_net = None):
+    def __init__(self, cell, dg_cuts = None, dg_trunc = 'abs_tol', svd_tol = 1e-3, 
+                    voronoi = False, v_cells = None, v_net = None, dg_on=True):
         
         self.cell = copy.copy(cell)
         print('Unit: ', self.cell.unit)
@@ -37,11 +38,11 @@ class dg_model_ham:
 
         print("    Computing DG-Gramm matrix ...")
         start = time.time()
-        self.dg_gramm, self.dg_idx = get_dg_gramm(self.cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells, v_net)
+        self.dg_gramm, self.dg_idx = get_dg_gramm(self.cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells, v_net, dg_on)
         end = time.time()
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
-
+        
 
         #print("##################") 
         #M=np.dot(self.dg_gramm.T, self.dg_gramm)#/64-np.eye(self.dg_gramm.shape[1])
@@ -73,24 +74,18 @@ class dg_model_ham:
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
         
-        print("Initializing cell object:")
-        print()
-
-        self.cell_dg      = gto.Cell()
-        self.cell_dg.atom = cell.atom
-        print("cell_dg.atom: ", self.cell_dg.atom)
-
-        self.cell_dg.a    = cell.a
-        print("cell_dg.a: ", self.cell_dg.a)
-
-        print("Number of electrons before build: ", self.cell_dg.nelectron)
-
-        self.cell_dg.unit = 'B'
-        self.cell_dg.pseudo = self.cell.pseudo
-        
-        self.cell_dg      = self.cell_dg.build()
-        print("Number of electrons: ", self.cell_dg.nelectron)
-        print("Number of electrons original cell: ", self.cell.nelectron)
+        self.cell_dg = gto.copy(cell)
+        #self.cell_dg      = gto.Cell()
+        #self.cell_dg.atom = cell.atom
+        #print("cell_dg.atom: ", self.cell_dg.atom)
+        #self.cell_dg.a    = cell.a
+        #print("cell_dg.a: ", self.cell_dg.a)
+        #print("Number of electrons before build: ", self.cell_dg.nelectron)
+        #self.cell_dg.unit = 'B'
+        #self.cell_dg.pseudo = self.cell.pseudo
+        #self.cell_dg      = self.cell_dg.build()
+        #print("Number of electrons: ", self.cell_dg.nelectron)
+        #print("Number of electrons original cell: ", self.cell.nelectron)
         
  
         self.cell_dg.pbc_intor = lambda *arg, **kwargs: self.ovl_dg
@@ -152,9 +147,9 @@ class dg_model_ham:
         self.edft = self.dft_dg.e_tot
         return self.edft
 
-    def run_RHF(self):
+    def run_RHF(self, exxdiv_ = 'ewald'):
         
-        self.mf_dg         = scf.RHF(self.cell_dg, exxdiv='ewald') # 'ewald'
+        self.mf_dg         = scf.RHF(self.cell_dg, exxdiv=exxdiv_) # 'ewald'
         self.madelung      = tools.pbc.madelung(self.cell_dg, [self.mf_dg.kpt])
         print("No. of electrons (VDG): ", self.cell_dg.nelectron)
         self.tes           = self.madelung * self.cell_dg.nelectron * -0.5
@@ -342,7 +337,7 @@ def get_eri(cell, coords, aoR, b_idx, exx=False):
     assert ngrids == aoR.shape[0]
     dvol = vol / ngrids
     nao = aoR.shape[1]
-
+    print(nao)
     eri = np.zeros((nao,nao,nao,nao))
     vcoulR_pairs = np.zeros((ngrids,nao,nao))
 
@@ -370,17 +365,21 @@ def get_eri(cell, coords, aoR, b_idx, exx=False):
         # Solving Poisson eq. in k:th DG-block
         bl_k          = aoR[:,idx_k[0]:idx_k[-1]+1]
         bl_k_mat      = np.matlib.repmat(bl_k, 1, len(idx_k))
+        del bl_k
         idx_k_perm    = [j * len(idx_k) + i for i in range(len(idx_k))
                           for j in range(len(idx_k))]
         bl_k_mat_perm = bl_k_mat[:,idx_k_perm]
         
         # exploiting symmerty before using poisson solver:
         bl_k_dens     = bl_k_mat[:,idx_k_sym] * bl_k_mat_perm[:,idx_k_sym]
+        del bl_k_mat, bl_k_mat_perm
         bl_k_sol_pois = np.zeros_like(bl_k_dens)
         
         for j in range(bl_k_dens.shape[1]):
             coulG_k            = coulG * tools.fft(bl_k_dens[:,j], mesh) * dvol
             bl_k_sol_pois[:,j] = tools.ifft(coulG_k, mesh).real / dvol
+        
+        del bl_k_dens
         
         # exploit symmetry in l:th block
         idx_l_sym = dg_tools.get_red_idx(len(idx_l))
@@ -388,13 +387,17 @@ def get_eri(cell, coords, aoR, b_idx, exx=False):
         # Computing DG-basis product in l:th DG-block
         bl_l           = aoR[:,idx_l[0]:idx_l[-1]+1]
         bl_l_mat       = np.matlib.repmat(bl_l, 1, len(idx_l))
+        del bl_l
         idx_l_perm     = [j * len(idx_l) + i for i in range(len(idx_l))
                           for j in range(len(idx_l))]
         bl_l_mat_perm  = bl_l_mat[:,idx_l_perm]
         bl_l_mat_prod  = bl_l_mat[:,idx_l_sym] * bl_l_mat_perm[:,idx_l_sym]
+        del bl_l_mat
+        del bl_l_mat_perm
 
         # Compute integral Pois. part and product part
         eri_kl  = np.dot(bl_l_mat_prod.T,bl_k_sol_pois) * dvol
+        del bl_l_mat_prod, bl_k_sol_pois
         end_comp = time.time()
         print("            Done! Elapsed time: ", end_comp - start_comp, "sec.")
         print()
@@ -548,7 +551,7 @@ def get_eri(cell, coords, aoR, b_idx, exx=False):
 #    return int(l), int(k)
 
 
-def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells, v_net):
+def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells, v_net, dg_on):
     '''Generate the Gramm matrix for fake-DG basis
        Supports customized DG elements:
        dg_cuts: quasi 1D cuts
@@ -565,19 +568,23 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells, v_net):
 
        abs_cum:
     '''
-    print("        Performing DG-truncation: ", dg_trunc, " with tolerance: ", svd_tol)
+    
     coords = cell.get_uniform_grids()
-    x_dp   = np.array([x[0] for x in coords])
-    
-    # For naive voronoi:
-    dx = cell.a[0][0]
-    dy = cell.a[1][1]
-    atoms  = [elem[1] for elem in cell.atom]
-    
     # Fetching Gramm matrix
     ao_values = dft.numint.eval_ao(cell, coords, deriv=0) # change to eval_gto?
     dvol = cell.vol / np.prod(cell.mesh)
+ 
+    if dg_on == False:
+        print("        No DG-trunctaion performed!")
+        return ao_values, [[x for x in range(ao_values.shape[1])]] #* 1./np.sqrt(dvol)
+
+    print("        Performing DG-truncation: ", dg_trunc, " with tolerance: ", svd_tol)
+    
     if voronoi:
+        # For naive voronoi:
+        dx = cell.a[0][0]
+        dy = cell.a[1][1]
+        atoms  = [elem[1] for elem in cell.atom]       
         return get_vdg_basis(atoms, dx, dy, dvol, ao_values, coords, v_cells, dg_trunc, svd_tol, v_net)
     else:
         # Determine ideal DG-cuts for quasi-1D system along z-axis
@@ -587,8 +594,8 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells, v_net):
         else:
             iDG_cut = dg_cuts
         print("Q-1D DG: ", iDG_cut)
-        DG_cut   = np.zeros(len(iDG_cut), dtype=int)
-
+        DG_cut = np.zeros(len(iDG_cut), dtype=int)
+        x_dp   = np.array([x[0] for x in coords])
         for i in range(len(iDG_cut)):
             DG_cut[i] = np.argmin(np.absolute(x_dp - iDG_cut[i])) # check for min being unambiguous
             
@@ -606,34 +613,34 @@ def get_vdg_basis(atoms, dx, dy, dvol, ao_values, coords, v_cells, dg_trunc, svd
     index_out = []
     offset    = 0
 
-    print("Naive Voronoi:")
-    vstart = time.time()
-    idx_mat = np.zeros((ao_values.shape[0],len(atoms)), dtype = bool)
-    for j, point in enumerate(coords):
-        k = dg_tools.get_dist_atom(atoms, dx, dy, point)
-        idx_mat[j,k] = True
-    vend = time.time()
-    print("Computational time for naive voronoi: ", vend - vstart)
+    #print("Naive Voronoi:")
+    #vstart = time.time()
+    #idx_mat = np.zeros((ao_values.shape[0],len(atoms)), dtype = bool)
+    #for j, point in enumerate(coords):
+    #    k = dg_tools.get_dist_atom(atoms, dx, dy, point)
+    #    idx_mat[j,k] = True
+    #vend = time.time()
+    #print("Computational time for naive voronoi: ", vend - vstart)
     #dg_tools.visualize(idx_mat, coords, atoms[0][2], v_net, atoms)
 
-    #coords_2d = np.array([ x[0:2] for x in coords])
-    #idx_mat = []
-    #vstart = time.time()
-    #for vcell in v_cells:
-    #    idx_mat.append(dg_tools.in_hull(coords_2d, vcell))
-    #idx_mat = np.array(idx_mat).transpose()
+    coords_2d = np.array([ x[0:2] for x in coords])
+    idx_mat = []
+    vstart = time.time()
+    for vcell in v_cells:
+        idx_mat.append(dg_tools.in_hull(coords_2d, vcell))
+    idx_mat = np.array(idx_mat).transpose()
 
     # Asigning boundary values to a cell
-    #for i, elem in enumerate(idx_mat):
-    #    if len(elem[elem == True]) == 0:
-    #        k = dg_tools.get_dist_atom(atoms, dx, dy, coords[i]) 
-    #        idx_mat[i,k] = True
-    #    elif len(elem[elem == True]) > 1:
-    #        elem_n = np.zeros_like(elem, dtype = bool)
-    #        elem_n[np.where(elem == True)[0][0]] = True
-    #        idx_mat[i,:] = elem_n
-    #vend = time.time()
-    #print("            Done! Elapsed time for mixed voronoi: ", vend - vstart)
+    for i, elem in enumerate(idx_mat):
+        if len(elem[elem == True]) == 0:
+            k = dg_tools.get_dist_atom(atoms, dx, dy, coords[i]) 
+            idx_mat[i,k] = True
+        elif len(elem[elem == True]) > 1:
+            elem_n = np.zeros_like(elem, dtype = bool)
+            elem_n[np.where(elem == True)[0][0]] = True
+            idx_mat[i,:] = elem_n
+    vend = time.time()
+    print("            Done! Elapsed time for mixed voronoi: ", vend - vstart)
     #dg_tools.visualize(idx_mat, coords, atoms[0][2], v_net, atoms)  
 
     for k, idx in enumerate(idx_mat.transpose()):

@@ -67,16 +67,14 @@ def get_cell(atom, V_net):
 
     return np.array(cell)
 
-def get_next_vert(atom, idx,V_net):
-    print(np.array(V_net))
-    print()
+def get_next_vert(atom, idx, V_net):
     vert = V_net[idx][0]
     con  = V_net[idx][1]
     angle = []
     vertex = []
     cc = []
     for c in con:
-        if atom[0] != V_net[c][0][0] and atom[1] != V_net[c][0][1]:
+        if not(atom[0] == V_net[c][0][0] and atom[1] == V_net[c][0][1]):
             angle.append(get_angle(atom, vert, V_net[c][0]))
             vertex.append(V_net[c][0])
             cc.append(c) 
@@ -204,7 +202,7 @@ def get_V_net_per(atoms, x_min, x_max, y_min, y_max):
         V_net_per.append([[x_max, y_min],[]])
 
     vert   = np.array([v[0] for v in V_net_per])
-    vert_s = np.array([v for v in vert if v[1] == y_min])
+    vert_s = np.array([v for v in vert if np.abs(v[1] - y_min)<1e-8])
     vert_s = np.array(sorted(vert_s, key=lambda x: x[0]))
    
     for i, v in enumerate(vert_s[1:]):
@@ -217,7 +215,7 @@ def get_V_net_per(atoms, x_min, x_max, y_min, y_max):
         V_net_per.append([[x_max, y_max],[]])
 
     vert   = np.array([v[0] for v in V_net_per])
-    vert_s = np.array([v for v in vert if v[0] == x_max])
+    vert_s = np.array([v for v in vert if np.abs(v[0]- x_max)<1e-8])
     vert_s = np.array(sorted(vert_s, key=lambda x: x[1]))
 
     for i, v in enumerate(vert_s[1:]):
@@ -230,7 +228,7 @@ def get_V_net_per(atoms, x_min, x_max, y_min, y_max):
         V_net_per.append([[x_min, y_max],[]])
 
     vert = np.array([v[0] for v in V_net_per])
-    vert_s = np.array([v for v in vert if v[1] == y_max])
+    vert_s = np.array([v for v in vert if np.abs(v[1] - y_max)<1e-8 ])
     vert_s = np.array(sorted(vert_s, key=lambda x: x[0]))
 
     for i, v in enumerate(vert_s[1:]):
@@ -240,7 +238,7 @@ def get_V_net_per(atoms, x_min, x_max, y_min, y_max):
         V_net_per[idx_1][1].append(idx_0)
 
 
-    vert_s = np.array([v for v in vert if v[0] == x_min])
+    vert_s = np.array([v for v in vert if np.abs(v[0] - x_min)<1e-8])
     vert_s = np.array(sorted(vert_s, key=lambda x: x[1]))
 
     for i, v in enumerate(vert_s[1:]):

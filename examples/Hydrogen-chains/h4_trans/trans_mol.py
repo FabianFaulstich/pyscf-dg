@@ -57,7 +57,7 @@ if __name__ == '__main__':
         Mol[2][1][0:2] = trans(Mol_init[0][1][0:2], Mol_init[2][1][0:2], a)
         Mol[3][1][0:2] = trans(Mol_init[1][1][0:2], Mol_init[3][1][0:2], -a)
         mol = gto.M()
-        mol.basis = 'sto-3g'
+        mol.basis = 'aug-ccpvdz'
         mol.atom  = Mol
         mol.unit  = 'bohr'
         mol.verbose = 3
@@ -93,15 +93,15 @@ if __name__ == '__main__':
         mycc.kernel()
         ecc[i]    = mycc.e_tot
 
-        h1 = mf.mo_coeff.T.dot(mf.get_hcore()).dot(mf.mo_coeff)
-        eri = ao2mo.kernel(mol, mf.mo_coeff)
-        cisolver = fci.direct_spin1.FCI(mol)
-        efci[i], ci = cisolver.kernel(h1, eri, h1.shape[1], mol.nelec, ecore=mol.energy_nuc())
+        #h1 = mf.mo_coeff.T.dot(mf.get_hcore()).dot(mf.mo_coeff)
+        #eri = ao2mo.kernel(mol, mf.mo_coeff)
+        #cisolver = fci.direct_spin1.FCI(mol)
+        #efci[i], ci = cisolver.kernel(h1, eri, h1.shape[1], mol.nelec, ecore=mol.energy_nuc())
 
 
     plt.plot(angles*180/np.pi, mfe, 'b-v', label =  'HF  (' + mol.basis + ')')
     plt.plot(angles*180/np.pi, ecc, 'r-x', label =  'CC  (' + mol.basis + ')')
-    plt.plot(angles*180/np.pi, efci, 'r-o', label =  'FCI  (' + mol.basis + ')')
+    #plt.plot(angles*180/np.pi, efci, 'r-o', label =  'FCI  (' + mol.basis + ')')
     plt.title('PES in ' + mol.basis)
     plt.legend()
     plt.show()

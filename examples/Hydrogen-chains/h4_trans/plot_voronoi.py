@@ -27,32 +27,34 @@ def trans(x_, p_, a):
         R     = np.array(((c, -s), (s, c)))
         vec   = p - x
         r_vec = np.dot(R,vec)
-        out = r_vec + x
+        out   = np.round(r_vec + x,6)
         return out.tolist()
 
 def mol_size(Mol):
 
     expan = lambda cords: max(cords) - min(cords)
-    out = []
+    minim = lambda cords: min(cords)
+    out   = []
+    m     =[]
     for i in range(3):
         out.append(expan([mol[1][i] for mol in Mol]))
-    return np.round(np.array(out), 6)
+        m.append(minim([mol[1][i] for mol in Mol]))
+    return np.array(out), m
 
 if __name__ == '__main__':
 
         #test_trans()
-        #angles = np.linspace(0, np.pi/2.0, num=7)
-        angles = np.array([0])
+        angles = np.linspace(0, np.pi/2.0, num=7)
+        #angles = np.array([np.pi/2.])
 
         boxsizes = np.array([12])
-        dgrid    = [5] * 3 # Before: 5
+        dgrid    = [5] * 3 
         #bases    = ['augccpvdz', '631++g', '321++g', 'ccpvdz', '631g', '321g']
         #acc      = [.99, .99, .99, .99, .99, .99]
         bases = ['321g']
         acc   = [.99]
 
         Mol_init = [['H', [0,0,0]],['H', [2,0,0]], ['H', [0,2,0]], ['H', [2,2,0]]]
-        ms = mol_size(Mol_init)
     
         mfe = np.zeros(len(angles))
         max_ev = np.zeros(len(angles))
@@ -72,18 +74,29 @@ if __name__ == '__main__':
             mesh = [int(d * x) for d, x in zip(dgrid, [bs]*3)]
 
             # Centering Molecule in Box:
-            offset = np.array([ (bs - s)/2. for s in ms])
-            Mol_ic = copy.deepcopy(Mol_init)
-            for j, mol in enumerate(Mol_ic):
-                for k, off in enumerate(offset):
-                    Mol_ic[j][1][k] += off
-            Mol = copy.deepcopy(Mol_ic)            
+            #ms = mol_size(Mol_init)
+            #offset = np.array([ (bs - s)/2. for s in ms])
+            #Mol_ic = copy.deepcopy(Mol_init)
+            #for j, mol in enumerate(Mol_ic):
+            #    for k, off in enumerate(offset):
+            #        Mol_ic[j][1][k] += off
+            #Mol = copy.deepcopy(Mol_ic)            
             
             for ac, basis in enumerate(bases):
                 for i, a in enumerate(angles):
+                   
+                    Mol = copy.deepcopy(Mol_init)
+                    Mol[2][1][0:2] = trans(Mol_init[0][1][0:2], Mol_init[2][1][0:2], a)
+                    Mol[3][1][0:2] = trans(Mol_init[1][1][0:2], Mol_init[3][1][0:2], -a)
                     
-                    Mol[2][1][0:2] = trans(Mol_ic[0][1][0:2], Mol_ic[2][1][0:2], a)
-                    Mol[3][1][0:2] = trans(Mol_ic[1][1][0:2], Mol_ic[3][1][0:2], -a)
+                    print(Mol)
+
+                    # Centering Molecule in Box:
+                    ms, mm = mol_size(Mol)
+                    offset = np.array([ (bs - s)/2. - m for s, m in zip(ms,mm)])
+                    for k, off in enumerate(offset):
+                        for j in range(len(Mol)):
+                            Mol[j][1][k] += off
                     
                     cell         = gto.Cell()
                     cell.a       = [[bs, 0., 0.], [0., bs, 0.], [0., 0., bs]] 
@@ -133,19 +146,6 @@ if __name__ == '__main__':
                     print("Condition no. (DG): "    , con_no_dg[i])
                     print("No. of EV<10e-5 (DG): "  , m_dg[i])
 
-
-                    # HF in VDG
-                    start = time.time()
-                    
-                    mfe_dg[i] = cell_vdg.run_RHF()
-                    
-                    # HF in builtin
-                    start = time.time()
-                    
-                    mf = scf.RHF(cell, exxdiv='ewald') # madelung correction
-                    mf.kernel(dump_chk = False)
-                    mfe[i] = mf.e_tot
-                    
                     del cell
                     del cell_vdg
 

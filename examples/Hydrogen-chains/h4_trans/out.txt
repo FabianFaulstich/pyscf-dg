@@ -1,0 +1,1053 @@
+Computing P4 to D4 transition:
+Box size:
+12 x 12 x 12
+Box discretization:
+60 x 60 x 60
+AO basis:
+631+g
+Rotation angles:
+[0.         0.26179939 0.52359878 0.78539816 1.04719755 1.30899694
+ 1.57079633]
+Relative truncation in SVD:
+0.5
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.90880016 -2.06099822 -2.11713762 -2.14161039 -2.15209706 -2.15635236
+ -2.1576372 ]
+Max eigenvalue: [4.05703337 3.75567871 3.57049889 3.46808152 3.41568526 3.3921946
+ 3.38571429]
+Min eigenvalue: [0.05437406 0.06427985 0.06142294 0.05187882 0.04020352 0.03092089
+ 0.02739527]
+Condition no.: [ 74.61339395  58.42699498  58.12972785  66.84966374  84.95985593
+ 109.70560046 123.58753001]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.81400947 -2.01296571 -2.07870229 -2.09047797 -2.08638282 -2.12214038
+ -2.13667866]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+AO basis:
+ccpvdz
+Rotation angles:
+[0.         0.26179939 0.52359878 0.78539816 1.04719755 1.30899694
+ 1.57079633]
+Relative truncation in SVD:
+0.99
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Mean-field energy: [-1.96647471 -2.07886855 -2.13007467 -2.15217368 -2.16135762 -2.16481169
+ -2.16569417]
+Max eigenvalue: [4.75966062 4.40246204 4.1609331  4.01412518 3.93221087 3.89272481
+ 3.88126849]
+Min eigenvalue: [0.03053339 0.03623688 0.03376365 0.0268211  0.01821801 0.01118896
+ 0.00848684]
+Condition no.: [155.88381208 121.49120074 123.23704735 149.66297171 215.84189799
+ 347.90763057 457.32813801]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.94593146 -2.07941021 -2.13065745 -2.15273882 -2.16198415 -2.16548494
+ -2.16637187]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.95
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Mean-field energy: [-1.96647471 -2.07886855 -2.13007467 -2.15217368 -2.16135762 -2.16481169
+ -2.16569417]
+Max eigenvalue: [4.75966062 4.40246204 4.1609331  4.01412518 3.93221087 3.89272481
+ 3.88126849]
+Min eigenvalue: [0.03053339 0.03623688 0.03376365 0.0268211  0.01821801 0.01118896
+ 0.00848684]
+Condition no.: [155.88381208 121.49120074 123.23704735 149.66297171 215.84189799
+ 347.90763057 457.32813801]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.94589151 -2.07934972 -2.13055901 -2.15264023 -2.1618567  -2.16538035
+ -2.16637187]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.9
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Mean-field energy: [-1.96647471 -2.07886855 -2.13007467 -2.15217368 -2.16135762 -2.16481169
+ -2.16569417]
+Max eigenvalue: [4.75966062 4.40246204 4.1609331  4.01412518 3.93221087 3.89272481
+ 3.88126849]
+Min eigenvalue: [0.03053339 0.03623688 0.03376365 0.0268211  0.01821801 0.01118896
+ 0.00848684]
+Condition no.: [155.88381208 121.49120074 123.23704735 149.66297171 215.84189799
+ 347.90763057 457.32813801]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.94582542 -2.07922488 -2.13050642 -2.15260997 -2.16184965 -2.16538035
+ -2.16637187]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.85
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Mean-field energy: [-1.96647471 -2.07886855 -2.13007467 -2.15217368 -2.16135762 -2.16481169
+ -2.16569417]
+Max eigenvalue: [4.75966062 4.40246204 4.1609331  4.01412518 3.93221087 3.89272481
+ 3.88126849]
+Min eigenvalue: [0.03053339 0.03623688 0.03376365 0.0268211  0.01821801 0.01118896
+ 0.00848684]
+Condition no.: [155.88381208 121.49120074 123.23704735 149.66297171 215.84189799
+ 347.90763057 457.32813801]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.94406035 -2.07829723 -2.13036609 -2.15260997 -2.16184625 -2.16535215
+ -2.16635512]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.8
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Mean-field energy: [-1.96647471 -2.07886855 -2.13007467 -2.15217368 -2.16135762 -2.16481169
+ -2.16569417]
+Max eigenvalue: [4.75966062 4.40246204 4.1609331  4.01412518 3.93221087 3.89272481
+ 3.88126849]
+Min eigenvalue: [0.03053339 0.03623688 0.03376365 0.0268211  0.01821801 0.01118896
+ 0.00848684]
+Condition no.: [155.88381208 121.49120074 123.23704735 149.66297171 215.84189799
+ 347.90763057 457.32813801]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.94179843 -2.07766298 -2.13016703 -2.15247287 -2.16162497 -2.16518901
+ -2.16612643]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.7
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Mean-field energy: [-1.96647471 -2.07886855 -2.13007467 -2.15217368 -2.16135762 -2.16481169
+ -2.16569417]
+Max eigenvalue: [4.75966062 4.40246204 4.1609331  4.01412518 3.93221087 3.89272481
+ 3.88126849]
+Min eigenvalue: [0.03053339 0.03623688 0.03376365 0.0268211  0.01821801 0.01118896
+ 0.00848684]
+Condition no.: [155.88381208 121.49120074 123.23704735 149.66297171 215.84189799
+ 347.90763057 457.32813801]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.93748217 -2.0736523  -2.12820457 -2.15086052 -2.16034305 -2.16434477
+ -2.16564783]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.6
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Mean-field energy: [-1.96647471 -2.07886855 -2.13007467 -2.15217368 -2.16135762 -2.16481169
+ -2.16569417]
+Max eigenvalue: [4.75966062 4.40246204 4.1609331  4.01412518 3.93221087 3.89272481
+ 3.88126849]
+Min eigenvalue: [0.03053339 0.03623688 0.03376365 0.0268211  0.01821801 0.01118896
+ 0.00848684]
+Condition no.: [155.88381208 121.49120074 123.23704735 149.66297171 215.84189799
+ 347.90763057 457.32813801]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.9196473  -2.0640058  -2.11367408 -2.13851688 -2.15280903 -2.16032346
+ -2.162937  ]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.5
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Number of DG basis functions:
+20
+Mean-field energy: [-1.96647471 -2.07886855 -2.13007467 -2.15217368 -2.16135762 -2.16481169
+ -2.16569417]
+Max eigenvalue: [4.75966062 4.40246204 4.1609331  4.01412518 3.93221087 3.89272481
+ 3.88126849]
+Min eigenvalue: [0.03053339 0.03623688 0.03376365 0.0268211  0.01821801 0.01118896
+ 0.00848684]
+Condition no.: [155.88381208 121.49120074 123.23704735 149.66297171 215.84189799
+ 347.90763057 457.32813801]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.79146969 -1.97877434 -2.06385682 -2.10754163 -2.14621053 -2.15786824
+ -2.10964111]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+AO basis:
+6311g
+Rotation angles:
+[0.         0.26179939 0.52359878 0.78539816 1.04719755 1.30899694
+ 1.57079633]
+Relative truncation in SVD:
+0.99
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Mean-field energy: [-1.95319568 -2.06859251 -2.12252728 -2.14602455 -2.15599349 -2.16034645
+ -2.16218273]
+Max eigenvalue: [5.81832372 5.43551112 5.18801303 5.0453793  4.97222274 4.94079264
+ 4.93256669]
+Min eigenvalue: [0.01421326 0.01671836 0.01564859 0.0126516  0.00847484 0.00428057
+ 0.00243677]
+Condition no.: [ 409.3588986   325.12226876  331.53236569  398.79378805  586.70377132
+ 1154.23790048 2024.22352153]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.93747618 -2.07475536 -2.1265818  -2.14952121 -2.1593996  -2.16294123
+ -2.16418978]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.95
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Mean-field energy: [-1.95319568 -2.06859251 -2.12252728 -2.14602455 -2.15599349 -2.16034645
+ -2.16218273]
+Max eigenvalue: [5.81832372 5.43551112 5.18801303 5.0453793  4.97222274 4.94079264
+ 4.93256669]
+Min eigenvalue: [0.01421326 0.01671836 0.01564859 0.0126516  0.00847484 0.00428057
+ 0.00243677]
+Condition no.: [ 409.3588986   325.12226876  331.53236569  398.79378805  586.70377132
+ 1154.23790048 2024.22352153]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.93747618 -2.07475536 -2.1265818  -2.14952121 -2.1593996  -2.16294123
+ -2.16418978]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.9
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Mean-field energy: [-1.95319568 -2.06859251 -2.12252728 -2.14602455 -2.15599349 -2.16034645
+ -2.16218273]
+Max eigenvalue: [5.81832372 5.43551112 5.18801303 5.0453793  4.97222274 4.94079264
+ 4.93256669]
+Min eigenvalue: [0.01421326 0.01671836 0.01564859 0.0126516  0.00847484 0.00428057
+ 0.00243677]
+Condition no.: [ 409.3588986   325.12226876  331.53236569  398.79378805  586.70377132
+ 1154.23790048 2024.22352153]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.93730078 -2.07469726 -2.12656677 -2.14951486 -2.1593867  -2.16292352
+ -2.16407495]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.85
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Mean-field energy: [-1.95319568 -2.06859251 -2.12252728 -2.14602455 -2.15599349 -2.16034645
+ -2.16218273]
+Max eigenvalue: [5.81832372 5.43551112 5.18801303 5.0453793  4.97222274 4.94079264
+ 4.93256669]
+Min eigenvalue: [0.01421326 0.01671836 0.01564859 0.0126516  0.00847484 0.00428057
+ 0.00243677]
+Condition no.: [ 409.3588986   325.12226876  331.53236569  398.79378805  586.70377132
+ 1154.23790048 2024.22352153]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.93730078 -2.07469726 -2.12656677 -2.14951486 -2.1593867  -2.16292352
+ -2.16407495]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.8
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Mean-field energy: [-1.95319568 -2.06859251 -2.12252728 -2.14602455 -2.15599349 -2.16034645
+ -2.16218273]
+Max eigenvalue: [5.81832372 5.43551112 5.18801303 5.0453793  4.97222274 4.94079264
+ 4.93256669]
+Min eigenvalue: [0.01421326 0.01671836 0.01564859 0.0126516  0.00847484 0.00428057
+ 0.00243677]
+Condition no.: [ 409.3588986   325.12226876  331.53236569  398.79378805  586.70377132
+ 1154.23790048 2024.22352153]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.9371089  -2.07447203 -2.12643236 -2.14933246 -2.15916242 -2.16288103
+ -2.16400837]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.7
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Mean-field energy: [-1.95319568 -2.06859251 -2.12252728 -2.14602455 -2.15599349 -2.16034645
+ -2.16218273]
+Max eigenvalue: [5.81832372 5.43551112 5.18801303 5.0453793  4.97222274 4.94079264
+ 4.93256669]
+Min eigenvalue: [0.01421326 0.01671836 0.01564859 0.0126516  0.00847484 0.00428057
+ 0.00243677]
+Condition no.: [ 409.3588986   325.12226876  331.53236569  398.79378805  586.70377132
+ 1154.23790048 2024.22352153]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.93331277 -2.07126838 -2.12254126 -2.14783201 -2.15874198 -2.16259914
+ -2.16343027]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.6
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Mean-field energy: [-1.95319568 -2.06859251 -2.12252728 -2.14602455 -2.15599349 -2.16034645
+ -2.16218273]
+Max eigenvalue: [5.81832372 5.43551112 5.18801303 5.0453793  4.97222274 4.94079264
+ 4.93256669]
+Min eigenvalue: [0.01421326 0.01671836 0.01564859 0.0126516  0.00847484 0.00428057
+ 0.00243677]
+Condition no.: [ 409.3588986   325.12226876  331.53236569  398.79378805  586.70377132
+ 1154.23790048 2024.22352153]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.90790788 -2.06212547 -2.12146621 -2.14606554 -2.15755725 -2.16179157
+ -2.16275044]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.5
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Number of DG basis functions:
+12
+Mean-field energy: [-1.95319568 -2.06859251 -2.12252728 -2.14602455 -2.15599349 -2.16034645
+ -2.16218273]
+Max eigenvalue: [5.81832372 5.43551112 5.18801303 5.0453793  4.97222274 4.94079264
+ 4.93256669]
+Min eigenvalue: [0.01421326 0.01671836 0.01564859 0.0126516  0.00847484 0.00428057
+ 0.00243677]
+Condition no.: [ 409.3588986   325.12226876  331.53236569  398.79378805  586.70377132
+ 1154.23790048 2024.22352153]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.87839392 -2.04339326 -2.09770274 -2.13194361 -2.15009908 -2.15643229
+ -2.15866964]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+AO basis:
+631g
+Rotation angles:
+[0.         0.26179939 0.52359878 0.78539816 1.04719755 1.30899694
+ 1.57079633]
+Relative truncation in SVD:
+0.99
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.90880016 -2.06099822 -2.11713762 -2.14161039 -2.15209706 -2.15635236
+ -2.1576372 ]
+Max eigenvalue: [4.05703337 3.75567871 3.57049889 3.46808152 3.41568526 3.3921946
+ 3.38571429]
+Min eigenvalue: [0.05437406 0.06427985 0.06142294 0.05187882 0.04020352 0.03092089
+ 0.02739527]
+Condition no.: [ 74.61339395  58.42699498  58.12972785  66.84966374  84.95985593
+ 109.70560046 123.58753001]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.92885635 -2.07046832 -2.12353068 -2.14676172 -2.15639329 -2.16046332
+ -2.16287832]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.95
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.90880016 -2.06099822 -2.11713762 -2.14161039 -2.15209706 -2.15635236
+ -2.1576372 ]
+Max eigenvalue: [4.05703337 3.75567871 3.57049889 3.46808152 3.41568526 3.3921946
+ 3.38571429]
+Min eigenvalue: [0.05437406 0.06427985 0.06142294 0.05187882 0.04020352 0.03092089
+ 0.02739527]
+Condition no.: [ 74.61339395  58.42699498  58.12972785  66.84966374  84.95985593
+ 109.70560046 123.58753001]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.92885635 -2.07046832 -2.12353068 -2.14676172 -2.15639329 -2.16046332
+ -2.16287832]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.9
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.90880016 -2.06099822 -2.11713762 -2.14161039 -2.15209706 -2.15635236
+ -2.1576372 ]
+Max eigenvalue: [4.05703337 3.75567871 3.57049889 3.46808152 3.41568526 3.3921946
+ 3.38571429]
+Min eigenvalue: [0.05437406 0.06427985 0.06142294 0.05187882 0.04020352 0.03092089
+ 0.02739527]
+Condition no.: [ 74.61339395  58.42699498  58.12972785  66.84966374  84.95985593
+ 109.70560046 123.58753001]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.92885635 -2.07046832 -2.12353068 -2.14676172 -2.15639329 -2.16046332
+ -2.16287832]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.85
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.90880016 -2.06099822 -2.11713762 -2.14161039 -2.15209706 -2.15635236
+ -2.1576372 ]
+Max eigenvalue: [4.05703337 3.75567871 3.57049889 3.46808152 3.41568526 3.3921946
+ 3.38571429]
+Min eigenvalue: [0.05437406 0.06427985 0.06142294 0.05187882 0.04020352 0.03092089
+ 0.02739527]
+Condition no.: [ 74.61339395  58.42699498  58.12972785  66.84966374  84.95985593
+ 109.70560046 123.58753001]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.92798498 -2.06984467 -2.12317743 -2.14666907 -2.15638078 -2.16031624
+ -2.16226395]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.90880016 -2.06099822 -2.11713762 -2.14161039 -2.15209706 -2.15635236
+ -2.1576372 ]
+Max eigenvalue: [4.05703337 3.75567871 3.57049889 3.46808152 3.41568526 3.3921946
+ 3.38571429]
+Min eigenvalue: [0.05437406 0.06427985 0.06142294 0.05187882 0.04020352 0.03092089
+ 0.02739527]
+Condition no.: [ 74.61339395  58.42699498  58.12972785  66.84966374  84.95985593
+ 109.70560046 123.58753001]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.92798498 -2.06984467 -2.12317743 -2.14666907 -2.15638078 -2.16031624
+ -2.16226395]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.7
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.90880016 -2.06099822 -2.11713762 -2.14161039 -2.15209706 -2.15635236
+ -2.1576372 ]
+Max eigenvalue: [4.05703337 3.75567871 3.57049889 3.46808152 3.41568526 3.3921946
+ 3.38571429]
+Min eigenvalue: [0.05437406 0.06427985 0.06142294 0.05187882 0.04020352 0.03092089
+ 0.02739527]
+Condition no.: [ 74.61339395  58.42699498  58.12972785  66.84966374  84.95985593
+ 109.70560046 123.58753001]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.89811331 -2.06133874 -2.12006666 -2.14598603 -2.15617985 -2.16020526
+ -2.1617988 ]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.6
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.90880016 -2.06099822 -2.11713762 -2.14161039 -2.15209706 -2.15635236
+ -2.1576372 ]
+Max eigenvalue: [4.05703337 3.75567871 3.57049889 3.46808152 3.41568526 3.3921946
+ 3.38571429]
+Min eigenvalue: [0.05437406 0.06427985 0.06142294 0.05187882 0.04020352 0.03092089
+ 0.02739527]
+Condition no.: [ 74.61339395  58.42699498  58.12972785  66.84966374  84.95985593
+ 109.70560046 123.58753001]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.86885782 -2.02883295 -2.09298802 -2.12800954 -2.14175876 -2.15475767
+ -2.15969381]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.5
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.90880016 -2.06099822 -2.11713762 -2.14161039 -2.15209706 -2.15635236
+ -2.1576372 ]
+Max eigenvalue: [4.05703337 3.75567871 3.57049889 3.46808152 3.41568526 3.3921946
+ 3.38571429]
+Min eigenvalue: [0.05437406 0.06427985 0.06142294 0.05187882 0.04020352 0.03092089
+ 0.02739527]
+Condition no.: [ 74.61339395  58.42699498  58.12972785  66.84966374  84.95985593
+ 109.70560046 123.58753001]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.81400947 -2.01296571 -2.07870229 -2.09047797 -2.08638282 -2.12214038
+ -2.13667866]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+AO basis:
+321g
+Rotation angles:
+[0.         0.26179939 0.52359878 0.78539816 1.04719755 1.30899694
+ 1.57079633]
+Relative truncation in SVD:
+0.99
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.93766069 -2.05966969 -2.11615513 -2.1407184  -2.15116515 -2.15518602
+ -2.15618729]
+Max eigenvalue: [3.83293843 3.53668768 3.36374952 3.27150021 3.22483135 3.20369342
+ 3.19777547]
+Min eigenvalue: [0.06599903 0.07737624 0.07428244 0.06395    0.0518001  0.04241906
+ 0.03890277]
+Condition no.: [58.07568108 45.707673   45.28323953 51.15715762 62.25531488 75.52484865
+ 82.19916428]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.92101408 -2.06641602 -2.12026306 -2.14367788 -2.15353167 -2.15756629
+ -2.16023743]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.95
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.93766069 -2.05966969 -2.11615513 -2.1407184  -2.15116515 -2.15518602
+ -2.15618729]
+Max eigenvalue: [3.83293843 3.53668768 3.36374952 3.27150021 3.22483135 3.20369342
+ 3.19777547]
+Min eigenvalue: [0.06599903 0.07737624 0.07428244 0.06395    0.0518001  0.04241906
+ 0.03890277]
+Condition no.: [58.07568108 45.707673   45.28323953 51.15715762 62.25531488 75.52484865
+ 82.19916428]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.92101408 -2.06641602 -2.12026306 -2.14367788 -2.15353167 -2.15756629
+ -2.16023743]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.9
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.93766069 -2.05966969 -2.11615513 -2.1407184  -2.15116515 -2.15518602
+ -2.15618729]
+Max eigenvalue: [3.83293843 3.53668768 3.36374952 3.27150021 3.22483135 3.20369342
+ 3.19777547]
+Min eigenvalue: [0.06599903 0.07737624 0.07428244 0.06395    0.0518001  0.04241906
+ 0.03890277]
+Condition no.: [58.07568108 45.707673   45.28323953 51.15715762 62.25531488 75.52484865
+ 82.19916428]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.92101408 -2.06641602 -2.12026306 -2.14367788 -2.15353167 -2.15756629
+ -2.16023743]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.85
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.93766069 -2.05966969 -2.11615513 -2.1407184  -2.15116515 -2.15518602
+ -2.15618729]
+Max eigenvalue: [3.83293843 3.53668768 3.36374952 3.27150021 3.22483135 3.20369342
+ 3.19777547]
+Min eigenvalue: [0.06599903 0.07737624 0.07428244 0.06395    0.0518001  0.04241906
+ 0.03890277]
+Condition no.: [58.07568108 45.707673   45.28323953 51.15715762 62.25531488 75.52484865
+ 82.19916428]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.92019251 -2.06604551 -2.12015473 -2.14364722 -2.15351618 -2.1574405
+ -2.15948876]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.93766069 -2.05966969 -2.11615513 -2.1407184  -2.15116515 -2.15518602
+ -2.15618729]
+Max eigenvalue: [3.83293843 3.53668768 3.36374952 3.27150021 3.22483135 3.20369342
+ 3.19777547]
+Min eigenvalue: [0.06599903 0.07737624 0.07428244 0.06395    0.0518001  0.04241906
+ 0.03890277]
+Condition no.: [58.07568108 45.707673   45.28323953 51.15715762 62.25531488 75.52484865
+ 82.19916428]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.92019251 -2.06604551 -2.12015473 -2.14364722 -2.15351618 -2.1574405
+ -2.15948876]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.7
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.93766069 -2.05966969 -2.11615513 -2.1407184  -2.15116515 -2.15518602
+ -2.15618729]
+Max eigenvalue: [3.83293843 3.53668768 3.36374952 3.27150021 3.22483135 3.20369342
+ 3.19777547]
+Min eigenvalue: [0.06599903 0.07737624 0.07428244 0.06395    0.0518001  0.04241906
+ 0.03890277]
+Condition no.: [58.07568108 45.707673   45.28323953 51.15715762 62.25531488 75.52484865
+ 82.19916428]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.89134507 -2.05897597 -2.11707197 -2.14222807 -2.15269833 -2.15711868
+ -2.15892402]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.6
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.93766069 -2.05966969 -2.11615513 -2.1407184  -2.15116515 -2.15518602
+ -2.15618729]
+Max eigenvalue: [3.83293843 3.53668768 3.36374952 3.27150021 3.22483135 3.20369342
+ 3.19777547]
+Min eigenvalue: [0.06599903 0.07737624 0.07428244 0.06395    0.0518001  0.04241906
+ 0.03890277]
+Condition no.: [58.07568108 45.707673   45.28323953 51.15715762 62.25531488 75.52484865
+ 82.19916428]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.86986357 -2.03245892 -2.09840341 -2.13056546 -2.13991027 -2.15229091
+ -2.15728652]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]
+Relative truncation in SVD:
+0.5
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Number of DG basis functions:
+8
+Mean-field energy: [-1.93766069 -2.05966969 -2.11615513 -2.1407184  -2.15116515 -2.15518602
+ -2.15618729]
+Max eigenvalue: [3.83293843 3.53668768 3.36374952 3.27150021 3.22483135 3.20369342
+ 3.19777547]
+Min eigenvalue: [0.06599903 0.07737624 0.07428244 0.06395    0.0518001  0.04241906
+ 0.03890277]
+Condition no.: [58.07568108 45.707673   45.28323953 51.15715762 62.25531488 75.52484865
+ 82.19916428]
+No. of EV<10e-5: [0. 0. 0. 0. 0. 0. 0.]
+Mean-field energy (DG): [-1.81344961 -2.01489919 -2.07704956 -2.06697972 -2.09406157 -2.11991882
+ -2.13095593]
+Max eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Min eigenvalue (DG): [1. 1. 1. 1. 1. 1. 1.]
+Condition no. (DG): [1. 1. 1. 1. 1. 1. 1.]
+No. of EV<10e-5 (DG): [0. 0. 0. 0. 0. 0. 0.]

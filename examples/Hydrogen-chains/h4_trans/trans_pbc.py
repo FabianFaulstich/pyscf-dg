@@ -33,10 +33,13 @@ def trans(x_, p_, a):
 def mol_size(Mol):
 
     expan = lambda cords: max(cords) - min(cords)
-    out = []
+    minim = lambda cords: min(cords)
+    out   = []
+    m     =[]
     for i in range(3):
         out.append(expan([mol[1][i] for mol in Mol]))
-    return np.round(np.array(out), 6)
+        m.append(minim([mol[1][i] for mol in Mol]))
+    return np.array(out), m
 
 if __name__ == '__main__':
 
@@ -49,8 +52,24 @@ if __name__ == '__main__':
         
         boxsizes = np.array([12])
         dgrid    = [5] * 3 
-        bases    = ['augccpvdz', '631++g', '321++g', 'ccpvdz', '631g', '321g']
-        acc      = [.99, .99, .99, .99, .99, .99]
+        #bases    = ['augccpvdz', '6311++g', '631++g', '321++g', '6311+g', '631+g', 'ccpvdz', '6311g', '631g', '321g']
+        bases    = [ '631+g', 'ccpvdz', '6311g', '631g', '321g']
+        #acc      = [[.99, .95, .9, .85, .8, .7, .6, .5],
+        #            [.99, .95, .9, .85, .8, .7, .6, .5],
+        #            [.99, .95, .9, .85, .8, .7, .6, .5],
+        #            [.99, .95, .9, .85, .8, .7, .6, .5],
+        #            [.99, .95, .9, .85, .8, .7, .6, .5],
+        #            [.99, .95, .9, .85, .8, .7, .6, .5],
+        #            [.99, .95, .9, .85, .8, .7, .6, .5],
+        #            [.99, .95, .9, .85, .8, .7, .6, .5],
+        #            [.99, .95, .9, .85, .8, .7, .6, .5],
+        #            [.99, .95, .9, .85, .8, .7, .6, .5]]
+        acc = [[.5], 
+               [.99, .95, .9, .85, .8, .7, .6, .5],
+               [.99, .95, .9, .85, .8, .7, .6, .5],
+               [.99, .95, .9, .85, .8, .7, .6, .5],
+               [.99, .95, .9, .85, .8, .7, .6, .5]]
+
 
         Mol_init = [['H', [0,0,0]],['H', [2,0,0]], ['H', [0,2,0]], ['H', [2,2,0]]]
         ms = mol_size(Mol_init)
@@ -71,14 +90,6 @@ if __name__ == '__main__':
             
             # discretization mesh
             mesh = [int(d * x) for d, x in zip(dgrid, [bs]*3)]
-
-            # Centering Molecule in Box:
-            offset = np.array([ (bs - s)/2. for s in ms])
-            Mol_ic = copy.deepcopy(Mol_init)
-            for j, mol in enumerate(Mol_ic):
-                for k, off in enumerate(offset):
-                    Mol_ic[j][1][k] += off
-            Mol = copy.deepcopy(Mol_ic)            
             
             f.write("Box size:\n")
             f.write(str(bs) + " x " + str(bs) + " x " + str(bs) + "\n")
@@ -98,117 +109,133 @@ if __name__ == '__main__':
                 f.write("Rotation angles:\n")
                 f.write(str(angles) + "\n")
                 
-                for i, a in enumerate(angles):
+                for accc in acc[ac]:
+                    f.write("Relative truncation in SVD:\n")
+                    f.write(str(accc) + "\n")
+                    log.write("    Relative truncation in SVD:\n")
+                    log.write("    " + str(accc) + "\n")
                     
-                    log.write("        Rotation angle:\n")
-                    log.write("        " + str(a) + "\n") 
-                   
-                    Mol[2][1][0:2] = trans(Mol_ic[0][1][0:2], Mol_ic[2][1][0:2], a)
-                    Mol[3][1][0:2] = trans(Mol_ic[1][1][0:2], Mol_ic[3][1][0:2], -a)
-                    
-                    cell         = gto.Cell()
-                    cell.a       = [[bs, 0., 0.], [0., bs, 0.], [0., 0., bs]] 
-                    cell.unit    = 'B'
-                    cell.verbose = 3
-                    cell.basis   = basis
-                    cell.pseudo  = 'gth-pade'
-                    cell.mesh    = np.array(mesh)
-                    cell.atom    = Mol
-                    cell.build()
-                   
-                    overlap = cell.pbc_intor('int1e_ovlp_sph')
-                    w, _ = la.eig(overlap)
-                    max_ev[i] = np.amax(w)
-                    min_ev[i] = np.amin(w)
-                    con_no[i] = np.amax(w)/ np.amin(w)
-                    m[i] = len(w[w<10**-5])
-                    
-                    print("Max eigenvalue: "   , max_ev[i])
-                    print("Min eigenvalue: "   , min_ev[i])
-                    print("Condition no.: "    , con_no[i])
-                    print("No. of EV<10e-5: "  , m[i])
+                    for i, a in enumerate(angles):
+                        
+                        log.write("        Rotation angle:\n")
+                        log.write("        " + str(a) + "\n") 
+                       
+                        Mol = copy.deepcopy(Mol_init)
+                        Mol[2][1][0:2] = trans(Mol_init[0][1][0:2], Mol_init[2][1][0:2], a)
+                        Mol[3][1][0:2] = trans(Mol_init[1][1][0:2], Mol_init[3][1][0:2], -a)
 
-                    # VDG calculations
-                    print("Creating  VDG Hamiltonian ...")
-                    log.write("        Creating  VDG Hamiltonian ...\n")
-                    start_H = time.time()
+                        # Centering Molecule in Box:
+                        ms, mm = mol_size(Mol)
+                        offset = np.array([ (bs - s)/2. - m for s, m in zip(ms,mm)])
+                        for k, off in enumerate(offset):
+                            for j in range(len(Mol)):
+                                Mol[j][1][k] += off
+                        print(Mol)
+                        
+                        cell         = gto.Cell()
+                        cell.a       = [[bs, 0., 0.], [0., bs, 0.], [0., 0., bs]] 
+                        cell.unit    = 'B'
+                        cell.verbose = 3
+                        cell.basis   = basis
+                        cell.pseudo  = 'gth-pade'
+                        cell.mesh    = np.array(mesh)
+                        cell.atom    = Mol
+                        cell.build()
+                       
+                        overlap = cell.pbc_intor('int1e_ovlp_sph')
+                        w, _ = la.eig(overlap)
+                        max_ev[i] = np.amax(w)
+                        min_ev[i] = np.amin(w)
+                        con_no[i] = np.amax(w)/ np.amin(w)
+                        m[i] = len(w[w<10**-5])
+                        
+                        print("Max eigenvalue: "   , max_ev[i])
+                        print("Min eigenvalue: "   , min_ev[i])
+                        print("Condition no.: "    , con_no[i])
+                        print("No. of EV<10e-5: "  , m[i])
 
-                    log.write("            Creating Voronoi decomposition ... \n")
-                    start = time.time()
-                    
-                    atoms_2d = np.array([atom[1][:2] for atom in cell.atom])
-                    V_net = dg_tools.get_V_net_per(atoms_2d, 0, cell.a[0][0],0, cell.a[1][1])
-                    voronoi_cells = dg_tools.get_V_cells(V_net, atoms_2d)
-                    
-                    log.write("            Done! Elapsed time: " + str(time.time() - start) + "sec.\n")
-                    log.write("            VDG Hamiltonian ... \n")
-                    start = time.time()
-                    
-                    cell_vdg = dg.dg_model_ham(cell, None ,'rel_num', acc[ac], True, voronoi_cells)
-                    
-                    log.write("            Done! Elapsed time: " + str(time.time() - start) + "sec.\n")
-                    log.write("        Done! Elapsed time: " + str(time.time() - start_H) + "sec.\n")
+                        # VDG calculations
+                        print("Creating  VDG Hamiltonian ...")
+                        log.write("        Creating  VDG Hamiltonian ...\n")
+                        start_H = time.time()
 
-                    overlap_dg = cell_vdg.ovl_dg
-                    w_dg, _ = la.eig(overlap_dg)
-                    max_ev_dg[i] = np.amax(w_dg)
-                    min_ev_dg[i] = np.amin(w_dg)
-                    con_no_dg[i] = np.amax(w_dg)/ np.amin(w_dg)
-                    m_dg[i] = len(w_dg[w_dg<10**-5])
-                    
-                    print("Max eigenvalue (DG): "   , max_ev_dg[i])
-                    print("Min eigenvalue (DG): "   , min_ev_dg[i])
-                    print("Condition no. (DG): "    , con_no_dg[i])
-                    print("No. of EV<10e-5 (DG): "  , m_dg[i])
+                        log.write("            Creating Voronoi decomposition ... \n")
+                        start = time.time()
+                        
+                        atoms_2d = np.array([atom[1][:2] for atom in cell.atom])
+                        V_net = dg_tools.get_V_net_per(atoms_2d, 0, cell.a[0][0],0, cell.a[1][1])
+                        voronoi_cells = dg_tools.get_V_cells(V_net, atoms_2d)
+                        
+                        log.write("            Done! Elapsed time: " + str(time.time() - start) + "sec.\n")
+                        log.write("            VDG Hamiltonian ... \n")
+                        start = time.time()
+                        
+                        cell_vdg = dg.dg_model_ham(cell, None ,'rel_num', accc, True, voronoi_cells)
+                        f.write("Number of DG basis functions:\n")
+                        f.write(str(cell.nao) + "\n")
+                        log.write("            Done! Elapsed time: " + str(time.time() - start) + "sec.\n")
+                        log.write("        Done! Elapsed time: " + str(time.time() - start_H) + "sec.\n")
 
-
-                    # HF in VDG
-                    log.write("        Computing HF in VDG Bases ...\n")
-                    start = time.time()
-                    
-                    mfe_dg[i] = cell_vdg.run_RHF()
-                    
-                    log.write("        Done! Elapsed time: " + str(time.time() - start) + "sec.\n")
-                
-
-                    # HF in builtin
-                    log.write("        Comuting HF using PyScf-PBC...\n")
-                    start = time.time()
-                    
-                    mf = scf.RHF(cell, exxdiv='ewald') # madelung correction
-                    mf.kernel(dump_chk = False)
-                    mfe[i] = mf.e_tot
-                    
-                    log.write("        Done! Elapsed time: " + str(time.time() - start) + "sec.\n")
-                    
-                    del cell
-                    del cell_vdg
+                        overlap_dg = cell_vdg.ovl_dg
+                        w_dg, _ = la.eig(overlap_dg)
+                        max_ev_dg[i] = np.amax(w_dg)
+                        min_ev_dg[i] = np.amin(w_dg)
+                        con_no_dg[i] = np.amax(w_dg)/ np.amin(w_dg)
+                        m_dg[i] = len(w_dg[w_dg<10**-5])
+                        
+                        print("Max eigenvalue (DG): "   , max_ev_dg[i])
+                        print("Min eigenvalue (DG): "   , min_ev_dg[i])
+                        print("Condition no. (DG): "    , con_no_dg[i])
+                        print("No. of EV<10e-5 (DG): "  , m_dg[i])
 
 
-                f.write("Mean-field energy: " + str(mfe) + "\n")
-                f.write("Max eigenvalue: "    + str(max_ev) + "\n") 
-                f.write("Min eigenvalue: "    + str(min_ev) + "\n")
-                f.write("Condition no.: "     + str(con_no) + "\n")
-                f.write("No. of EV<10e-5: "   + str(m) + "\n")
-                
-                f.write("Mean-field energy (DG): " + str(mfe_dg) + "\n")
-                f.write("Max eigenvalue (DG): "    + str(max_ev_dg) + "\n")
-                f.write("Min eigenvalue (DG): "    + str(min_ev_dg) + "\n")
-                f.write("Condition no. (DG): "     + str(con_no_dg) + "\n")
-                f.write("No. of EV<10e-5 (DG): "   + str(m_dg) + "\n")
+                        # HF in VDG
+                        log.write("        Computing HF in VDG Bases ...\n")
+                        start = time.time()
+                        
+                        mfe_dg[i] = cell_vdg.run_RHF()
+                        
+                        log.write("        Done! Elapsed time: " + str(time.time() - start) + "sec.\n")
+                    
 
-        
-                print("Mean-field energy: ", mfe)
-                print("Max eigenvalue: "   , max_ev)
-                print("Min eigenvalue: "   , min_ev)
-                print("Condition no.: "    , con_no)
-                print("No. of EV<10e-5: "  , m)
-                print()
-                print("Mean-field energy (DG): ", mfe_dg)
-                print("Max eigenvalue (DG): "   , max_ev_dg)
-                print("Min eigenvalue (DG): "   , min_ev_dg)
-                print("Condition no. (DG): "    , con_no_dg)
-                print("No. of EV<10e-5 (DG): "  , m_dg)
-                print()
+                        # HF in builtin
+                        log.write("        Comuting HF using PyScf-PBC...\n")
+                        start = time.time()
+                        
+                        mf = scf.RHF(cell, exxdiv='ewald') # madelung correction
+                        mf.kernel(dump_chk = False)
+                        mfe[i] = mf.e_tot
+                        
+                        log.write("        Done! Elapsed time: " + str(time.time() - start) + "sec.\n")
+                        
+                        del cell
+                        del cell_vdg
+
+
+                    f.write("Mean-field energy: " + str(mfe) + "\n")
+                    f.write("Max eigenvalue: "    + str(max_ev) + "\n") 
+                    f.write("Min eigenvalue: "    + str(min_ev) + "\n")
+                    f.write("Condition no.: "     + str(con_no) + "\n")
+                    f.write("No. of EV<10e-5: "   + str(m) + "\n")
+                    
+                    f.write("Mean-field energy (DG): " + str(mfe_dg) + "\n")
+                    f.write("Max eigenvalue (DG): "    + str(max_ev_dg) + "\n")
+                    f.write("Min eigenvalue (DG): "    + str(min_ev_dg) + "\n")
+                    f.write("Condition no. (DG): "     + str(con_no_dg) + "\n")
+                    f.write("No. of EV<10e-5 (DG): "   + str(m_dg) + "\n")
+
+            
+                    print("Mean-field energy: ", mfe)
+                    print("Max eigenvalue: "   , max_ev)
+                    print("Min eigenvalue: "   , min_ev)
+                    print("Condition no.: "    , con_no)
+                    print("No. of EV<10e-5: "  , m)
+                    print()
+                    print("Mean-field energy (DG): ", mfe_dg)
+                    print("Max eigenvalue (DG): "   , max_ev_dg)
+                    print("Min eigenvalue (DG): "   , min_ev_dg)
+                    print("Condition no. (DG): "    , con_no_dg)
+                    print("No. of EV<10e-5 (DG): "  , m_dg)
+                    print()
         log.close()
         f.close()

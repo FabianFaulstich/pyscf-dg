@@ -133,7 +133,6 @@ if __name__ == '__main__':
                     start = time.time()
                    
                     cell_vdg = dg.dg_model_ham(cell, None ,'rel_num', acc[ac], True, voronoi_cells, V_net)
-                    
                     overlap_dg = cell_vdg.ovl_dg
                     w_dg, _ = la.eig(overlap_dg)
                     max_ev_dg[i] = np.amax(w_dg)

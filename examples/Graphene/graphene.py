@@ -41,13 +41,20 @@ cell = pbcgto.Cell()
 cell.build(unit = 'B',
            a = [[4.6298286730500005, 0.0, 0.0], [-2.3149143365249993, 4.009549246030899, 0.0], [0.0, 0.0, Lz]],
            atom = [['C',[0, 0, 0]], ['C', [0, 2.67303283, 0]]],
-           mesh = [50,50,50],
-           #dimension=2,
+           mesh = aft_mesh,
+           dimension=2,
            #low_dim_ft_type = 'inf_vacuum',
            pseudo = pseudo,
            verbose = 3,
-           #precision = 1e-6,
+           precision = 1e-6,
            basis='gth-szv')
+
+t0  = time.time()
+mf = pbchf.RHF(cell, exxdiv='ewald')  
+mf.kernel(dump_chk = False)
+e.append(mf.e_tot)
+t.append(time.time() - t0)
+
 t0 = time.time()
 atoms_2d = np.array([atom[1][:2] for atom in cell.atom])
 V_net = dg_tools.get_V_net_per(atoms_2d, 0, cell.a[0][0],0, cell.a[1][1])
@@ -130,8 +137,8 @@ mf.conv_tol = 1e-6
 e.append(mf.kernel())
 t.append(time.time() - t0)
 
-print('Energy (DG) (AFTDF) (FFTDF) (GDF)   (MDF)')
+print('Energy (RHF) (DG-RHF) (AFTDF) (FFTDF) (GDF)   (MDF)')
 print(e)
-print('Timing (DG) (AFTDF) (FFTDF) (GDF)   (MDF)')
-print(t)
+#print('Timing (RHF) (DG-RHF) (AFTDF) (FFTDF) (GDF)   (MDF)')
+#print(t)
 

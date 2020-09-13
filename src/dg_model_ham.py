@@ -627,6 +627,7 @@ def get_vdg_basis(atoms, dx, dy, dvol, ao_values, coords, v_cells, dg_trunc, svd
     idx_mat = []
     vstart = time.time()
     for vcell in v_cells:
+
         idx_mat.append(dg_tools.in_hull(coords_2d, vcell))
     idx_mat = np.array(idx_mat).transpose()
 

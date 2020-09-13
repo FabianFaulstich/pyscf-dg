@@ -2,32 +2,32 @@ Computing two dimensional LiH:
 Box size:
 6 x 6 x 12
 Box discretization:
-30 x 30 x 60
+48 x 48 x 96
     AO basis:
     321g
     Relative truncation in SVD:
     0.99
         Creating  VDG Hamiltonian ...
             Creating Voronoi decomposition ... 
-            Done! Elapsed time: 0.0054857730865478516sec.
+            Done! Elapsed time: 0.008583545684814453sec.
             VDG Hamiltonian ... 
-            Done! Elapsed time: 33.88760995864868sec.
-        Done! Elapsed time: 33.893112897872925sec.
+            Done! Elapsed time: 85.70388627052307sec.
+        Done! Elapsed time: 85.71248769760132sec.
         Computing HF in VDG Bases ...
-        Done! Elapsed time: 0.3288147449493408sec.
+        Done! Elapsed time: 2.837552309036255sec.
         Comuting HF using PyScf-PBC...
-        Done! Elapsed time: 2.809847593307495sec.
+        Done! Elapsed time: 10.289019584655762sec.
     AO basis:
     321g
     Relative truncation in SVD:
     0.99
         Creating  VDG Hamiltonian ...
             Creating Voronoi decomposition ... 
-            Done! Elapsed time: 0.005335092544555664sec.
+            Done! Elapsed time: 0.005904436111450195sec.
             VDG Hamiltonian ... 
-            Done! Elapsed time: 33.7158362865448sec.
-        Done! Elapsed time: 33.721186876297sec.
+            Done! Elapsed time: 84.09789204597473sec.
+        Done! Elapsed time: 84.10380983352661sec.
         Computing HF in VDG Bases ...
-        Done! Elapsed time: 0.2869699001312256sec.
+        Done! Elapsed time: 2.809619665145874sec.
         Comuting HF using PyScf-PBC...
-        Done! Elapsed time: 3.1738643646240234sec.
+        Done! Elapsed time: 9.322201013565063sec.

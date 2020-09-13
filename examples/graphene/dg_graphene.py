@@ -18,17 +18,31 @@ from sys import exit
 import time
 import copy
 
-def trans(x_, p_, a):
-        '''
-        counter clockwise a-rotation of p around x
-        '''
-        x, p = np.array(x_), np.array(p_)
-        c, s  = np.cos(a), np.sin(a)
-        R     = np.array(((c, -s), (s, c)))
-        vec   = p - x
-        r_vec = np.dot(R,vec)
-        out = r_vec + x
-        return out.tolist()
+
+from pyscf.pbc.tools import pyscf_ase
+from ase.io import read, write
+
+def graphene_ase():
+    
+    supercell = read('graphene.xyz')
+    # FIXME when you compare with supercell.arrays['positions'], you see
+    # that the difference with the array below is just the last few
+    # digits. Somehow this leads the Voronoi procedure to complain. Maybe there is some bug
+    supercell.arrays['positions'] = np.array([[0.000000000000000e+00, 0.000000000000000e+00, 0.000000000000000e+00],
+        [2.673768765258395e-16, 1.414508159514583e+00, 0.000000000000000e+00],
+        [1.225000000000000e+00, 2.121762239271875e+00, 0.000000000000000e+00],
+        [1.225000000000000e+00, 3.536270398786459e+00, 0.000000000000000e+00]])
+
+    print('Convert to pyscf')
+    
+    cell = gto.Cell()
+    cell.verbose = 5
+    cell.atom=pyscf_ase.ase_atoms_to_pyscf(supercell)
+    cell.a=supercell.cell
+
+
+    return cell
+
 
 def mol_size(Mol):
 
@@ -43,17 +57,18 @@ def mol_size(Mol):
 
 if __name__ == '__main__':
 
+        cell = graphene_ase()
+
         log = open("log.txt", "w")
         f   = open("out.txt", "w")
-        f.write("Computing two dimensional LiH:\n")
-        log.write("Computing two dimensional LiH:\n")
         #test_trans()
         #angles = np.linspace(0, np.pi/2.0, num=7)
         
-        boxsize = [6,6,12]
-        dgrid    = [8] * 3 
+        lat = cell.lattice_vectors() 
+        boxsize = np.diag(lat)
+        dgrid    = [6] * 3 
         #bases    = ['augccpvdz', '6311++g', '631++g', '321++g', '6311+g', '631+g', 'ccpvdz', '6311g', '631g', '321g']
-        bases    = [ '321g', '321g']
+        bases    = [ 'gth-dzvp', 'gth-dzvp']
         #acc      = [[.99, .95, .9, .85, .8, .7, .6, .5],
         #            [.99, .95, .9, .85, .8, .7, .6, .5],
         #            [.99, .95, .9, .85, .8, .7, .6, .5],
@@ -66,8 +81,6 @@ if __name__ == '__main__':
         #            [.99, .95, .9, .85, .8, .7, .6, .5]]
         acc = [[.99], [.99]] 
 
-        Mol_init = [['Li', [0,0,0]],['H', [3,0,0]], ['Li', [3,3,0]], ['H', [0,3,0]]]
-        ms = mol_size(Mol_init)
     
         #mfe = np.zeros(len(angles))
         #max_ev = np.zeros(len(angles))
@@ -106,26 +119,12 @@ if __name__ == '__main__':
                 log.write("    " + str(accc) + "\n")
                 
                
-                Mol = copy.deepcopy(Mol_init)
-
-                # Centering Molecule in Box:
-                ms, mm = mol_size(Mol)
-                offset = np.array([ (bs - s)/2. - m for s, m, bs in zip(ms,mm,boxsize)])
-                for k, off in enumerate(offset):
-                    for j in range(len(Mol)):
-                        Mol[j][1][k] += off
-                print(Mol)
                 
-                cell         = gto.Cell()
-                cell.a       = [[boxsize[0], 0., 0.], [0., boxsize[1], 0.], [0., 0., boxsize[2]]] 
-                cell.unit    = 'B'
-                cell.verbose = 3
                 cell.basis   = basis
                 cell.pseudo  = 'gth-pade'
                 cell.mesh    = np.array(mesh)
-                cell.atom    = Mol
                 cell.build()
-               
+
                 overlap = cell.pbc_intor('int1e_ovlp_sph')
                 w, _ = la.eig(overlap)
                 max_ev = np.amax(w)
@@ -146,8 +145,10 @@ if __name__ == '__main__':
                 log.write("            Creating Voronoi decomposition ... \n")
                 start = time.time()
                 
-                atoms_2d = np.array([atom[1][:2] for atom in cell.atom])
-                V_net = dg_tools.get_V_net_per(atoms_2d, 0, cell.a[0][0],0, cell.a[1][1])
+                # pay attention to the unit
+                atoms_2d = cell.atom_coords()[:,:2]
+                V_net = dg_tools.get_V_net_per(atoms_2d, 0, cell.lattice_vectors()[0,0],0, 
+                        cell.lattice_vectors()[1,1])
                 voronoi_cells = dg_tools.get_V_cells(V_net, atoms_2d)
                 
                 log.write("            Done! Elapsed time: " + str(time.time() - start) + "sec.\n")

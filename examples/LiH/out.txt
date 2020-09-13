@@ -2,22 +2,22 @@ Computing two dimensional LiH:
 Box size:
 6 x 6 x 12
 Box discretization:
-30 x 30 x 60
+48 x 48 x 96
 AO basis:
 321g
 Relative truncation in SVD:
 0.99
 Number of DG basis functions:
 22
-Mean-field energy: -17.257133207927055
+Mean-field energy: -17.308041334388808
 Max eigenvalue: 20.03691733918052
 Min eigenvalue: 5.0710657646159906e-11
 Condition no.: 395122411525.2196
 No. of EV<10e-5: 6
-Mean-field energy (DG): -15.397757259437604
-Max eigenvalue (DG): 1.0000000000000033
-Min eigenvalue (DG): 0.9999999999999976
-Condition no. (DG): 1.0000000000000058
+Mean-field energy (DG): -15.258468485578383
+Max eigenvalue (DG): (1.0000000000000044+0j)
+Min eigenvalue (DG): (0.9999999999999961+0j)
+Condition no. (DG): (1.0000000000000084+0j)
 No. of EV<10e-5 (DG): 0
 AO basis:
 321g
@@ -25,13 +25,13 @@ Relative truncation in SVD:
 0.99
 Number of DG basis functions:
 22
-Mean-field energy: -17.257132726429298
+Mean-field energy: -17.308040773844134
 Max eigenvalue: 20.03691733918052
 Min eigenvalue: 5.0710657646159906e-11
 Condition no.: 395122411525.2196
 No. of EV<10e-5: 6
-Mean-field energy (DG): -15.39775725943761
-Max eigenvalue (DG): 1.0000000000000033
-Min eigenvalue (DG): 0.9999999999999976
-Condition no. (DG): 1.0000000000000058
+Mean-field energy (DG): -15.258468485578392
+Max eigenvalue (DG): (1.0000000000000044+0j)
+Min eigenvalue (DG): (0.9999999999999961+0j)
+Condition no. (DG): (1.0000000000000084+0j)
 No. of EV<10e-5 (DG): 0

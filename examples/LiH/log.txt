@@ -1,0 +1,33 @@
+Computing two dimensional LiH:
+Box size:
+6 x 6 x 12
+Box discretization:
+30 x 30 x 60
+    AO basis:
+    321g
+    Relative truncation in SVD:
+    0.99
+        Creating  VDG Hamiltonian ...
+            Creating Voronoi decomposition ... 
+            Done! Elapsed time: 0.0054857730865478516sec.
+            VDG Hamiltonian ... 
+            Done! Elapsed time: 33.88760995864868sec.
+        Done! Elapsed time: 33.893112897872925sec.
+        Computing HF in VDG Bases ...
+        Done! Elapsed time: 0.3288147449493408sec.
+        Comuting HF using PyScf-PBC...
+        Done! Elapsed time: 2.809847593307495sec.
+    AO basis:
+    321g
+    Relative truncation in SVD:
+    0.99
+        Creating  VDG Hamiltonian ...
+            Creating Voronoi decomposition ... 
+            Done! Elapsed time: 0.005335092544555664sec.
+            VDG Hamiltonian ... 
+            Done! Elapsed time: 33.7158362865448sec.
+        Done! Elapsed time: 33.721186876297sec.
+        Computing HF in VDG Bases ...
+        Done! Elapsed time: 0.2869699001312256sec.
+        Comuting HF using PyScf-PBC...
+        Done! Elapsed time: 3.1738643646240234sec.

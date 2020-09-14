@@ -147,7 +147,8 @@ def get_V_net_per(atoms, x_min, x_max, y_min, y_max):
     """
 
     # tiling atoms:
-    atoms = tile_atoms(atoms,x_max - x_min, y_max - y_min)
+    #atoms = np.round(atoms, decimals = 4)
+    atoms = tile_atoms(atoms, x_max - x_min, y_max - y_min)
     vor   = Voronoi(atoms)
     edge  = np.array(vor.ridge_vertices)
     center = atoms.mean(axis=0)
@@ -155,7 +156,7 @@ def get_V_net_per(atoms, x_min, x_max, y_min, y_max):
 
     # fetch inner points
     # Rounding to ensure to captur all vertices (C2H4)
-    vor.vertices = np.around(vor.vertices, decimals=8)
+    vor.vertices = np.around(vor.vertices, decimals=6)
     for k, v in enumerate(vor.vertices):
         if x_min <= v[0] <= x_max and y_min <= v[1] <= y_max:
             vert =[] 
@@ -171,9 +172,9 @@ def get_V_net_per(atoms, x_min, x_max, y_min, y_max):
                     v_n[2].append(len(V_net))
             vert.append(c)
             V_net.append(vert)
-    
+   
     V_net_per = [[vert[1],vert[2]] for vert in V_net]
-    
+
     # Adding points on boundary
     for j, v in enumerate(V_net):
         if np.count_nonzero(edge == v[0]) != len(v[2]):
@@ -378,15 +379,14 @@ def visualize(mat,coords, sl, v_net, atoms):
         for k, point in enumerate(col):
             if point and coords[k][2] == sl:
                 plt.plot(coords[k][0],coords[k][1], color =cmap(i) , marker='x')
+    #vert = np.array([elem[0] for elem in v_net])
     
-    vert = np.array([elem[0] for elem in v_net])
-    
-    atom = np.array([[a[0],a[1]] for a in atoms])
-    plt.plot(atom[:,0], atom[:,1], 'bo')
-    plt.plot(vert[:,0], vert[:,1],'ro')
-    for v in v_net:
-        for c in v[1]:
-            plt.plot([v[0][0],v_net[c][0][0]],[v[0][1],v_net[c][0][1]],'k-')
+    #atom = np.array([[a[0],a[1]] for a in atoms])
+    #plt.plot(atom[:,0], atom[:,1], 'bo')
+    #plt.plot(vert[:,0], vert[:,1],'ro')
+    #for v in v_net:
+    #    for c in v[1]:
+    #        plt.plot([v[0][0],v_net[c][0][0]],[v[0][1],v_net[c][0][1]],'k-')
     #plt.xlim(x_min -1.5,x_max +1.5)
     #plt.ylim(x_min -1.5,x_max +1.5)
     plt.show()

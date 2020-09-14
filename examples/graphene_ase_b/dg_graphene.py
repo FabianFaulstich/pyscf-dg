@@ -151,11 +151,12 @@ if __name__ == '__main__':
                         cell.lattice_vectors()[1,1])
                 voronoi_cells = dg_tools.get_V_cells(V_net, atoms_2d)
                 
+
                 log.write("            Done! Elapsed time: " + str(time.time() - start) + "sec.\n")
                 log.write("            VDG Hamiltonian ... \n")
                 start = time.time()
                 
-                cell_vdg = dg.dg_model_ham(cell, None ,'rel_num', accc, True, voronoi_cells)
+                cell_vdg = dg.dg_model_ham(cell, None ,'rel_num', accc, True, voronoi_cells, V_net)
                 f.write("Number of DG basis functions:\n")
                 f.write(str(cell.nao) + "\n")
                 log.write("            Done! Elapsed time: " + str(time.time() - start) + "sec.\n")

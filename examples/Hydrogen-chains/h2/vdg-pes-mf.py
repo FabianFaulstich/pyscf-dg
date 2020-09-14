@@ -32,7 +32,7 @@ if __name__ == '__main__':
     f   = open("BS_energies.txt", "w")
     box_sizes = np.array([10., 9., 8.])
 
-    dgrid = [8,8,8]
+    dgrid = [8,8,8] # 
     bonds = np.array([[12e-1], [14e-1], [16e-1], [18e-1], [20e-1]])
     #bonds = np.array([[8e-1], [10e-1], [12e-1], [14e-1], [16e-1], [18e-1], [20e-1], [24e-1], [28e-1], [32e-1], [36e-1]])
     #bonds = np.array([[8e-1]])

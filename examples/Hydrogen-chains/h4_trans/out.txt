@@ -1,458 +1,945 @@
-Computing P4 to D4 transition correlation energies:
+Computing L-box effect for HF and MP2:
 Box size:
 12 x 12 x 12
 Box discretization:
 60 x 60 x 60
-AO basis:
-augccpvdz
-Rotation angles:
-[0.26179939 0.52359878 0.78539816 1.04719755 1.30899694 1.57079633]
 Relative truncation in SVD:
 0.85
+Shift along the X-coordinate:
+0.0
 Number of Built in basis functions: 
 36
 Number of DG basis functions:
 124
+Shift along the X-coordinate:
+0.5
 Number of Built in basis functions: 
 36
 Number of DG basis functions:
 124
+Shift along the X-coordinate:
+1.0
 Number of Built in basis functions: 
 36
 Number of DG basis functions:
 124
+Shift along the X-coordinate:
+1.5
 Number of Built in basis functions: 
 36
 Number of DG basis functions:
 124
+Shift along the X-coordinate:
+2.0
 Number of Built in basis functions: 
 36
 Number of DG basis functions:
 124
+Shift along the X-coordinate:
+2.5
 Number of Built in basis functions: 
 36
 Number of DG basis functions:
 124
-Mean-field energy: [-2.07978142 -2.1307779  -2.15277222 -2.16190828 -2.16533473 -2.16621248]
-MP2 corr. energy : [-0.06944726 -0.06729979 -0.06656978 -0.06632823 -0.06627081 -0.06626694]
-CCSD corr. energy: [-0.09711037 -0.09249756 -0.09074756 -0.09002594 -0.08971801 -0.08959559]
-Max eigenvalue   : [9.79938162 9.66085377 9.55712128 9.49283581 9.46072025 9.45136052]
-Min eigenvalue   : [3.90934683e-05 5.04521515e-05 4.56917772e-05 2.53210000e-05
- 7.42538074e-06 1.55434036e-08]
-Condition no.    : [2.50665445e+05 1.91485467e+05 2.09165015e+05 3.74899719e+05
- 1.27410574e+06 6.08062480e+08]
-No. of EV<10e-5  : [0. 0. 0. 0. 1. 1.]
-Mean-field energy (DG): [-2.07982373 -2.13091124 -2.1530912  -2.16222791 -2.16569335 -2.16676717]
-MP2 corr. energy (DG) : [-0.07417457 -0.0714448  -0.07044929 -0.06997525 -0.06983271 -0.06994732]
-CCSD corr. energy (DG): [-0.10108897 -0.09597453 -0.09397853 -0.09303165 -0.09266681 -0.09268071]
-Max eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Min eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Condition no. (DG)    : [1. 1. 1. 1. 1. 1.]
-No. of EV<10e-5 (DG)  : [0. 0. 0. 0. 0. 0.]
+Shift along the X-coordinate:
+3.0
+Number of Built in basis functions: 
+36
+Number of DG basis functions:
+124
+Shift along the X-coordinate:
+3.5
+Number of Built in basis functions: 
+36
+Number of DG basis functions:
+124
+Shift along the X-coordinate:
+4.0
+Number of Built in basis functions: 
+36
+Number of DG basis functions:
+124
+Shift along the X-coordinate:
+4.5
+Number of Built in basis functions: 
+36
+Number of DG basis functions:
+124
+Shift along the X-coordinate:
+5.0
+Number of Built in basis functions: 
+36
+Number of DG basis functions:
+124
+Shift along the X-coordinate:
+5.5
+Number of Built in basis functions: 
+36
+Number of DG basis functions:
+124
+Shift along the X-coordinate:
+6.0
+Number of Built in basis functions: 
+36
+Number of DG basis functions:
+124
+AO basis:
+augccpvdz
+Mean-field energy: [-2.16621248 -2.16616089 -2.16621248 -2.16616089 -2.16621248 -2.16616089
+ -2.16621248 -2.16616089 -2.16621248 -2.16616089 -2.16621248 -2.16616089
+ -2.16621248]
+MP2 corr. energy : [-0.06626694 -0.06626319 -0.06626694 -0.06626319 -0.06626694 -0.06626319
+ -0.06626694 -0.06626319 -0.06626694 -0.06626319 -0.06626694 -0.06626319
+ -0.06626694]
+Mean-field energy (DG): [-2.16668263 -2.16664414 -2.16671565 -2.16662085 -2.16672239 -2.16665096
+ -2.16680233 -2.16666178 -2.1667579  -2.1666719  -2.16674649 -2.16669855
+ -2.16671945]
+MP2 corr. energy (DG) : [-0.06989215 -0.06984876 -0.06998467 -0.06990485 -0.06996488 -0.06986999
+ -0.06997147 -0.07000457 -0.07005917 -0.07000761 -0.07006172 -0.07005801
+ -0.06997198]
+Relative truncation in SVD:
+0.7
+Shift along the X-coordinate:
+0.0
+Number of Built in basis functions: 
+16
+Number of DG basis functions:
+48
+Shift along the X-coordinate:
+0.5
+Number of Built in basis functions: 
+16
+Number of DG basis functions:
+48
+Shift along the X-coordinate:
+1.0
+Number of Built in basis functions: 
+16
+Number of DG basis functions:
+48
+Shift along the X-coordinate:
+1.5
+Number of Built in basis functions: 
+16
+Number of DG basis functions:
+48
+Shift along the X-coordinate:
+2.0
+Number of Built in basis functions: 
+16
+Number of DG basis functions:
+48
+Shift along the X-coordinate:
+2.5
+Number of Built in basis functions: 
+16
+Number of DG basis functions:
+48
+Shift along the X-coordinate:
+3.0
+Number of Built in basis functions: 
+16
+Number of DG basis functions:
+48
+Shift along the X-coordinate:
+3.5
+Number of Built in basis functions: 
+16
+Number of DG basis functions:
+48
+Shift along the X-coordinate:
+4.0
+Number of Built in basis functions: 
+16
+Number of DG basis functions:
+48
+Shift along the X-coordinate:
+4.5
+Number of Built in basis functions: 
+16
+Number of DG basis functions:
+48
+Shift along the X-coordinate:
+5.0
+Number of Built in basis functions: 
+16
+Number of DG basis functions:
+48
+Shift along the X-coordinate:
+5.5
+Number of Built in basis functions: 
+16
+Number of DG basis functions:
+48
+Shift along the X-coordinate:
+6.0
+Number of Built in basis functions: 
+16
+Number of DG basis functions:
+48
 AO basis:
 6311++g
-Rotation angles:
-[0.26179939 0.52359878 0.78539816 1.04719755 1.30899694 1.57079633]
-Relative truncation in SVD:
-0.7
-Number of Built in basis functions: 
-16
-Number of DG basis functions:
-48
-Number of Built in basis functions: 
-16
-Number of DG basis functions:
-48
-Number of Built in basis functions: 
-16
-Number of DG basis functions:
-48
-Number of Built in basis functions: 
-16
-Number of DG basis functions:
-48
-Number of Built in basis functions: 
-16
-Number of DG basis functions:
-48
-Number of Built in basis functions: 
-16
-Number of DG basis functions:
-48
-Mean-field energy: [-2.06884968 -2.12269848 -2.14615637 -2.15612799 -2.16050557 -2.16235434]
-MP2 corr. energy : [-0.04706719 -0.04473979 -0.04392815 -0.04358202 -0.04348817 -0.04349908]
-CCSD corr. energy: [-0.07783589 -0.07132628 -0.06878057 -0.06759998 -0.06711016 -0.06704353]
-Max eigenvalue   : [9.50204671 9.3089865  9.19210018 9.13621175 9.11721949 9.1137266 ]
-Min eigenvalue   : [1.43213005e-04 1.37184448e-04 1.14035749e-04 8.22519596e-05
- 4.12654174e-05 2.01624656e-07]
-Condition no.    : [   66349.04907942    67857.44745124    80607.18007094   111075.91601452
-   220940.92492453 45201449.051909  ]
-No. of EV<10e-5  : [0. 0. 0. 0. 0. 1.]
-Mean-field energy (DG): [-2.0746957  -2.12651293 -2.14930516 -2.15916093 -2.1626924  -2.16365551]
-MP2 corr. energy (DG) : [-0.05482131 -0.05150939 -0.04985764 -0.04881108 -0.04812907 -0.04818272]
-CCSD corr. energy (DG): [-0.08371224 -0.0771152  -0.07407464 -0.07242389 -0.07147045 -0.07138606]
-Max eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Min eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Condition no. (DG)    : [1. 1. 1. 1. 1. 1.]
-No. of EV<10e-5 (DG)  : [0. 0. 0. 0. 0. 0.]
-AO basis:
-631++g
-Rotation angles:
-[0.26179939 0.52359878 0.78539816 1.04719755 1.30899694 1.57079633]
+Mean-field energy: [-2.16235434 -2.1615935  -2.16235434 -2.1615935  -2.16235434 -2.1615935
+ -2.16235434 -2.1615935  -2.16235434 -2.1615935  -2.16235434 -2.1615935
+ -2.16235434]
+MP2 corr. energy : [-0.04349908 -0.04342455 -0.04349908 -0.04342455 -0.04349908 -0.04342455
+ -0.04349908 -0.04342455 -0.04349908 -0.04342455 -0.04349908 -0.04342455
+ -0.04349908]
+Mean-field energy (DG): [-2.16281388 -2.16380399 -2.16318404 -2.164656   -2.16375655 -2.16484328
+ -2.16372365 -2.16490952 -2.16371427 -2.16466668 -2.16334541 -2.16437105
+ -2.16356253]
+MP2 corr. energy (DG) : [-0.04818528 -0.0483845  -0.04825979 -0.04838418 -0.04834934 -0.04837699
+ -0.04823055 -0.04856862 -0.04839155 -0.04854893 -0.0484121  -0.04860099
+ -0.04832207]
 Relative truncation in SVD:
 0.6
+Shift along the X-coordinate:
+0.0
 Number of Built in basis functions: 
 12
 Number of DG basis functions:
 32
+Shift along the X-coordinate:
+0.5
 Number of Built in basis functions: 
 12
 Number of DG basis functions:
 32
+Shift along the X-coordinate:
+1.0
 Number of Built in basis functions: 
 12
 Number of DG basis functions:
 32
+Shift along the X-coordinate:
+1.5
 Number of Built in basis functions: 
 12
 Number of DG basis functions:
 32
+Shift along the X-coordinate:
+2.0
 Number of Built in basis functions: 
 12
 Number of DG basis functions:
 32
+Shift along the X-coordinate:
+2.5
 Number of Built in basis functions: 
 12
 Number of DG basis functions:
 32
-Mean-field energy: [-2.06240291 -2.11796928 -2.14231309 -2.1528538  -2.15719135 -2.15862764]
-MP2 corr. energy : [-0.04632324 -0.0437725  -0.04280677 -0.04239737 -0.04224276 -0.04222518]
-CCSD corr. energy: [-0.07640295 -0.06964737 -0.06696681 -0.06569558 -0.06510204 -0.06499003]
-Max eigenvalue   : [7.84921314 7.72033673 7.64327917 7.60728882 7.59567108 7.59374386]
-Min eigenvalue   : [4.02084601e-04 3.78298726e-04 3.02743020e-04 1.94758009e-04
- 6.82286237e-05 3.99832950e-07]
-Condition no.    : [   19521.29756012    20408.04316895    25246.75608342    39060.21041801
-   111326.75221653 18992291.31523133]
-No. of EV<10e-5  : [0. 0. 0. 0. 0. 1.]
-Mean-field energy (DG): [-2.06331081 -2.11929937 -2.14658954 -2.15631772 -2.1594976  -2.16236323]
-MP2 corr. energy (DG) : [-0.05088553 -0.04888263 -0.04791752 -0.04712005 -0.04698832 -0.04699115]
-CCSD corr. energy (DG): [-0.07820009 -0.07308083 -0.07103644 -0.06975582 -0.06972258 -0.06985382]
-Max eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Min eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Condition no. (DG)    : [1. 1. 1. 1. 1. 1.]
-No. of EV<10e-5 (DG)  : [0. 0. 0. 0. 0. 0.]
+Shift along the X-coordinate:
+3.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+32
+Shift along the X-coordinate:
+3.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+32
+Shift along the X-coordinate:
+4.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+32
+Shift along the X-coordinate:
+4.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+32
+Shift along the X-coordinate:
+5.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+32
+Shift along the X-coordinate:
+5.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+32
+Shift along the X-coordinate:
+6.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+32
+AO basis:
+631++g
+Mean-field energy: [-2.15862764 -2.15841399 -2.15862764 -2.15841399 -2.15862764 -2.15841399
+ -2.15862764 -2.15841399 -2.15862764 -2.15841399 -2.15862764 -2.15841399
+ -2.15862764]
+MP2 corr. energy : [-0.04222518 -0.04220658 -0.04222518 -0.04220658 -0.04222518 -0.04220658
+ -0.04222518 -0.04220658 -0.04222518 -0.04220658 -0.04222518 -0.04220658
+ -0.04222518]
+Mean-field energy (DG): [-2.16010703 -2.16184812 -2.16238206 -2.1607667  -2.16195163 -2.16218948
+ -2.16217909 -2.16227545 -2.16185646 -2.16296861 -2.16262464 -2.16214142
+ -2.15904147]
+MP2 corr. energy (DG) : [-0.04716335 -0.04714377 -0.04710264 -0.04680779 -0.04698918 -0.04699673
+ -0.04702788 -0.04697355 -0.04693998 -0.04707607 -0.04720839 -0.04726591
+ -0.04703055]
+Relative truncation in SVD:
+0.7
+Shift along the X-coordinate:
+0.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+0.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+1.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+1.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+2.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+2.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+3.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+3.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+4.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+4.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+5.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+5.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+6.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
 AO basis:
 321++g
-Rotation angles:
-[0.26179939 0.52359878 0.78539816 1.04719755 1.30899694 1.57079633]
+Mean-field energy: [-2.15902687 -2.15902541 -2.15902687 -2.15902541 -2.15902687 -2.15902541
+ -2.15902687 -2.15902541 -2.15902687 -2.15902541 -2.15902687 -2.15902541
+ -2.15902687]
+MP2 corr. energy : [-0.04218778 -0.04218764 -0.04218778 -0.04218764 -0.04218778 -0.04218764
+ -0.04218778 -0.04218764 -0.04218778 -0.04218764 -0.04218778 -0.04218764
+ -0.04218778]
+Mean-field energy (DG): [-2.16045216 -2.16172959 -2.16205086 -2.16209919 -2.16235154 -2.16260744
+ -2.16240749 -2.16259978 -2.16225784 -2.16257507 -2.16222294 -2.1618692
+ -2.16074608]
+MP2 corr. energy (DG) : [-0.04715898 -0.04715451 -0.04709196 -0.04704604 -0.0471178  -0.04714609
+ -0.04710332 -0.04716875 -0.04708033 -0.04720231 -0.04719625 -0.04747044
+ -0.04707361]
 Relative truncation in SVD:
 0.7
+Shift along the X-coordinate:
+0.0
 Number of Built in basis functions: 
 12
 Number of DG basis functions:
 36
+Shift along the X-coordinate:
+0.5
 Number of Built in basis functions: 
 12
 Number of DG basis functions:
 36
+Shift along the X-coordinate:
+1.0
 Number of Built in basis functions: 
 12
 Number of DG basis functions:
 36
+Shift along the X-coordinate:
+1.5
 Number of Built in basis functions: 
 12
 Number of DG basis functions:
 36
+Shift along the X-coordinate:
+2.0
 Number of Built in basis functions: 
 12
 Number of DG basis functions:
 36
+Shift along the X-coordinate:
+2.5
 Number of Built in basis functions: 
 12
 Number of DG basis functions:
 36
-Mean-field energy: [-2.06354772 -2.11894486 -2.14321974 -2.15372792 -2.15789967 -2.15902687]
-MP2 corr. energy : [-0.04614971 -0.04359026 -0.04266839 -0.04232485 -0.04220758 -0.04218778]
-CCSD corr. energy: [-0.07665587 -0.06982411 -0.06715749 -0.06595472 -0.06540282 -0.06528521]
-Max eigenvalue   : [7.58158676 7.46378213 7.39419257 7.36202761 7.35183793 7.35021526]
-Min eigenvalue   : [4.68698990e-04 4.37742404e-04 3.44013351e-04 2.13639408e-04
- 7.10507631e-05 4.43528118e-07]
-Condition no.    : [1.61758120e+04 1.70506262e+04 2.14939116e+04 3.44600637e+04
- 1.03473033e+05 1.65721517e+07]
-No. of EV<10e-5  : [0. 0. 0. 0. 0. 1.]
-Mean-field energy (DG): [-2.07020481 -2.12267899 -2.14581263 -2.15607651 -2.16046139 -2.16230158]
-MP2 corr. energy (DG) : [-0.0527386  -0.05013292 -0.0484797  -0.04753258 -0.04705132 -0.04701703]
-CCSD corr. energy (DG): [-0.08089748 -0.0754528  -0.07222531 -0.07068025 -0.07005121 -0.07013091]
-Max eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Min eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Condition no. (DG)    : [1. 1. 1. 1. 1. 1.]
-No. of EV<10e-5 (DG)  : [0. 0. 0. 0. 0. 0.]
+Shift along the X-coordinate:
+3.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+3.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+4.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+4.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+5.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+5.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+6.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
 AO basis:
 6311+g
-Rotation angles:
-[0.26179939 0.52359878 0.78539816 1.04719755 1.30899694 1.57079633]
+Mean-field energy: [-2.16218273 -2.16141807 -2.16218273 -2.16141807 -2.16218273 -2.16141807
+ -2.16218273 -2.16141807 -2.16218273 -2.16141807 -2.16218273 -2.16141807
+ -2.16218273]
+MP2 corr. energy : [-0.04341327 -0.04333798 -0.04341327 -0.04333798 -0.04341327 -0.04333798
+ -0.04341327 -0.04333798 -0.04341327 -0.04333798 -0.04341327 -0.04333798
+ -0.04341327]
+Mean-field energy (DG): [-2.16105032 -2.16360191 -2.16296207 -2.1644123  -2.16353384 -2.16466517
+ -2.16350608 -2.16472904 -2.16348837 -2.16448575 -2.16311125 -2.16389536
+ -2.1627398 ]
+MP2 corr. energy (DG) : [-0.04787181 -0.04800322 -0.04787367 -0.04797191 -0.04793468 -0.04797695
+ -0.04782954 -0.04814475 -0.04798446 -0.04814747 -0.04800904 -0.04822963
+ -0.0478125 ]
 Relative truncation in SVD:
 0.7
+Shift along the X-coordinate:
+0.0
 Number of Built in basis functions: 
-12
+8
 Number of DG basis functions:
-36
+24
+Shift along the X-coordinate:
+0.5
 Number of Built in basis functions: 
-12
+8
 Number of DG basis functions:
-36
+24
+Shift along the X-coordinate:
+1.0
 Number of Built in basis functions: 
-12
+8
 Number of DG basis functions:
-36
+24
+Shift along the X-coordinate:
+1.5
 Number of Built in basis functions: 
-12
+8
 Number of DG basis functions:
-36
+24
+Shift along the X-coordinate:
+2.0
 Number of Built in basis functions: 
-12
+8
 Number of DG basis functions:
-36
+24
+Shift along the X-coordinate:
+2.5
 Number of Built in basis functions: 
-12
+8
 Number of DG basis functions:
-36
-Mean-field energy: [-2.06859251 -2.12252728 -2.14602455 -2.15599349 -2.16034645 -2.16218273]
-MP2 corr. energy : [-0.04694892 -0.04461275 -0.04382132 -0.0434833  -0.04337776 -0.04341327]
-CCSD corr. energy: [-0.077769   -0.07122902 -0.06868622 -0.06750782 -0.06701441 -0.06696722]
-Max eigenvalue   : [5.43551112 5.18801303 5.0453793  4.97222274 4.94079264 4.93256669]
-Min eigenvalue   : [0.01671836 0.01564859 0.0126516  0.00847484 0.00428057 0.00243677]
-Condition no.    : [ 325.12226876  331.53236569  398.79378805  586.70377132 1154.23790048
- 2024.22352153]
-No. of EV<10e-5  : [0. 0. 0. 0. 0. 0.]
-Mean-field energy (DG): [-2.07126838 -2.12254126 -2.14783201 -2.15874198 -2.16259914 -2.16343027]
-MP2 corr. energy (DG) : [-0.05461233 -0.05094072 -0.049501   -0.04855486 -0.04788111 -0.04777057]
-CCSD corr. energy (DG): [-0.08374976 -0.0762553  -0.07355475 -0.07209278 -0.07119727 -0.07096502]
-Max eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Min eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Condition no. (DG)    : [1. 1. 1. 1. 1. 1.]
-No. of EV<10e-5 (DG)  : [0. 0. 0. 0. 0. 0.]
+24
+Shift along the X-coordinate:
+3.0
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+24
+Shift along the X-coordinate:
+3.5
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+24
+Shift along the X-coordinate:
+4.0
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+24
+Shift along the X-coordinate:
+4.5
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+24
+Shift along the X-coordinate:
+5.0
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+24
+Shift along the X-coordinate:
+5.5
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+24
+Shift along the X-coordinate:
+6.0
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+24
 AO basis:
 631+g
-Rotation angles:
-[0.26179939 0.52359878 0.78539816 1.04719755 1.30899694 1.57079633]
-Relative truncation in SVD:
-0.7
-Number of Built in basis functions: 
-8
-Number of DG basis functions:
-24
-Number of Built in basis functions: 
-8
-Number of DG basis functions:
-24
-Number of Built in basis functions: 
-8
-Number of DG basis functions:
-24
-Number of Built in basis functions: 
-8
-Number of DG basis functions:
-24
-Number of Built in basis functions: 
-8
-Number of DG basis functions:
-24
-Number of Built in basis functions: 
-8
-Number of DG basis functions:
-24
-Mean-field energy: [-2.06099822 -2.11713762 -2.14161039 -2.15209706 -2.15635236 -2.1576372 ]
-MP2 corr. energy : [-0.0459922  -0.0433383  -0.0423074  -0.04189456 -0.04179632 -0.04181665]
-CCSD corr. energy: [-0.07629299 -0.06922506 -0.06643392 -0.0651692  -0.06465302 -0.06455517]
-Max eigenvalue   : [3.75567871 3.57049889 3.46808152 3.41568526 3.3921946  3.38571429]
-Min eigenvalue   : [0.06427985 0.06142294 0.05187882 0.04020352 0.03092089 0.02739527]
-Condition no.    : [ 58.42699498  58.12972785  66.84966374  84.95985593 109.70560046
- 123.58753001]
-No. of EV<10e-5  : [0. 0. 0. 0. 0. 0.]
-Mean-field energy (DG): [-2.06133874 -2.12006666 -2.14598603 -2.15617985 -2.16020526 -2.1617988 ]
-MP2 corr. energy (DG) : [-0.05066    -0.04936396 -0.04820119 -0.04732672 -0.04696417 -0.04693733]
-CCSD corr. energy (DG): [-0.07737242 -0.07407056 -0.0716609  -0.07019874 -0.06967494 -0.06988515]
-Max eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Min eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Condition no. (DG)    : [1. 1. 1. 1. 1. 1.]
-No. of EV<10e-5 (DG)  : [0. 0. 0. 0. 0. 0.]
-AO basis:
-ccpvdz
-Rotation angles:
-[0.26179939 0.52359878 0.78539816 1.04719755 1.30899694 1.57079633]
+Mean-field energy: [-2.1576372  -2.15742549 -2.1576372  -2.15742549 -2.1576372  -2.15742549
+ -2.1576372  -2.15742549 -2.1576372  -2.15742549 -2.1576372  -2.15742549
+ -2.1576372 ]
+MP2 corr. energy : [-0.04181665 -0.04179777 -0.04181665 -0.04179777 -0.04181665 -0.04179777
+ -0.04181665 -0.04179777 -0.04181665 -0.04179777 -0.04181665 -0.04179777
+ -0.04181665]
+Mean-field energy (DG): [-2.15883595 -2.1605971  -2.16117575 -2.16121814 -2.16125024 -2.16198457
+ -2.16187769 -2.16195617 -2.16155118 -2.16176185 -2.16132993 -2.16087592
+ -2.15781106]
+MP2 corr. energy (DG) : [-0.04708843 -0.04698881 -0.04698677 -0.04689408 -0.0469339  -0.04696394
+ -0.04700236 -0.04698708 -0.04698376 -0.04701061 -0.0470848  -0.04733544
+ -0.04700788]
 Relative truncation in SVD:
 0.9
+Shift along the X-coordinate:
+0.0
 Number of Built in basis functions: 
 20
 Number of DG basis functions:
 72
+Shift along the X-coordinate:
+0.5
 Number of Built in basis functions: 
 20
 Number of DG basis functions:
 72
+Shift along the X-coordinate:
+1.0
 Number of Built in basis functions: 
 20
 Number of DG basis functions:
 72
+Shift along the X-coordinate:
+1.5
 Number of Built in basis functions: 
 20
 Number of DG basis functions:
 72
+Shift along the X-coordinate:
+2.0
 Number of Built in basis functions: 
 20
 Number of DG basis functions:
 72
+Shift along the X-coordinate:
+2.5
 Number of Built in basis functions: 
 20
 Number of DG basis functions:
 72
-Mean-field energy: [-2.07886855 -2.13007467 -2.15217368 -2.16135762 -2.16481169 -2.16569417]
-MP2 corr. energy : [-0.06679004 -0.06447343 -0.06361007 -0.06322304 -0.06304109 -0.06298796]
-CCSD corr. energy: [-0.09444032 -0.08935194 -0.08729903 -0.08633327 -0.08585566 -0.08570352]
-Max eigenvalue   : [4.40246204 4.1609331  4.01412518 3.93221087 3.89272481 3.88126849]
-Min eigenvalue   : [0.03623688 0.03376365 0.0268211  0.01821801 0.01118896 0.00848684]
-Condition no.    : [121.49120074 123.23704735 149.66297171 215.84189799 347.90763057
- 457.32813801]
-No. of EV<10e-5  : [0. 0. 0. 0. 0. 0.]
-Mean-field energy (DG): [-2.07922488 -2.13050642 -2.15260997 -2.16184965 -2.16538035 -2.16637187]
-MP2 corr. energy (DG) : [-0.0717097  -0.0687916  -0.06761962 -0.06705481 -0.0669291  -0.06677704]
-CCSD corr. energy (DG): [-0.09880301 -0.09335947 -0.09106043 -0.08988349 -0.08940038 -0.08887189]
-Max eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Min eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Condition no. (DG)    : [1. 1. 1. 1. 1. 1.]
-No. of EV<10e-5 (DG)  : [0. 0. 0. 0. 0. 0.]
+Shift along the X-coordinate:
+3.0
+Number of Built in basis functions: 
+20
+Number of DG basis functions:
+72
+Shift along the X-coordinate:
+3.5
+Number of Built in basis functions: 
+20
+Number of DG basis functions:
+72
+Shift along the X-coordinate:
+4.0
+Number of Built in basis functions: 
+20
+Number of DG basis functions:
+72
+Shift along the X-coordinate:
+4.5
+Number of Built in basis functions: 
+20
+Number of DG basis functions:
+72
+Shift along the X-coordinate:
+5.0
+Number of Built in basis functions: 
+20
+Number of DG basis functions:
+72
+Shift along the X-coordinate:
+5.5
+Number of Built in basis functions: 
+20
+Number of DG basis functions:
+72
+Shift along the X-coordinate:
+6.0
+Number of Built in basis functions: 
+20
+Number of DG basis functions:
+72
+AO basis:
+ccpvdz
+Mean-field energy: [-2.16569417 -2.16564314 -2.16569417 -2.16564314 -2.16569417 -2.16564314
+ -2.16569417 -2.16564314 -2.16569417 -2.16564314 -2.16569417 -2.16564314
+ -2.16569417]
+MP2 corr. energy : [-0.06298796 -0.06298399 -0.06298796 -0.06298399 -0.06298796 -0.06298399
+ -0.06298796 -0.06298399 -0.06298796 -0.06298399 -0.06298796 -0.06298399
+ -0.06298796]
+Mean-field energy (DG): [-2.16630917 -2.16633728 -2.16640168 -2.16635281 -2.16638247 -2.16633419
+ -2.16637436 -2.16633536 -2.16638555 -2.16634531 -2.16641215 -2.16635374
+ -2.1663643 ]
+MP2 corr. energy (DG) : [-0.06669352 -0.06670384 -0.06687103 -0.06679333 -0.06690223 -0.06670449
+ -0.06678575 -0.06687753 -0.06693059 -0.06681889 -0.066902   -0.06684944
+ -0.06677398]
+Relative truncation in SVD:
+0.7
+Shift along the X-coordinate:
+0.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+0.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+1.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+1.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+2.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+2.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+3.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+3.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+4.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+4.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+5.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+5.5
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
+Shift along the X-coordinate:
+6.0
+Number of Built in basis functions: 
+12
+Number of DG basis functions:
+36
 AO basis:
 6311g
-Rotation angles:
-[0.26179939 0.52359878 0.78539816 1.04719755 1.30899694 1.57079633]
+Mean-field energy: [-2.16218273 -2.16141807 -2.16218273 -2.16141807 -2.16218273 -2.16141807
+ -2.16218273 -2.16141807 -2.16218273 -2.16141807 -2.16218273 -2.16141807
+ -2.16218273]
+MP2 corr. energy : [-0.04341327 -0.04333798 -0.04341327 -0.04333798 -0.04341327 -0.04333798
+ -0.04341327 -0.04333798 -0.04341327 -0.04333798 -0.04341327 -0.04333798
+ -0.04341327]
+Mean-field energy (DG): [-2.16105032 -2.16360191 -2.16296207 -2.1644123  -2.16353384 -2.16466517
+ -2.16350608 -2.16472904 -2.16348837 -2.16448575 -2.16311125 -2.16389536
+ -2.1627398 ]
+MP2 corr. energy (DG) : [-0.04787181 -0.04800322 -0.04787367 -0.04797191 -0.04793468 -0.04797695
+ -0.04782954 -0.04814475 -0.04798446 -0.04814747 -0.04800904 -0.04822963
+ -0.0478125 ]
 Relative truncation in SVD:
 0.7
+Shift along the X-coordinate:
+0.0
 Number of Built in basis functions: 
-12
+8
 Number of DG basis functions:
-36
+24
+Shift along the X-coordinate:
+0.5
 Number of Built in basis functions: 
-12
+8
 Number of DG basis functions:
-36
+24
+Shift along the X-coordinate:
+1.0
 Number of Built in basis functions: 
-12
+8
 Number of DG basis functions:
-36
+24
+Shift along the X-coordinate:
+1.5
 Number of Built in basis functions: 
-12
+8
 Number of DG basis functions:
-36
+24
+Shift along the X-coordinate:
+2.0
 Number of Built in basis functions: 
-12
+8
 Number of DG basis functions:
-36
+24
+Shift along the X-coordinate:
+2.5
 Number of Built in basis functions: 
-12
+8
 Number of DG basis functions:
-36
-Mean-field energy: [-2.06859251 -2.12252728 -2.14602455 -2.15599349 -2.16034645 -2.16218273]
-MP2 corr. energy : [-0.04694892 -0.04461275 -0.04382132 -0.0434833  -0.04337776 -0.04341327]
-CCSD corr. energy: [-0.077769   -0.07122902 -0.06868622 -0.06750782 -0.06701441 -0.06696722]
-Max eigenvalue   : [5.43551112 5.18801303 5.0453793  4.97222274 4.94079264 4.93256669]
-Min eigenvalue   : [0.01671836 0.01564859 0.0126516  0.00847484 0.00428057 0.00243677]
-Condition no.    : [ 325.12226876  331.53236569  398.79378805  586.70377132 1154.23790048
- 2024.22352153]
-No. of EV<10e-5  : [0. 0. 0. 0. 0. 0.]
-Mean-field energy (DG): [-2.07126838 -2.12254126 -2.14783201 -2.15874198 -2.16259914 -2.16343027]
-MP2 corr. energy (DG) : [-0.05461233 -0.05094072 -0.049501   -0.04855486 -0.04788111 -0.04777057]
-CCSD corr. energy (DG): [-0.08374976 -0.0762553  -0.07355475 -0.07209278 -0.07119727 -0.07096502]
-Max eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Min eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Condition no. (DG)    : [1. 1. 1. 1. 1. 1.]
-No. of EV<10e-5 (DG)  : [0. 0. 0. 0. 0. 0.]
+24
+Shift along the X-coordinate:
+3.0
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+24
+Shift along the X-coordinate:
+3.5
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+24
+Shift along the X-coordinate:
+4.0
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+24
+Shift along the X-coordinate:
+4.5
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+24
+Shift along the X-coordinate:
+5.0
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+24
+Shift along the X-coordinate:
+5.5
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+24
+Shift along the X-coordinate:
+6.0
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+24
 AO basis:
 631g
-Rotation angles:
-[0.26179939 0.52359878 0.78539816 1.04719755 1.30899694 1.57079633]
-Relative truncation in SVD:
-0.7
-Number of Built in basis functions: 
-8
-Number of DG basis functions:
-24
-Number of Built in basis functions: 
-8
-Number of DG basis functions:
-24
-Number of Built in basis functions: 
-8
-Number of DG basis functions:
-24
-Number of Built in basis functions: 
-8
-Number of DG basis functions:
-24
-Number of Built in basis functions: 
-8
-Number of DG basis functions:
-24
-Number of Built in basis functions: 
-8
-Number of DG basis functions:
-24
-Mean-field energy: [-2.06099822 -2.11713762 -2.14161039 -2.15209706 -2.15635236 -2.1576372 ]
-MP2 corr. energy : [-0.0459922  -0.0433383  -0.0423074  -0.04189456 -0.04179632 -0.04181665]
-CCSD corr. energy: [-0.07629299 -0.06922506 -0.06643392 -0.0651692  -0.06465302 -0.06455517]
-Max eigenvalue   : [3.75567871 3.57049889 3.46808152 3.41568526 3.3921946  3.38571429]
-Min eigenvalue   : [0.06427985 0.06142294 0.05187882 0.04020352 0.03092089 0.02739527]
-Condition no.    : [ 58.42699498  58.12972785  66.84966374  84.95985593 109.70560046
- 123.58753001]
-No. of EV<10e-5  : [0. 0. 0. 0. 0. 0.]
-Mean-field energy (DG): [-2.06133874 -2.12006666 -2.14598603 -2.15617985 -2.16020526 -2.1617988 ]
-MP2 corr. energy (DG) : [-0.05066    -0.04936396 -0.04820119 -0.04732672 -0.04696417 -0.04693733]
-CCSD corr. energy (DG): [-0.07737242 -0.07407056 -0.0716609  -0.07019874 -0.06967494 -0.06988515]
-Max eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Min eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Condition no. (DG)    : [1. 1. 1. 1. 1. 1.]
-No. of EV<10e-5 (DG)  : [0. 0. 0. 0. 0. 0.]
-AO basis:
-321g
-Rotation angles:
-[0.26179939 0.52359878 0.78539816 1.04719755 1.30899694 1.57079633]
+Mean-field energy: [-2.1576372  -2.15742549 -2.1576372  -2.15742549 -2.1576372  -2.15742549
+ -2.1576372  -2.15742549 -2.1576372  -2.15742549 -2.1576372  -2.15742549
+ -2.1576372 ]
+MP2 corr. energy : [-0.04181665 -0.04179777 -0.04181665 -0.04179777 -0.04181665 -0.04179777
+ -0.04181665 -0.04179777 -0.04181665 -0.04179777 -0.04181665 -0.04179777
+ -0.04181665]
+Mean-field energy (DG): [-2.15883595 -2.1605971  -2.16117575 -2.16121814 -2.16125024 -2.16198457
+ -2.16187769 -2.16195617 -2.16155118 -2.16176185 -2.16132993 -2.16087592
+ -2.15781106]
+MP2 corr. energy (DG) : [-0.04708843 -0.04698881 -0.04698677 -0.04689408 -0.0469339  -0.04696394
+ -0.04700236 -0.04698708 -0.04698376 -0.04701061 -0.0470848  -0.04733544
+ -0.04700788]
 Relative truncation in SVD:
 0.8
+Shift along the X-coordinate:
+0.0
 Number of Built in basis functions: 
 8
 Number of DG basis functions:
 28
+Shift along the X-coordinate:
+0.5
 Number of Built in basis functions: 
 8
 Number of DG basis functions:
 28
+Shift along the X-coordinate:
+1.0
 Number of Built in basis functions: 
 8
 Number of DG basis functions:
 28
+Shift along the X-coordinate:
+1.5
 Number of Built in basis functions: 
 8
 Number of DG basis functions:
 28
+Shift along the X-coordinate:
+2.0
 Number of Built in basis functions: 
 8
 Number of DG basis functions:
 28
+Shift along the X-coordinate:
+2.5
 Number of Built in basis functions: 
 8
 Number of DG basis functions:
 28
-Mean-field energy: [-2.05966969 -2.11615513 -2.1407184  -2.15116515 -2.15518602 -2.15618729]
-MP2 corr. energy : [-0.04587106 -0.04310976 -0.04209815 -0.04177042 -0.041733   -0.04175557]
-CCSD corr. energy: [-0.07706927 -0.06966917 -0.06681859 -0.06562557 -0.06516934 -0.06506146]
-Max eigenvalue   : [3.53668768 3.36374952 3.27150021 3.22483135 3.20369342 3.19777547]
-Min eigenvalue   : [0.07737624 0.07428244 0.06395    0.0518001  0.04241906 0.03890277]
-Condition no.    : [45.707673   45.28323953 51.15715762 62.25531488 75.52484865 82.19916428]
-No. of EV<10e-5  : [0. 0. 0. 0. 0. 0.]
-Mean-field energy (DG): [-2.06604551 -2.12015473 -2.14364722 -2.15351618 -2.1574405  -2.15948876]
-MP2 corr. energy (DG) : [-0.05361968 -0.05027856 -0.04868898 -0.04773306 -0.04726239 -0.04764773]
-CCSD corr. energy (DG): [-0.08333883 -0.07619286 -0.07306035 -0.07134069 -0.0705797  -0.07103415]
-Max eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Min eigenvalue (DG)   : [1. 1. 1. 1. 1. 1.]
-Condition no. (DG)    : [1. 1. 1. 1. 1. 1.]
-No. of EV<10e-5 (DG)  : [0. 0. 0. 0. 0. 0.]
+Shift along the X-coordinate:
+3.0
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+28
+Shift along the X-coordinate:
+3.5
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+28
+Shift along the X-coordinate:
+4.0
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+28
+Shift along the X-coordinate:
+4.5
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+28
+Shift along the X-coordinate:
+5.0
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+28
+Shift along the X-coordinate:
+5.5
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+28
+Shift along the X-coordinate:
+6.0
+Number of Built in basis functions: 
+8
+Number of DG basis functions:
+28
+AO basis:
+321g
+Mean-field energy: [-2.15618729 -2.15618585 -2.15618729 -2.15618585 -2.15618729 -2.15618585
+ -2.15618729 -2.15618585 -2.15618729 -2.15618585 -2.15618729 -2.15618585
+ -2.15618729]
+MP2 corr. energy : [-0.04175557 -0.04175542 -0.04175557 -0.04175542 -0.04175557 -0.04175542
+ -0.04175557 -0.04175542 -0.04175557 -0.04175542 -0.04175557 -0.04175542
+ -0.04175557]
+Mean-field energy (DG): [-2.15955395 -2.15984326 -2.15978512 -2.15997967 -2.15983688 -2.15995384
+ -2.15970108 -2.15977565 -2.15974814 -2.15988107 -2.15977951 -2.15984992
+ -2.15926462]
+MP2 corr. energy (DG) : [-0.04764339 -0.04764101 -0.04774326 -0.0477815  -0.04787606 -0.04782481
+ -0.04792235 -0.04793112 -0.04790778 -0.04787653 -0.04783435 -0.04788174
+ -0.04769308]

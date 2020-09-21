@@ -1,0 +1,89 @@
+Computing grid convergence for P4 to D4 transition:
+AO basis:augccpvdz
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.85
+Number of Built in basis functions :36
+Number of DG basis functions       :124
+Grid spacing     : [0.2, 0.3000030000300003, 0.4, 0.6000240009600384, 0.8, 1.0]
+Mean-field energy: [-2.16190828 -2.15918252 -2.16144312 -2.08633719 -2.0602627  -1.99637937]
+MP2 corr. energy : [-0.06632823 -0.06614115 -0.06649527 -0.06129945 -0.06011679 -0.05898867]
+Mean-field energy (DG): [-2.16222791 -2.16140668 -2.1576643  -2.12993038 -2.10908622 -2.05503077]
+MP2 corr. energy (DG) : [-0.06997525 -0.07013443 -0.07003919 -0.06970947 -0.06972584 -0.06848022]
+AO basis:6311++g
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.7
+Number of Built in basis functions :16
+Number of DG basis functions       :48
+Grid spacing     : [0.2, 0.3000030000300003, 0.4, 0.6000240009600384, 0.8, 1.0]
+Mean-field energy: [-2.15612799 -2.15032995 -2.15786724 -2.08617037 -2.06718818 -2.01881755]
+MP2 corr. energy : [-0.04358202 -0.04300783 -0.04410496 -0.03746093 -0.03667574 -0.03471498]
+Mean-field energy (DG): [-2.15916093 -2.16020583 -2.1561518  -2.12639013 -2.10829681 -2.05260954]
+MP2 corr. energy (DG) : [-0.04881108 -0.04931745 -0.04929473 -0.04895674 -0.04947541 -0.04820085]
+AO basis:631++g
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.6
+Number of Built in basis functions :12
+Number of DG basis functions       :32
+Grid spacing     : [0.2, 0.3000030000300003, 0.4, 0.6000240009600384, 0.8, 1.0]
+Mean-field energy: [-2.1528538  -2.14788115 -2.15398964 -2.06352617 -2.03460161 -1.97294383]
+MP2 corr. energy : [-0.04239737 -0.04198331 -0.04285191 -0.03506873 -0.03358177 -0.03198003]
+Mean-field energy (DG): [-2.15631772 -2.15684936 -2.15246674 -2.1242642  -2.10417639 -2.04557265]
+MP2 corr. energy (DG) : [-0.04712005 -0.04753347 -0.04746143 -0.04714143 -0.04693873 -0.04570552]
+AO basis:321++g
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.7
+Number of Built in basis functions :12
+Number of DG basis functions       :36
+Grid spacing     : [0.2, 0.3000030000300003, 0.4, 0.6000240009600384, 0.8, 1.0]
+Mean-field energy: [-2.15372792 -2.15309492 -2.15200718 -2.08442684 -2.05993764 -1.99275328]
+MP2 corr. energy : [-0.04232485 -0.04226786 -0.0422387  -0.03683729 -0.03576859 -0.03257749]
+Mean-field energy (DG): [-2.15607651 -2.15585204 -2.1537599  -2.12087034 -2.10596194 -2.05029854]
+MP2 corr. energy (DG) : [-0.04753258 -0.04787092 -0.04809715 -0.04767445 -0.04807892 -0.04701461]
+AO basis:ccpvdz
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.9
+Number of Built in basis functions :20
+Number of DG basis functions       :72
+Grid spacing     : [0.2, 0.3000030000300003, 0.4, 0.6000240009600384, 0.8, 1.0]
+Mean-field energy: [-2.16135762 -2.15863755 -2.16091275 -2.08470538 -2.05810388 -1.99069861]
+MP2 corr. energy : [-0.06322304 -0.06302348 -0.06336955 -0.05771949 -0.05631719 -0.0544044 ]
+Mean-field energy (DG): [-2.16184965 -2.16104867 -2.15728733 -2.12934739 -2.10848998 -2.0537814 ]
+MP2 corr. energy (DG) : [-0.06705481 -0.06727834 -0.06720376 -0.06695622 -0.06725511 -0.06567556]
+AO basis:6311g
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.7
+Number of Built in basis functions :12
+Number of DG basis functions       :36
+Grid spacing     : [0.2, 0.3000030000300003, 0.4, 0.6000240009600384, 0.8, 1.0]
+Mean-field energy: [-2.15599349 -2.15016685 -2.15776155 -2.08555626 -2.0664153  -2.01724424]
+MP2 corr. energy : [-0.0434833  -0.04290342 -0.04400194 -0.03727706 -0.03646719 -0.03448583]
+Mean-field energy (DG): [-2.15874198 -2.15996357 -2.15588748 -2.12620713 -2.10809829 -2.05221514]
+MP2 corr. energy (DG) : [-0.04855486 -0.04907881 -0.04901657 -0.04862255 -0.04924607 -0.04785922]
+AO basis:631g
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.7
+Number of Built in basis functions :8
+Number of DG basis functions       :24
+Grid spacing     : [0.2, 0.3000030000300003, 0.4, 0.6000240009600384, 0.8, 1.0]
+Mean-field energy: [-2.15209706 -2.14716529 -2.15316563 -2.06315792 -2.03419125 -1.97272649]
+MP2 corr. energy : [-0.04189456 -0.04147609 -0.04234832 -0.03445477 -0.03293525 -0.03127219]
+Mean-field energy (DG): [-2.15617985 -2.15644778 -2.15204499 -2.12353976 -2.10354854 -2.04567838]
+MP2 corr. energy (DG) : [-0.04732672 -0.04780482 -0.04775845 -0.04761167 -0.04754248 -0.04627205]
+AO basis:321g
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.8
+Number of Built in basis functions :8
+Number of DG basis functions       :28
+Grid spacing     : [0.2, 0.3000030000300003, 0.4, 0.6000240009600384, 0.8, 1.0]
+Mean-field energy: [-2.15116515 -2.15054393 -2.14945347 -2.08258162 -2.05822485 -1.99155123]
+MP2 corr. energy : [-0.04177042 -0.04171255 -0.04168163 -0.03619017 -0.03509741 -0.03181518]
+Mean-field energy (DG): [-2.15351618 -2.15311393 -2.15090902 -2.11788368 -2.1031496  -2.04704054]
+MP2 corr. energy (DG) : [-0.04773306 -0.04803433 -0.048235   -0.04787223 -0.04830559 -0.04726802]

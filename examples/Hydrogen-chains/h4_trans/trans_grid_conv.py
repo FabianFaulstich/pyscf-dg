@@ -183,7 +183,7 @@ if __name__ == '__main__':
                     log.write("        Computing MP2 in VDG Bases ...\n")
                     start = time.time()
                     
-                    #mpe_dg[i], _ = cell_vdg.run_MP2()
+                    mpe_dg[i], _ = cell_vdg.run_MP2()
                     
                     log.write("        Done! Elapsed time: " + str(time.time() - start) + "sec.\n")
                     
@@ -203,7 +203,7 @@ if __name__ == '__main__':
                     log.write("        Comuting MP2 using PyScf-PBC...\n")
                     start = time.time()
                     
-                    #mpe[i], _ = mp.MP2(mf).kernel()
+                    mpe[i], _ = mp.MP2(mf).kernel()
                     
                     log.write("        Done! Elapsed time: " + str(time.time() - start) + "sec.\n")
                         
@@ -213,7 +213,7 @@ if __name__ == '__main__':
             f.write("Number of DG basis functions       :" + str(nao_dg) + "\n")
             f.write("Grid spacing     : " + str([1/g for g in dgrids]) + "\n")
             f.write("Mean-field energy: " + str(mfe)    + "\n")
-            #f.write("MP2 corr. energy : " + str(mpe)    + "\n")
+            f.write("MP2 corr. energy : " + str(mpe)    + "\n")
             #f.write("Max eigenvalue   : " + str(max_ev) + "\n") 
             #f.write("Min eigenvalue   : " + str(min_ev) + "\n")
             #f.write("Condition no.    : " + str(con_no) + "\n")
@@ -221,7 +221,7 @@ if __name__ == '__main__':
             
             #f.write("Box sizes             : " + str(dgrids) + "\n")
             f.write("Mean-field energy (DG): " + str(mfe_dg)    + "\n")
-            #f.write("MP2 corr. energy (DG) : " + str(mpe_dg)    + "\n")
+            f.write("MP2 corr. energy (DG) : " + str(mpe_dg)    + "\n")
             #f.write("Max eigenvalue (DG)   : " + str(max_ev_dg) + "\n")
             #f.write("Min eigenvalue (DG)   : " + str(min_ev_dg) + "\n")
             #f.write("Condition no. (DG)    : " + str(con_no_dg) + "\n")

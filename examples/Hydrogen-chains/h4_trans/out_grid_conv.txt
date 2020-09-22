@@ -1,0 +1,73 @@
+Computing grid convergence for P4 to D4 transition:
+AO basis:augccpvdz
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.85
+Number of Built in basis functions :36
+Number of DG basis functions       :124
+Grid spacing     : [0.125, 0.15000150001500015]
+Mean-field energy: [-2.16191209 -2.1619119 ]
+Mean-field energy (DG): [-2.16220273 -2.16221825]
+AO basis:6311++g
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.7
+Number of Built in basis functions :16
+Number of DG basis functions       :48
+Grid spacing     : [0.125, 0.15000150001500015]
+Mean-field energy: [-2.1560919  -2.15607741]
+Mean-field energy (DG): [-2.15878228 -2.15898637]
+AO basis:631++g
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.6
+Number of Built in basis functions :12
+Number of DG basis functions       :32
+Grid spacing     : [0.125, 0.15000150001500015]
+Mean-field energy: [-2.15285437 -2.1528528 ]
+Mean-field energy (DG): [-2.15572151 -2.15602274]
+AO basis:321++g
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.7
+Number of Built in basis functions :12
+Number of DG basis functions       :36
+Grid spacing     : [0.125, 0.15000150001500015]
+Mean-field energy: [-2.15372836 -2.15372836]
+Mean-field energy (DG): [-2.15570821 -2.15582495]
+AO basis:ccpvdz
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.9
+Number of Built in basis functions :20
+Number of DG basis functions       :72
+Grid spacing     : [0.125, 0.15000150001500015]
+Mean-field energy: [-2.1613615  -2.16136131]
+Mean-field energy (DG): [-2.1618073  -2.16183144]
+AO basis:6311g
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.7
+Number of Built in basis functions :12
+Number of DG basis functions       :36
+Grid spacing     : [0.125, 0.15000150001500015]
+Mean-field energy: [-2.15595791 -2.15594331]
+Mean-field energy (DG): [-2.15811561 -2.15845675]
+AO basis:631g
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.7
+Number of Built in basis functions :8
+Number of DG basis functions       :24
+Grid spacing     : [0.125, 0.15000150001500015]
+Mean-field energy: [-2.15209727 -2.15209573]
+Mean-field energy (DG): [-2.15602179 -2.15609054]
+AO basis:321g
+Rotation angle:59.99999999999999
+Box size:12 x 12 x 12
+Relative truncation in SVD:0.8
+Number of Built in basis functions :8
+Number of DG basis functions       :28
+Grid spacing     : [0.125, 0.15000150001500015]
+Mean-field energy: [-2.15116557 -2.15116557]
+Mean-field energy (DG): [-2.15340477 -2.15343773]

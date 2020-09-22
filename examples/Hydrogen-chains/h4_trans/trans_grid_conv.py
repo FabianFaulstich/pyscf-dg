@@ -52,8 +52,8 @@ if __name__ == '__main__':
 
         boxsizes = np.array([12])
         bs = 12
-        dgrid    = [5] * 3 
-        dgrids   = [5, 3.3333, 2.5, 1.6666, 1.25, 1] # 0.1, 0.2, 0.3, 0.4, 0.6 1
+        #dgrid    = [5] * 3 
+        dgrids   = [8, 6.6666]#, 5, 3.3333, 2.5, 1.6666, 1.25, 1] 
         bases    = ['augccpvdz', '6311++g', '631++g', '321++g', 'ccpvdz', '6311g', '631g', '321g']
         #bases    = [ '321g', '321g']
         acc      = [[.85], [.7], [.6], [.7], [.9], [.7], [.7], [.8]]
@@ -119,23 +119,23 @@ if __name__ == '__main__':
                     cell.basis     = basis
                     cell.pseudo    = 'gth-pade'
                     cell.mesh      = np.array(mesh)
-                    cell.ke_cutoff = 100
+                    #cell.ke_cutoff = 100
                     cell.atom      = Mol
                     cell.build()
                    
                     nao_bi = cell.nao_nr()
                     
-                    overlap = cell.pbc_intor('int1e_ovlp_sph')
-                    w, _ = la.eig(overlap)
-                    max_ev[i] = np.amax(w)
-                    min_ev[i] = np.amin(w)
-                    con_no[i] = np.amax(w)/ np.amin(w)
-                    m[i] = len(w[w<10**-5])
+                    #overlap = cell.pbc_intor('int1e_ovlp_sph')
+                    #w, _ = la.eig(overlap)
+                    #max_ev[i] = np.amax(w)
+                    #min_ev[i] = np.amin(w)
+                    #con_no[i] = np.amax(w)/ np.amin(w)
+                    #m[i] = len(w[w<10**-5])
                     
-                    print("Max eigenvalue: "   , max_ev[i])
-                    print("Min eigenvalue: "   , min_ev[i])
-                    print("Condition no.: "    , con_no[i])
-                    print("No. of EV<10e-5: "  , m[i])
+                    #print("Max eigenvalue: "   , max_ev[i])
+                    #print("Min eigenvalue: "   , min_ev[i])
+                    #print("Condition no.: "    , con_no[i])
+                    #print("No. of EV<10e-5: "  , m[i])
 
                     # VDG calculations
                     print("Creating  VDG Hamiltonian ...")
@@ -159,17 +159,17 @@ if __name__ == '__main__':
                     log.write("            Done! Elapsed time: " + str(time.time() - start) + "sec.\n")
                     log.write("        Done! Elapsed time: " + str(time.time() - start_H) + "sec.\n")
 
-                    overlap_dg = cell_vdg.ovl_dg
-                    w_dg, _ = la.eig(overlap_dg)
-                    max_ev_dg[i] = np.amax(w_dg)
-                    min_ev_dg[i] = np.amin(w_dg)
-                    con_no_dg[i] = np.amax(w_dg)/ np.amin(w_dg)
-                    m_dg[i] = len(w_dg[w_dg<10**-5])
+                    #overlap_dg = cell_vdg.ovl_dg
+                    #w_dg, _ = la.eig(overlap_dg)
+                    #max_ev_dg[i] = np.amax(w_dg)
+                    #min_ev_dg[i] = np.amin(w_dg)
+                    #con_no_dg[i] = np.amax(w_dg)/ np.amin(w_dg)
+                    #m_dg[i] = len(w_dg[w_dg<10**-5])
                     
-                    print("Max eigenvalue (DG): "   , max_ev_dg[i])
-                    print("Min eigenvalue (DG): "   , min_ev_dg[i])
-                    print("Condition no. (DG): "    , con_no_dg[i])
-                    print("No. of EV<10e-5 (DG): "  , m_dg[i])
+                    #print("Max eigenvalue (DG): "   , max_ev_dg[i])
+                    #print("Min eigenvalue (DG): "   , min_ev_dg[i])
+                    #print("Condition no. (DG): "    , con_no_dg[i])
+                    #print("No. of EV<10e-5 (DG): "  , m_dg[i])
 
                     # HF in VDG
                     log.write("        Computing HF in VDG Bases ...\n")
@@ -183,7 +183,7 @@ if __name__ == '__main__':
                     log.write("        Computing MP2 in VDG Bases ...\n")
                     start = time.time()
                     
-                    mpe_dg[i], _ = cell_vdg.run_MP2()
+                    #mpe_dg[i], _ = cell_vdg.run_MP2()
                     
                     log.write("        Done! Elapsed time: " + str(time.time() - start) + "sec.\n")
                     
@@ -203,7 +203,7 @@ if __name__ == '__main__':
                     log.write("        Comuting MP2 using PyScf-PBC...\n")
                     start = time.time()
                     
-                    mpe[i], _ = mp.MP2(mf).kernel()
+                    #mpe[i], _ = mp.MP2(mf).kernel()
                     
                     log.write("        Done! Elapsed time: " + str(time.time() - start) + "sec.\n")
                         
@@ -213,7 +213,7 @@ if __name__ == '__main__':
             f.write("Number of DG basis functions       :" + str(nao_dg) + "\n")
             f.write("Grid spacing     : " + str([1/g for g in dgrids]) + "\n")
             f.write("Mean-field energy: " + str(mfe)    + "\n")
-            f.write("MP2 corr. energy : " + str(mpe)    + "\n")
+            #f.write("MP2 corr. energy : " + str(mpe)    + "\n")
             #f.write("Max eigenvalue   : " + str(max_ev) + "\n") 
             #f.write("Min eigenvalue   : " + str(min_ev) + "\n")
             #f.write("Condition no.    : " + str(con_no) + "\n")
@@ -221,7 +221,7 @@ if __name__ == '__main__':
             
             #f.write("Box sizes             : " + str(dgrids) + "\n")
             f.write("Mean-field energy (DG): " + str(mfe_dg)    + "\n")
-            f.write("MP2 corr. energy (DG) : " + str(mpe_dg)    + "\n")
+            #f.write("MP2 corr. energy (DG) : " + str(mpe_dg)    + "\n")
             #f.write("Max eigenvalue (DG)   : " + str(max_ev_dg) + "\n")
             #f.write("Min eigenvalue (DG)   : " + str(min_ev_dg) + "\n")
             #f.write("Condition no. (DG)    : " + str(con_no_dg) + "\n")

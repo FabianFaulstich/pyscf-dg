@@ -47,11 +47,12 @@ if __name__ == '__main__':
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
     atoms = np.flip(np.linspace(2,30,15, dtype = int))
     #atoms = np.linspace(2,20,10, dtype = int)
-    #atoms = np.array([28])
+    #atoms = np.array([4])
     
-    svd_tol = np.array([1e-1])
+    svd_tol = np.array([1e-3])
 
     nnz_eri     = np.zeros(len(atoms))
+    nnz_eri_pw  = np.zeros(len(atoms))
     nnz_eri_dg  = np.zeros(len(atoms))
     n_lambda    = np.zeros(len(atoms))
     n_lambda_dg = np.zeros(len(atoms))
@@ -103,8 +104,10 @@ if __name__ == '__main__':
             cell.atom    = Mol
             cell.build()
             
-            del boxsize
+            nnz_eri_pw[i] = np.prod(mesh)**2
 
+            del boxsize
+            
             print("Computing Gram Matrix ...")
             start = time.time()
             dg_gramm, dg_idx = dg.get_dg_gramm(cell, None, 'abs_tol', tol, False, v_cells = None, v_net = None, dg_on=True)
@@ -113,7 +116,7 @@ if __name__ == '__main__':
             start = time.time()
             n_lambda_dg[i], nnz_eri_dg[i] = dg_tools.get_dg_nnz_eri(cell, dg_gramm, dg_idx) 
             print("Done! Elapsed time: ", time.time() -start)
-
+            
             n_ao[i]    = cell.nao
             n_ao_dg[i] = np.size(dg_gramm, 1) 
 
@@ -138,6 +141,7 @@ if __name__ == '__main__':
             print("Lambda-value: ", n_lambda[i])
             print("Lambda-value (DG): ", n_lambda_dg[i])
 
+
             del cell, Mol, Mol1, fftdf, mf, eri
 
         f.write("SV tolerance: " + str(tol) + "\n")
@@ -154,5 +158,7 @@ if __name__ == '__main__':
         f.write(str(np.flip(nnz_eri_dg)) + "\n")
         f.write("Lambda (DG): \n ")
         f.write(str(np.flip(n_lambda_dg)) + "\n")
+        f.write("nnz_eri (PW): \n")
+        f.write(str(np.flip(nnz_eri_pw)) + "\n")
 
     f.close()

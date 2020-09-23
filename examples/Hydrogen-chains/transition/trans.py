@@ -13,7 +13,7 @@ import dg_tools
 import pyscf
 from pyscf import lib
 from pyscf.pbc import dft as dft
-from pyscf.pbc import gto, scf, mp, cc
+from pyscf.pbc import gto, df, scf, mp, cc
 from pyscf.pbc.gto import pseudo
 from pyscf.pbc.df import FFTDF
 from pyscf.pbc import tools
@@ -47,9 +47,9 @@ if __name__ == '__main__':
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
     atoms = np.flip(np.linspace(2,30,15, dtype = int))
     #atoms = np.linspace(2,20,10, dtype = int)
-    atoms = np.array([28])
+    #atoms = np.array([28])
     
-    svd_tol = np.array([1e-3, 1e-2, 1e-1])
+    svd_tol = np.array([1e-2, 1e-1])
 
     nnz_eri     = np.zeros(len(atoms))
     nnz_eri_dg  = np.zeros(len(atoms))
@@ -63,6 +63,9 @@ if __name__ == '__main__':
     for tol in svd_tol:
 
         for i, no_atom in enumerate(atoms):
+            print("Computing H", no_atom)
+            print("SVD tolerance: ", tol)
+
             Mol  = []
             Mol1 = []
             for n in range(no_atom):
@@ -72,19 +75,24 @@ if __name__ == '__main__':
             # Centering Molecule in Box:
             ms, mm = mol_size(Mol1)
             ms[0] += 3.6
-            boxsize = [ 2*bs + s for s in ms]
+            boxsize = [ np.ceil(2*bs + s) for s in ms]
             ms, mm = mol_size(Mol)
             offset = np.array([ (bs - s)/2. - m for bs, s, m in zip(boxsize,ms,mm)])
             for k, off in enumerate(offset):
                 for j in range(len(Mol)):
                     Mol[j][1][k] += off
-          
-            print("Box size: ", boxsize)
-            print("Molecule: ", Mol)
-            print("Offset: ", offset)
-            print("Molecule length: ", ms)
+            del ms, mm 
+            #print("Box size: ", boxsize)
+            #print("Molecule: ", Mol)
+            #print("Offset: ", offset)
+            #print("Molecule length: ", ms)
             mesh = [int(d * x) for d, x in zip(dgrid, boxsize)]
-           
+            
+            print("Mesh: ", mesh)
+            print("BS:", boxsize)
+            print("Basis", basis)
+            print("Mol:", Mol)
+
             cell         = gto.Cell()
             cell.a       = [[boxsize[0], 0., 0.], [0., boxsize[1], 0.], [0., 0., boxsize[2]]]
             cell.unit    = 'B'
@@ -94,26 +102,43 @@ if __name__ == '__main__':
             cell.mesh    = np.array(mesh)
             cell.atom    = Mol
             cell.build()
+            
+            del boxsize
 
+            print("Computing Gram Matrix ...")
+            start = time.time()
             dg_gramm, dg_idx = dg.get_dg_gramm(cell, None, 'abs_tol', tol, False, v_cells = None, v_net = None, dg_on=True)
+            print("Done! Elapsed time: ", time.time() - start)
+            print("Computing DG NNZ-ERI and Lambda value ...")
+            start = time.time()
             n_lambda_dg[i], nnz_eri_dg[i] = dg_tools.get_dg_nnz_eri(cell, dg_gramm, dg_idx) 
+            print("Done! Elapsed time: ", time.time() -start)
 
             n_ao[i]    = cell.nao
             n_ao_dg[i] = np.size(dg_gramm, 1) 
 
+            print("Computing HF ...")
+            start = time.time()
+            fftdf = df.FFTDF(cell)
             mf = scf.RHF(cell, exxdiv = 'ewald')
             mf.kernel(dump_chk = False)
-
-            eri = ao2mo.restore(1, mf._eri, cell.nao_nr()) 
+            print("Done! Elapsed time: ", time.time() - start)
+            
+            print('Computing ERI tensor...')            
+            start = time.time()
+            eri = ao2mo.restore(1, fftdf.get_eri(), cell.nao_nr()) #mf._eri 
+            print('Done! Elapsed time:', time.time() - start)
             #h1e = mf.get_hcore()
             
-            nnz_eri[i]  = np.count_nonzero(eri) # ~full eri
-            n_lambda[i] = np.sum(np.abs(eri))   # ~full eri
+            nnz_eri[i]  = np.count_nonzero(eri) 
+            n_lambda[i] = np.sum(np.abs(eri))   
 
             print("NNZ ERI: ", nnz_eri[i])
             print("NNZ ERI (DG): ", nnz_eri_dg[i])
             print("Lambda-value: ", n_lambda[i])
             print("Lambda-value (DG): ", n_lambda_dg[i])
+
+            del cell, Mol, Mol1, fftdf, mf, eri
 
         f.write("SV tolerance: " + str(tol) + "\n")
         f.write("Hydrogen chain to H" + str(atoms[0]) + "\n")

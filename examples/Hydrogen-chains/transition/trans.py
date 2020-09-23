@@ -45,9 +45,9 @@ if __name__ == '__main__':
     bond  = np.array([1.4])
     bond1 = np.array([3.6])
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
-    atoms = np.flip(np.linspace(2,30,15, dtype = int))
+    #atoms = np.flip(np.linspace(2,30,15, dtype = int))
     #atoms = np.linspace(2,20,10, dtype = int)
-    #atoms = np.array([4])
+    atoms = np.array([26])
     
     svd_tol = np.array([1e-3])
 
@@ -112,6 +112,7 @@ if __name__ == '__main__':
             start = time.time()
             dg_gramm, dg_idx = dg.get_dg_gramm(cell, None, 'abs_tol', tol, False, v_cells = None, v_net = None, dg_on=True)
             print("Done! Elapsed time: ", time.time() - start)
+            exit()
             print("Computing DG NNZ-ERI and Lambda value ...")
             start = time.time()
             n_lambda_dg[i], nnz_eri_dg[i] = dg_tools.get_dg_nnz_eri(cell, dg_gramm, dg_idx) 

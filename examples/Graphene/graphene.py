@@ -59,7 +59,7 @@ t0 = time.time()
 atoms_2d = np.array([atom[1][:2] for atom in cell.atom])
 V_net = dg_tools.get_V_net_per(atoms_2d, 0, cell.a[0][0],0, cell.a[1][1])
 voronoi_cells = dg_tools.get_V_cells(V_net, atoms_2d)
-cell_vdg = dg.dg_model_ham(cell, None ,'rel_num', .99, True, voronoi_cells, V_net)
+cell_vdg = dg.dg_model_ham(cell, None ,'abs_num', 3, True, voronoi_cells, V_net)
 e.append(cell_vdg.run_RHF())
 t.append(time.time() - t0)
 

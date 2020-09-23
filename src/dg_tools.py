@@ -3,6 +3,164 @@ import numpy as np
 from scipy.spatial import Delaunay, Voronoi
 import matplotlib.pyplot as plt
 from numpy import linalg as la
+import copy
+
+from pyscf.pbc import tools
+
+# For NNZ-ERI and Lambda values
+
+def get_dg_nnz_eri_loop(cell, aoR, b_idx, exx=False):
+
+    coords = copy.copy(cell.get_uniform_grids())
+    mesh = cell.mesh
+    vol = cell.vol
+    ngrids = np.prod(mesh)
+    assert ngrids == aoR.shape[0]
+    dvol = vol / ngrids
+    nao = aoR.shape[1]
+    eri = np.zeros((nao,nao,nao,nao))
+    vcoulR_pairs = np.zeros((ngrids,nao,nao))
+    coulG = tools.get_coulG(cell, mesh=mesh, exx=exx)
+    assert aoR.dtype == np.double
+
+    print("        primitive loops ...")
+    for q in range(nao):
+        for s in range(nao):
+            aoR_qs = aoR[:,q] * aoR[:,s]
+            aoG_qs = tools.fft(aoR_qs, mesh) * dvol
+            vcoulG_qs = coulG * aoG_qs
+            vcoulR_pairs[:,q,s] = tools.ifft(vcoulG_qs, mesh).real / dvol
+    print()
+    print("        primitive loops, eneter contractions ...")
+    eri = np.einsum('xp,xr,xqs->prqs', aoR, aoR, vcoulR_pairs, optimize=True) * dvol
+    print()
+    return np.count_nonzero(eri)
+
+
+def get_dg_nnz_eri(cell, aoR, b_idx, exx=False):
+    '''Generate the ERI tensor
+
+    This does consider symmetry.
+
+    This is only a proof of principle and the implementation is not 
+    efficient in terms of either memory or speed
+    '''
+
+    nnz_eri  = 0
+    n_lambda = 0
+
+    coords = copy.copy(cell.get_uniform_grids())
+
+    print("    Treating EXX:", exx)
+    mesh = cell.mesh
+    vol = cell.vol
+    ngrids = np.prod(mesh)
+    assert ngrids == aoR.shape[0]
+    dvol = vol / ngrids
+    nao = aoR.shape[1]
+    print("No. of DG orbitals: ", nao)
+    print("No. of grid points: ", ngrids)
+    vcoulR_pairs = np.zeros((ngrids,nao,nao))
+
+    coulG = tools.get_coulG(cell, mesh=mesh, exx=exx)
+
+    assert aoR.dtype == np.double
+
+    # Careful! Check memory
+
+    print("        matricized loops with symmetry ...")
+
+    m = int(len(b_idx) * (len(b_idx) + 1)/2.0)
+    for i in range(1,m+1):
+        print("            Computing compressed kl-tensor: ", i, ' of ', m+1)
+        k, l  = unfold_sym(i)
+        idx_k = b_idx[k]
+        idx_l = b_idx[l]
+
+        # exploit symmetry in k:th block
+        idx_k_sym = get_red_idx(len(idx_k))
+
+        # Solving Poisson eq. in k:th DG-block
+        bl_k       = aoR[:,idx_k[0]:idx_k[-1]+1]
+        bl_k_mat   = np.matlib.repmat(bl_k, 1, len(idx_k))
+        del bl_k
+        idx_k_perm = [j * len(idx_k) + i for i in range(len(idx_k)) 
+                        for j in range(len(idx_k))]
+        bl_k_mat_perm = bl_k_mat[:,idx_k_perm]
+                                                           
+        # exploiting symmerty before using poisson solver:
+        bl_k_dens     = bl_k_mat[:,idx_k_sym] * bl_k_mat_perm[:,idx_k_sym]
+        del bl_k_mat, bl_k_mat_perm
+        bl_k_sol_pois = np.zeros_like(bl_k_dens)
+
+        for j in range(bl_k_dens.shape[1]):
+            coulG_k = coulG * tools.fft(bl_k_dens[:,j], mesh) * dvol
+            bl_k_sol_pois[:,j] = tools.ifft(coulG_k, mesh).real / dvol
+
+        del bl_k_dens
+
+        # exploit symmetry in l:th block
+        idx_l_sym = get_red_idx(len(idx_l))
+
+        # Computing DG-basis product in l:th DG-block
+        bl_l = aoR[:,idx_l[0]:idx_l[-1]+1]
+        bl_l_mat = np.matlib.repmat(bl_l, 1, len(idx_l))
+        del bl_l
+        idx_l_perm     = [j * len(idx_l) + i for i in range(len(idx_l))
+                          for j in range(len(idx_l))]
+        bl_l_mat_perm  = bl_l_mat[:,idx_l_perm]
+        bl_l_mat_prod  = bl_l_mat[:,idx_l_sym] * bl_l_mat_perm[:,idx_l_sym]
+        del bl_l_mat
+        del bl_l_mat_perm
+
+        # Compute integral Pois. part and product part
+        eri_kl  = np.dot(bl_l_mat_prod.T,bl_k_sol_pois) * dvol
+        del bl_l_mat_prod, bl_k_sol_pois
+
+        # Creating full kl-tensor:
+        #   Recreating neglected and kept indices 
+
+        neg_k     = np.arange(len(idx_k)**2).reshape(int(len(idx_k)), int(len(idx_k)))
+        neg_k_per = np.copy(neg_k)
+        neg_k_per = np.transpose(neg_k_per)
+
+        neg_k     = np.tril(neg_k,-1).reshape(-1)
+        neg_k     = neg_k[neg_k != 0]
+        neg_k_per = np.tril(neg_k_per,-1).reshape(-1)
+        neg_k_per = neg_k_per[neg_k_per != 0]
+        kep_k     = np.delete(np.arange(int(len(idx_k)**2)), neg_k)
+
+        neg_l     = np.arange(len(idx_l)**2).reshape(int(len(idx_l)), int(len(idx_l)))
+        neg_l_per = np.copy(neg_l)
+        neg_l_per = np.transpose(neg_l_per)
+
+        neg_l     = np.tril(neg_l,-1).reshape(-1)
+        neg_l     = neg_l[neg_l != 0]
+        neg_l_per = np.tril(neg_l_per,-1).reshape(-1)
+        neg_l_per = neg_l_per[neg_l_per != 0]
+        kep_l     = np.delete(np.arange(int(len(idx_l)**2)), neg_l)
+
+        #   Generating mask for kept indices
+        kep_kl = [[x,y] for y in kep_k for x in kep_l]
+        mask = np.zeros((len(idx_l)**2, len(idx_k)**2), dtype=bool)
+        for idx in kep_kl:
+            mask[idx[0],idx[1]] = True
+
+        eri_kl_full = np.zeros((len(idx_l)**2,len(idx_k)**2))
+        np.place(eri_kl_full, mask, eri_kl)
+        eri_kl_full[:,neg_k] = eri_kl_full[:,neg_k_per]
+        eri_kl_full[neg_l,:] = eri_kl_full[neg_l_per,:]
+        
+        if k != l:
+            nnz_eri  += 2*np.count_nonzero(eri_kl_full)
+            n_lambda += 2*np.sum(np.abs(eri_kl_full))
+        else:
+            nnz_eri  += np.count_nonzero(eri_kl_full)
+            n_lambda += np.sum(np.abs(eri_kl_full))
+    return n_lambda, nnz_eri     
+
+
+#
 
 def unfold(m,n):
     l = m % n

@@ -42,7 +42,7 @@ class dg_model_ham:
         end = time.time()
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
-        
+        print("    Number of Dg basis functions: ", np.size(self.dg_gramm,1)) 
 
         #print("##################") 
         #M=np.dot(self.dg_gramm.T, self.dg_gramm)#/64-np.eye(self.dg_gramm.shape[1])
@@ -130,6 +130,15 @@ class dg_model_ham:
         end = time.time()
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
+
+    def get_nnz_eri(self):
+        print(self.eri.shape)
+        return np.count_nonzero(self.eri)
+
+    def get_lambda(self):
+
+        return np.sum(np.abs(self.eri))
+
 
     def run_DFT(self, xc = 'pbe'):
 
@@ -337,7 +346,8 @@ def get_eri(cell, coords, aoR, b_idx, exx=False):
     assert ngrids == aoR.shape[0]
     dvol = vol / ngrids
     nao = aoR.shape[1]
-    print(nao)
+    print('Number DG AOs: ', nao)
+    print('Number of grid points:, ', ngrids)
     eri = np.zeros((nao,nao,nao,nao))
     vcoulR_pairs = np.zeros((ngrids,nao,nao))
 
@@ -613,35 +623,35 @@ def get_vdg_basis(atoms, dx, dy, dvol, ao_values, coords, v_cells, dg_trunc, svd
     index_out = []
     offset    = 0
 
-    print("            Starting naive Voronoi:")
-    vstart = time.time()
-    idx_mat = np.zeros((ao_values.shape[0],len(atoms)), dtype = bool)
-    for j, point in enumerate(coords):
-        k = dg_tools.get_dist_atom(atoms, dx, dy, point)
-        idx_mat[j,k] = True
-    vend = time.time()
-    print(idx_mat.shape)
-    print("Computational time for naive voronoi: ", vend - vstart)
+    #print("            Starting naive Voronoi:")
+    #vstart = time.time()
+    #idx_mat = np.zeros((ao_values.shape[0],len(atoms)), dtype = bool)
+    #for j, point in enumerate(coords):
+    #    k = dg_tools.get_dist_atom(atoms, dx, dy, point)
+    #    idx_mat[j,k] = True
+    #vend = time.time()
+    #print(idx_mat.shape)
+    #print("Computational time for naive voronoi: ", vend - vstart)
     #dg_tools.visualize(idx_mat, coords, atoms[0][2], v_net, atoms)
 
-    #coords_2d = np.array([ x[0:2] for x in coords])
-    #idx_mat = []
-    #vstart = time.time()
-    #for vcell in v_cells:
-    #    idx_mat.append(dg_tools.in_hull(coords_2d, vcell))
-    #idx_mat = np.array(idx_mat).transpose()
+    coords_2d = np.array([ x[0:2] for x in coords])
+    idx_mat = []
+    vstart = time.time()
+    for vcell in v_cells:
+        idx_mat.append(dg_tools.in_hull(coords_2d, vcell))
+    idx_mat = np.array(idx_mat).transpose()
 
     # Asigning boundary values to a cell
-    #for i, elem in enumerate(idx_mat):
-    #    if len(elem[elem == True]) == 0:
-    #        k = dg_tools.get_dist_atom(atoms, dx, dy, coords[i]) 
-    #        idx_mat[i,k] = True
-    #    elif len(elem[elem == True]) > 1:
-    #        elem_n = np.zeros_like(elem, dtype = bool)
-    #        elem_n[np.where(elem == True)[0][0]] = True
-    #        idx_mat[i,:] = elem_n
-    #vend = time.time()
-    #print("            Done! Elapsed time for mixed voronoi: ", vend - vstart)
+    for i, elem in enumerate(idx_mat):
+        if len(elem[elem == True]) == 0:
+            k = dg_tools.get_dist_atom(atoms, dx, dy, coords[i]) 
+            idx_mat[i,k] = True
+        elif len(elem[elem == True]) > 1:
+            elem_n = np.zeros_like(elem, dtype = bool)
+            elem_n[np.where(elem == True)[0][0]] = True
+            idx_mat[i,:] = elem_n
+    vend = time.time()
+    print("            Done! Elapsed time for mixed voronoi: ", vend - vstart)
     #dg_tools.visualize(idx_mat, coords, atoms[0][2], v_net, atoms)  
 
     for k, idx in enumerate(idx_mat.transpose()):

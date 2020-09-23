@@ -44,8 +44,7 @@ def test_rot():
 if __name__ == '__main__':
 
     ''' Computing H2O in x-y plane:
-        bon angle remains fixed,
-        O-H bonds get dissociated
+        H-rotation pes barrier hight 
     '''
     start_pes = time.time()
 
@@ -78,7 +77,8 @@ if __name__ == '__main__':
         f.write(str(acc) + "\n")
 
         for k, angle in enumerate(angles):
-    
+            # k = 0: included angle 104.5 (optimal geometry)
+            # k = 1: included angle 180   (on top of barrier)
             if k == 0:
                 f.write("In optimal geometry, 104.5 deg\n")
             elif k == 1:
@@ -165,14 +165,6 @@ if __name__ == '__main__':
             del cell_dg
 
             # Built-in calculcations
-            print("Computing HF in " + cell.basis +  "-DG basis ...")
-            start_hf  = time.time()
-            mfe_dg[k] = cell_dg.run_RHF()
-            end_hf    = time.time()
-            f.write("Elapsed time to compute HF in DG: " + str(end_hf - start_hf)+ "\n")
-            print("Done! Elapsed time: ", end_hf - start_hf, "sec.")
-            print()
-
             print("Computing HF in " + cell.basis +  " basis ...")
             start_hf = time.time()
             cell.verbose = 3
@@ -187,36 +179,34 @@ if __name__ == '__main__':
 
         f.write("Meanfield results:\n")
         f.write("  Builtin: " + str(mfe) + "\n")
-        f.write("  Minimum: " + str(np.amin(mfe))+ "\n")
-        f.write("  Maximum: " + str(np.amax(mfe)) + "\n")
-        f.write("  abs diff: " + str(np.abs(np.amin(mfe) - np.amax(mfe))) + "\n")
+        f.write("  Minimum: " + str(mfe[0]) + "\n")
+        f.write("  Maximum: " + str(mfe[1]) + "\n")
+        f.write("  abs diff: " + str(mfe[0] - mfe[1]) + "\n")
         
         f.write("  DG: " + str(mfe_dg) + "\n")
-        f.write("  Minimum: " + str(np.amin(mfe_dg)) + "\n")
-        f.write("  Maximum: " + str(np.amax(mfe_dg)) + "\n")
-        f.write("  abs diff: " + str(np.abs(np.amin(mfe_dg) - np.amax(mfe_dg))) + "\n")
+        f.write("  Minimum: " + str(mfe_dg[0]) + "\n")
+        f.write("  Maximum: " + str(mfe_dg[1]) + "\n")
+        f.write("  abs diff: " + str(mfe_dg[0] - mfe_dg[1]) + "\n")
         
         f.write("  VDG: " + str(mfe_vdg) + "\n")
-        f.write("  Minimum: " + str(np.amin(mfe_vdg)) + "\n")
-        f.write("  Maximum: " + str(np.amax(mfe_vdg)) + "\n")
-        f.write("  abs diff: " + str(np.abs(np.amin(mfe_vdg) - np.amax(mfe_vdg))) + "\n")
+        f.write("  Minimum: " + str(mfe_vdg[0]) + "\n")
+        f.write("  Maximum: " + str(mfe_vdg[1]) + "\n")
+        f.write("  abs diff: " + str(mfe_vdg[0] - mfe_vdg[1]) + "\n")
 
         print("Meanfield reangles:")
         print("  Builtin: ",mfe)
-        print("  Minimum:", np.amin(mfe))
-        print("  Maximum:", np.amax(mfe))
-        print("  abs diff:", np.abs(np.amin(mfe) - np.amax(mfe)))
+        print("  Minimum:", mfe[0])
+        print("  Maximum:", mfe[1])
+        print("  abs diff:", mfe[0] - mfe[1])
         
         print("  DG: ", mfe_dg)
-        print("  Minimum:", np.amin(mfe_dg))
-        print("  Maximum:", np.amax(mfe_dg))
-        print("  abs diff:", np.abs(np.amin(mfe_dg) - np.amax(mfe_dg)))
+        print("  Minimum:", mfe_dg[0])
+        print("  Maximum:", mfe_dg[1])
+        print("  abs diff:", mfe_dg[0] - mfe_dg[1])
         
         print("  VDG: ", mfe_vdg)
-        print("  Minimum:", np.amin(mfe_vdg))
-        print("  Maximum:", np.amax(mfe_vdg))
-        print("  abs diff:", np.abs(np.amin(mfe_vdg) - np.amax(mfe_vdg)))
+        print("  Minimum:", mfe_vdg[0])
+        print("  Maximum:", mfe_vdg[1])
+        print("  abs diff:", mfe_vdg[0] - mfe_vdg[1])
         
-
     f.close()
-

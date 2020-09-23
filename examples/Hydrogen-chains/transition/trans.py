@@ -49,7 +49,7 @@ if __name__ == '__main__':
     #atoms = np.linspace(2,20,10, dtype = int)
     #atoms = np.array([28])
     
-    svd_tol = np.array([1e-2, 1e-1])
+    svd_tol = np.array([1e-1])
 
     nnz_eri     = np.zeros(len(atoms))
     nnz_eri_dg  = np.zeros(len(atoms))

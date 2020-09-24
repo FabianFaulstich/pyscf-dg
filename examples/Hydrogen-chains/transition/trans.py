@@ -45,11 +45,11 @@ if __name__ == '__main__':
     bond  = np.array([1.4])
     bond1 = np.array([3.6])
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
-    #atoms = np.flip(np.linspace(2,30,15, dtype = int))
+    atoms = np.flip(np.linspace(2,30,15, dtype = int))
     #atoms = np.linspace(2,20,10, dtype = int)
-    atoms = np.array([26])
+    #atoms = np.array([26])
     
-    svd_tol = np.array([1e-3])
+    svd_tol = np.array([1e-2])
 
     nnz_eri     = np.zeros(len(atoms))
     nnz_eri_pw  = np.zeros(len(atoms))
@@ -95,7 +95,9 @@ if __name__ == '__main__':
             print("Mol:", Mol)
 
             cell         = gto.Cell()
-            cell.a       = [[boxsize[0], 0., 0.], [0., boxsize[1], 0.], [0., 0., boxsize[2]]]
+            cell.a       = [[boxsize[0], 0., 0.], 
+                            [0., boxsize[1], 0.], 
+                            [0., 0., boxsize[2]]]
             cell.unit    = 'B'
             cell.verbose = 3
             cell.basis   = basis
@@ -110,12 +112,15 @@ if __name__ == '__main__':
             
             print("Computing Gram Matrix ...")
             start = time.time()
-            dg_gramm, dg_idx = dg.get_dg_gramm(cell, None, 'abs_tol', tol, False, v_cells = None, v_net = None, dg_on=True)
+            dg_gramm, dg_idx = dg.get_dg_gramm(
+                    cell, None, 'abs_tol', tol, False, v_cells = None, 
+                    v_net = None, dg_on=True)
             print("Done! Elapsed time: ", time.time() - start)
-            exit()
+            
             print("Computing DG NNZ-ERI and Lambda value ...")
             start = time.time()
-            n_lambda_dg[i], nnz_eri_dg[i] = dg_tools.get_dg_nnz_eri(cell, dg_gramm, dg_idx) 
+            n_lambda_dg[i], nnz_eri_dg[i] = dg_tools.get_dg_nnz_eri(
+                    cell, dg_gramm, dg_idx) 
             print("Done! Elapsed time: ", time.time() -start)
             
             n_ao[i]    = cell.nao

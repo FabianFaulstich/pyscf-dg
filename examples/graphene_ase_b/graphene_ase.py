@@ -39,12 +39,12 @@ P1 = np.array([[1, 0, 0],
 
 print('make a supercell')
 # the supercell can also be constructed as
-# gra.cell * P1.T
+# P1 @ gra.cell
 # the cell vectors are given as the row vectors
 supercell = make_supercell(gra, P1)
 
 print('Supercell.cell = ', supercell.cell)
-print('gra.cell*P1.T = ', gra.cell * P1.T)
+print('P1 @ gra.cell  = ', P1 @ gra.cell.array)
 print(supercell.arrays)
 
 # generate a large supercell

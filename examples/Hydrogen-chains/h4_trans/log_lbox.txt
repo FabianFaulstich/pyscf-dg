@@ -1,0 +1,12 @@
+Computing L-box effect for HF and MP2:
+Box size:
+[12, 12, 12] x [12, 12, 12] x [12, 12, 12]
+Box discretization:
+60 x 60 x 60
+    AO basis:
+    augccpvdz
+    Relative truncation in SVD:
+    0.85
+Shift along the X-coordinate:
+0.0
+        Creating  VDG Hamiltonian ...

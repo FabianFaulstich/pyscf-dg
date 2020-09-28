@@ -9,6 +9,37 @@ from pyscf.pbc import tools
 
 # For NNZ-ERI and Lambda values
 
+def naive_voronoi(grid, atoms, dx, dy, dz):
+
+    per = np.array([-1 ,0, 1])
+    for i, atom in enumerate(atoms):
+        dist_atom_grid = np.sum(np.abs(grid - atom)**2,axis=-1)**(1./2)
+        
+        #periodic distance
+        for x in per:
+            for y in per:
+                for z in per:
+                    if x == 0 and y == 0 and z == 0:
+                        continue
+                    else:
+                        atom_p = [x*dx+atom[0], y*dy+atom[1], z*dz+atom[2]] 
+                        dist_atom_grid_p = np.sum(np.abs(grid - atom_p)**2,
+                                axis=-1)**(1./2)
+                        dist_atom_grid = np.minimum(dist_atom_grid, 
+                                dist_atom_grid_p)
+        if i == 0:
+            distances = dist_atom_grid
+        else:
+            distances = np.vstack((distances, dist_atom_grid))
+
+    mask    = np.argsort(distances, axis=0)[0]
+    idx_mat = np.zeros((len(mask), len(atoms)), dtype=bool) 
+    
+    mask = mask.reshape((len(mask),1))
+    np.put_along_axis(idx_mat, mask, True, axis = 1)
+    
+    return idx_mat
+
 def get_dg_nnz_eri_loop(cell, aoR, b_idx, exx=False):
 
     coords = copy.copy(cell.get_uniform_grids())

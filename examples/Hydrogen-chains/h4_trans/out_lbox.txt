@@ -1,0 +1,13 @@
+Computing L-box effect for HF and MP2:
+Box size:
+[12, 12, 12] x [12, 12, 12] x [12, 12, 12]
+Box discretization:
+60 x 60 x 60
+AO basis:augccpvdz
+Rotation angle:[1.04719755]
+Relative truncation in SVD:
+0.85
+Shift along the X-coordinate:
+0.0
+Number of Built in basis functions: 
+36

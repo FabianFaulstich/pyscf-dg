@@ -594,8 +594,10 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells, v_net, dg_o
         # For naive voronoi:
         dx = cell.a[0][0]
         dy = cell.a[1][1]
+        dz = cell.a[2][2]
         atoms  = [elem[1] for elem in cell.atom]       
-        return get_vdg_basis(atoms, dx, dy, dvol, ao_values, coords, v_cells, dg_trunc, svd_tol, v_net)
+        return get_vdg_basis(atoms, dx, dy, dz, dvol, ao_values, 
+                coords, v_cells, dg_trunc, svd_tol, v_net)
     else:
         # Determine ideal DG-cuts for quasi-1D system along z-axis
         if dg_cuts is None:
@@ -612,7 +614,8 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells, v_net, dg_o
         DG_cut = np.append(0, np.append( DG_cut, len(x_dp)))
         return get_dg_basis(dvol, ao_values, DG_cut, dg_trunc, svd_tol)
 
-def get_vdg_basis(atoms, dx, dy, dvol, ao_values, coords, v_cells, dg_trunc, svd_tol, v_net):
+def get_vdg_basis(atoms, dx, dy, dz, dvol, ao_values, 
+        coords, v_cells, dg_trunc, svd_tol, v_net):
     '''Creating (fake) DG basis based on a 
         given voronoi decomposition 
     '''
@@ -634,24 +637,26 @@ def get_vdg_basis(atoms, dx, dy, dvol, ao_values, coords, v_cells, dg_trunc, svd
     #print("Computational time for naive voronoi: ", vend - vstart)
     #dg_tools.visualize(idx_mat, coords, atoms[0][2], v_net, atoms)
 
-    coords_2d = np.array([ x[0:2] for x in coords])
-    idx_mat = []
-    vstart = time.time()
-    for vcell in v_cells:
-        idx_mat.append(dg_tools.in_hull(coords_2d, vcell))
-    idx_mat = np.array(idx_mat).transpose()
+    idx_mat = dg_tools.naive_voronoi(coords, atoms, dx, dy, dz)
+
+    #coords_2d = np.array([ x[0:2] for x in coords])
+    #idx_mat = []
+    #vstart = time.time()
+    #for vcell in v_cells:
+    #    idx_mat.append(dg_tools.in_hull(coords_2d, vcell))
+    #idx_mat = np.array(idx_mat).transpose()
 
     # Asigning boundary values to a cell
-    for i, elem in enumerate(idx_mat):
-        if len(elem[elem == True]) == 0:
-            k = dg_tools.get_dist_atom(atoms, dx, dy, coords[i]) 
-            idx_mat[i,k] = True
-        elif len(elem[elem == True]) > 1:
-            elem_n = np.zeros_like(elem, dtype = bool)
-            elem_n[np.where(elem == True)[0][0]] = True
-            idx_mat[i,:] = elem_n
-    vend = time.time()
-    print("            Done! Elapsed time for mixed voronoi: ", vend - vstart)
+    #for i, elem in enumerate(idx_mat):
+    #    if len(elem[elem == True]) == 0:
+    #        k = dg_tools.get_dist_atom(atoms, dx, dy, coords[i]) 
+    #        idx_mat[i,k] = True
+    #    elif len(elem[elem == True]) > 1:
+    #        elem_n = np.zeros_like(elem, dtype = bool)
+    #        elem_n[np.where(elem == True)[0][0]] = True
+    #        idx_mat[i,:] = elem_n
+    #vend = time.time()
+    #print("            Done! Elapsed time for mixed voronoi: ", vend - vstart)
     #dg_tools.visualize(idx_mat, coords, atoms[0][2], v_net, atoms)  
 
     for k, idx in enumerate(idx_mat.transpose()):

@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 import time
 
-if __name__ == '__main__':
 
+def RandomAtoms():
     xx = np.linspace(0, 5, 11)
     yy = np.linspace(0, 5, 11)
     zz = np.linspace(0, 5, 11)
@@ -36,3 +36,36 @@ if __name__ == '__main__':
                 ax.scatter3D(grid[k][0], grid[k][1], grid[k][2], 
                         color = cmap(i), marker = "+");            
     plt.show()
+
+
+def timing():
+
+    xx = np.linspace(0, 12, 25)
+    yy = np.linspace(0, 12, 25)
+    zz = np.linspace(0, 12, 25)
+
+    grid    = np.array([[x,y,z] for x in xx for y in yy for z in zz])
+    atoms   = np.array([[5, 5, 6], [7, 5, 6], [5, 7, 6], [7, 7, 6]]) 
+      
+    
+    print("Starting naive Voronoi:")
+    vstart = time.time()
+    idx_mat = np.zeros((grid.shape[0],len(atoms)), dtype = bool)
+    for j, point in enumerate(grid):
+        k = dg.get_dist_atom(atoms, 12, 12, point)
+        idx_mat[j,k] = True
+    vend = time.time()
+    print(idx_mat.shape)
+    print("Computational time for naive voronoi: ", vend - vstart)
+    
+    start = time.time()
+    print("Starting voronoi ...")
+    idx_mat = dg.naive_voronoi(grid, atoms, 12, 12, 12)
+    print('Done! Elapsed time: ', time.time() - start)
+
+
+
+
+if __name__ == '__main__':
+
+    timing()   

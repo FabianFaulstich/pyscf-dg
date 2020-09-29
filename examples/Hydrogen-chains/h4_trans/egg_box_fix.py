@@ -43,22 +43,22 @@ def mol_size(Mol):
 
 if __name__ == '__main__':
 
-        log = open("log_egg_box_fine.txt", "w")
-        f   = open("out_egg_box_fine.txt", "w")
+        log = open("log_egg_box_fix.txt", "w")
+        f   = open("out_egg_box_fix.txt", "w")
         f.write("Computing L-box effect for HF and MP2:\n")
         log.write("Computing L-box effect for HF and MP2:\n")
         
-        angle   = np.array([np.pi/3.0]) # pi/3
-        shifts  = np.linspace(2, 8, num = 121) 
+        angle   = np.array([np.pi/2.0]) # pi/3
+        shifts  = np.linspace(2, 8, num = 25) 
 
         bs    = [12] *3
         dgrid = [5]  *3 
-        #bases = ['augccpvdz', '6311++g', '631++g', '321++g', 
-        #         'ccpvdz', '6311g', '631g', '321g']
-        #accuracies = [.85, .7, .6, .7, 
-        #               .9, .7, .7, .8]
-        bases = ['ccpvdz', '631g']
-        accuracies = [.9, .7]
+        bases = ['augccpvdz', '6311++g', '631++g', '321++g', 
+                 'ccpvdz', '6311g', '631g', '321g']
+        accuracies = [.85, .7, .6, .7, 
+                       .9, .7, .7, .8]
+        #bases = ['ccpvdz', '631g']
+        #accuracies = [.9, .7]
         #bases      = [ '321g', '321g']
         #accuracies = [ .99, .99] 
 
@@ -144,8 +144,10 @@ if __name__ == '__main__':
                 print("Creating  VDG Hamiltonian ...")
                 log.write("        Creating  VDG Hamiltonian ...\n")
 
-                # Using vanilla voronoi
-                cell_vdg = dg.dg_model_ham(cell, None ,'rel_num', acc, True)
+                # Using linear and fixed cut
+                # dg_cuts = [1., 3., 5.]
+                dg_cuts = np.array([1., 3., 5.])
+                cell_vdg = dg.dg_model_ham(cell, dg_cuts ,'rel_num', acc, False)
                 #f.write("Number of DG basis functions:\n")
                 #f.write(str(cell_vdg.nao) + "\n")
 

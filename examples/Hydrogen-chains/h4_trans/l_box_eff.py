@@ -49,12 +49,12 @@ if __name__ == '__main__':
         log.write("Computing L-box effect for HF and MP2:\n")
         
         angle   = np.array([np.pi/3.0]) # pi/3
-        shifts  = np.linspace(2, 8, num = 13) 
+        shifts  = np.linspace(2, 8, num = 25) 
 
         bs    = [12] *3
         dgrid = [5]  *3 
         bases = ['augccpvdz', '6311++g', '631++g', '321++g', 
-                    'ccpvdz', '6311g', '631g', '321g']
+                 'ccpvdz', '6311g', '631g', '321g']
         accuracies = [.85, .7, .6, .7, 
                        .9, .7, .7, .8]
         #bases      = [ '321g', '321g']
@@ -115,12 +115,7 @@ if __name__ == '__main__':
                 for k, off in enumerate(offset):
                     for j in range(len(Mol)):
                         Mol[j][1][k] += off
-                f.write("Shift along the X-coordinate:\n")
-                f.write(str(shift -2) + "\n")
-                #f.write("Molecule: \n")
-                #f.write(str(Mol) +"\n")
-                log.write("Shift along the X-coordinate:\n")
-                log.write(str(shift -2) + "\n")
+                
                 
                 cell         = gto.Cell()
                 cell.a       = [[bs[0], 0., 0.], 
@@ -134,8 +129,8 @@ if __name__ == '__main__':
                 cell.atom    = Mol
                 cell.build()
                
-                f.write("Number of Built in basis functions: \n")
-                f.write(str(cell.nao_nr()) + "\n")
+                #f.write("Number of Built in basis functions: \n")
+                #f.write(str(cell.nao_nr()) + "\n")
 
                 # VDG calculations
                 print("Creating  VDG Hamiltonian ...")
@@ -143,8 +138,8 @@ if __name__ == '__main__':
 
                 # Using vanilla voronoi
                 cell_vdg = dg.dg_model_ham(cell, None ,'rel_num', acc, True)
-                f.write("Number of DG basis functions:\n")
-                f.write(str(cell_vdg.nao) + "\n")
+                #f.write("Number of DG basis functions:\n")
+                #f.write(str(cell_vdg.nao) + "\n")
 
                 # HF in VDG
                 log.write("        Computing HF in VDG Bases ...\n")
@@ -190,6 +185,8 @@ if __name__ == '__main__':
 
             f.write("AO basis:\n")
             f.write(basis + "\n")
+
+            f.write("Shift along the X-coordinate:" + str(shifts -2) + "\n")      
             f.write("Mean-field energy: " + str(mfe)    + "\n")
             f.write("MP2 corr. energy : " + str(mpe)    + "\n")
             

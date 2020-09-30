@@ -18,7 +18,7 @@ if __name__ == '__main__':
     mpe_dg_b = False
     plt_b    = False
 
-    f   = open("out_egg_box.txt", "r")
+    f   = open("out_egg_box_fix.txt", "r")
 
     fig , arr  = plt.subplots(nrows=3, ncols=3,  figsize=(20,8))
     fig1, arr1 = plt.subplots(nrows=3, ncols=3,  figsize=(20,8))
@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
         if 'Shift along the X-coordinate:' in line:
             fl = [x for x in line.split()]
-            fl = fl[3:]
+            fl = fl[4:]
             fl[0] = fl[0][-2:]
             shift = [float(x) for x in fl]
             shift_b = True

@@ -18,7 +18,7 @@ if __name__ == '__main__':
     mpe_dg_b = False
     plt_b    = False
 
-    f   = open("egg_box.txt", "r")
+    f   = open("out_egg_box_fine.txt", "r")
 
     fig , arr  = plt.subplots(nrows=3, ncols=3,  figsize=(20,8))
     fig1, arr1 = plt.subplots(nrows=3, ncols=3,  figsize=(20,8))

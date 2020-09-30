@@ -49,7 +49,7 @@ if __name__ == '__main__':
         log.write("Computing L-box effect for HF and MP2:\n")
         
         angle   = np.array([np.pi/3.0]) # pi/3
-        shifts  = np.linspace(2, 8, num = 121) 
+        shifts  = np.linspace(2, 2.2, num = 10) 
 
         bs    = [12] *3
         dgrid = [5]  *3 

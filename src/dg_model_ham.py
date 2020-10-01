@@ -38,7 +38,8 @@ class dg_model_ham:
 
         print("    Computing DG-Gramm matrix ...")
         start = time.time()
-        self.dg_gramm, self.dg_idx = get_dg_gramm(self.cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells, v_net, dg_on)
+        self.dg_gramm, self.dg_idx = get_dg_gramm(self.cell, dg_cuts, dg_trunc,
+                svd_tol, voronoi, v_cells, v_net, dg_on)
         end = time.time()
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
@@ -357,67 +358,60 @@ def get_eri(cell, coords, aoR, b_idx, exx=False):
 
     # Careful! Check memory
 
-    print("        matricized loops with symmetry ...")
+    print("        partially matricized loops with symmetry ...")
     start = time.time()
     
     m = int(len(b_idx) * (len(b_idx) + 1)/2.0)
     eri_new_sym = np.zeros((nao,nao,nao,nao))
+    
+    # Avoid computation of matrix of size #grid x (#DG-AO)(#DG-AO+1)/2
     for i in range(1,m+1):
         print("            Computing compressed kl-tensor ...")
         start_comp = time.time()
         k, l  = dg_tools.unfold_sym(i)
         idx_k = b_idx[k]
         idx_l = b_idx[l]
-    
-        # exploit symmetry in k:th block
-        idx_k_sym = dg_tools.get_red_idx(len(idx_k))
+        bl_k  = aoR[:,idx_k[0]:idx_k[-1]+1]
+         
+        for j in range(len(idx_k)):
+            # Computing density of block k
+            sym_part_k = np.arange(j,len(idx_k)).tolist()
+            bl_k_dens = bl_k[:, sym_part_k] * np.matlib.repmat(bl_k[:, j],
+                    len(sym_part_k), 1).transpose() 
+            bl_k_sol_pois = np.zeros_like(bl_k_dens)
+            
+            for k in range(bl_k_dens.shape[1]):
+                coulG_k = coulG * tools.fft(bl_k_dens[:,k], mesh) * dvol
+                bl_k_sol_pois[:,k] = tools.ifft(coulG_k, mesh).real / dvol
+            
+            del bl_k_dens
 
-        # Solving Poisson eq. in k:th DG-block
-        bl_k          = aoR[:,idx_k[0]:idx_k[-1]+1]
-        bl_k_mat      = np.matlib.repmat(bl_k, 1, len(idx_k))
-        del bl_k
-        idx_k_perm    = [j * len(idx_k) + i for i in range(len(idx_k))
-                          for j in range(len(idx_k))]
-        bl_k_mat_perm = bl_k_mat[:,idx_k_perm]
-        
-        # exploiting symmerty before using poisson solver:
-        bl_k_dens     = bl_k_mat[:,idx_k_sym] * bl_k_mat_perm[:,idx_k_sym]
-        del bl_k_mat, bl_k_mat_perm
-        bl_k_sol_pois = np.zeros_like(bl_k_dens)
-        
-        for j in range(bl_k_dens.shape[1]):
-            coulG_k            = coulG * tools.fft(bl_k_dens[:,j], mesh) * dvol
-            bl_k_sol_pois[:,j] = tools.ifft(coulG_k, mesh).real / dvol
-        
-        del bl_k_dens
-        
-        # exploit symmetry in l:th block
-        idx_l_sym = dg_tools.get_red_idx(len(idx_l))
-        
-        # Computing DG-basis product in l:th DG-block
-        bl_l           = aoR[:,idx_l[0]:idx_l[-1]+1]
-        bl_l_mat       = np.matlib.repmat(bl_l, 1, len(idx_l))
-        del bl_l
-        idx_l_perm     = [j * len(idx_l) + i for i in range(len(idx_l))
-                          for j in range(len(idx_l))]
-        bl_l_mat_perm  = bl_l_mat[:,idx_l_perm]
-        bl_l_mat_prod  = bl_l_mat[:,idx_l_sym] * bl_l_mat_perm[:,idx_l_sym]
-        del bl_l_mat
-        del bl_l_mat_perm
+            # Computing density of block l
+            bl_l = aoR[:,idx_l[0]:idx_l[-1]+1]
+            for l in range(len(idx_l)):
+                sym_part_l = np.arange(l,len(idx_l)).tolist()
+                bl_l_dens = bl_l[:, sym_part_l] * np.matlib.repmat(bl_l[:, l],
+                        len(sym_part_l), 1).transpose()
 
-        # Compute integral Pois. part and product part
-        eri_kl  = np.dot(bl_l_mat_prod.T,bl_k_sol_pois) * dvol
-        del bl_l_mat_prod, bl_k_sol_pois
-        end_comp = time.time()
-        print("            Done! Elapsed time: ", end_comp - start_comp, "sec.")
-        print()
-
+                eri_kl_sub = np.dot(bl_l_dens.T, bl_k_sol_pois) * dvol 
+                
+                if l == 0:
+                    eri_kl_line = eri_kl_sub
+                else:
+                    eri_kl_line = np.vstack((eri_kl_line, eri_kl_sub))
+            
+            if j == 0:
+                eri_kl = eri_kl_line
+            else:
+                eri_kl = np.hstack((eri_kl, eri_kl_line))
+        print("            Done! Elapsed time: ", time.time() - start_comp)
         # Creating full kl-tensor:
-        #   Recreating neglected and kept indices 
-        print("            writing compressed kl-tensor to full tensor ...")
+        # Recreating neglected and kept indices 
+        print("            Writing compressed kl-tensor to full tensor ...")
         start_wrt = time.time()
 
-        neg_k     = np.arange(len(idx_k)**2).reshape(int(len(idx_k)), int(len(idx_k)))
+        neg_k     = np.arange(len(idx_k)**2).reshape(int(len(idx_k)), 
+                int(len(idx_k)))
         neg_k_per = np.copy(neg_k)
         neg_k_per = np.transpose(neg_k_per)
 
@@ -427,7 +421,8 @@ def get_eri(cell, coords, aoR, b_idx, exx=False):
         neg_k_per = neg_k_per[neg_k_per != 0]
         kep_k     = np.delete(np.arange(int(len(idx_k)**2)), neg_k)
         
-        neg_l     = np.arange(len(idx_l)**2).reshape(int(len(idx_l)), int(len(idx_l)))
+        neg_l     = np.arange(len(idx_l)**2).reshape(int(len(idx_l)), 
+                int(len(idx_l)))
         neg_l_per = np.copy(neg_l)
         neg_l_per = np.transpose(neg_l_per)
 
@@ -450,93 +445,133 @@ def get_eri(cell, coords, aoR, b_idx, exx=False):
         
         # store full kl-tensor 
         eri_new_sym[idx_l[0]:idx_l[-1]+1,idx_l[0]:idx_l[-1]+1,
-                idx_k[0]:idx_k[-1]+1,idx_k[0]:idx_k[-1]+1] = eri_kl_full.reshape((len(idx_l),len(idx_l),len(idx_k),len(idx_k))) 
+                idx_k[0]:idx_k[-1]+1,
+                idx_k[0]:idx_k[-1]+1] = eri_kl_full.reshape((len(idx_l),
+                    len(idx_l),len(idx_k),len(idx_k))) 
         if k != l:
             eri_new_sym[idx_k[0]:idx_k[-1]+1,idx_k[0]:idx_k[-1]+1,
-                    idx_l[0]:idx_l[-1]+1,idx_l[0]:idx_l[-1]+1] = np.transpose(eri_kl_full).reshape((len(idx_k),len(idx_k),len(idx_l),len(idx_l))) 
+                    idx_l[0]:idx_l[-1]+1, idx_l[0]:idx_l[-1]+1] = \
+                    np.transpose(eri_kl_full).reshape((len(idx_k),len(idx_k)
+                        ,len(idx_l),len(idx_l))) 
         
-        end_wrt = time.time()
-        print("            Done! Elapsed time: ", end_wrt - start_wrt, "sec.")
+        print("            Done! Elapsed time: ", time.time() - start_wrt, 
+                "sec.")
         print()
-    end = time.time()
-    print("        Done! Elapsed time: ", end - start, "sec.")
+    print("        Done! Elapsed time: ", time.time() - start, "sec.")
     print()
 
 
-    #print("        matricized loops ...")
+
+
+    # Fully matricised loops with symmetrie -> can exceed memory
     #start = time.time()
-    
-    #m = len(b_idx)**2
-    #eri_new = np.zeros((nao,nao,nao,nao))
-    #for i in range(m):
-    #    k, l  = dg_tools.unfold(i,len(b_idx))
+    #for i in range(1,m+1):
+    #    print("            Computing compressed kl-tensor ...")
+    #    start_comp = time.time()
+    #    k, l  = dg_tools.unfold_sym(i)
     #    idx_k = b_idx[k]
     #    idx_l = b_idx[l]
-    #        
+    #
+    #    # exploit symmetry in k:th block
+    #    idx_k_sym = dg_tools.get_red_idx(len(idx_k))
+
     #    # Solving Poisson eq. in k:th DG-block
     #    bl_k          = aoR[:,idx_k[0]:idx_k[-1]+1]
     #    bl_k_mat      = np.matlib.repmat(bl_k, 1, len(idx_k))
-    #    idx_k_perm    = [j * len(idx_k) + i for i in range(len(idx_k)) 
+    #    del bl_k
+    #    idx_k_perm    = [j * len(idx_k) + i for i in range(len(idx_k))
     #                      for j in range(len(idx_k))]
     #    bl_k_mat_perm = bl_k_mat[:,idx_k_perm]
-    #    bl_k_dens     = bl_k_mat * bl_k_mat_perm
+    #    
+    #    # exploiting symmerty before using poisson solver:
+    #    bl_k_dens     = bl_k_mat[:,idx_k_sym] * bl_k_mat_perm[:,idx_k_sym]
+    #    del bl_k_mat, bl_k_mat_perm
     #    bl_k_sol_pois = np.zeros_like(bl_k_dens)
-    #    for i in range(bl_k_dens.shape[1]):
-    #        coulG_k            = coulG * tools.fft(bl_k_dens[:,i], mesh) * dvol
-    #        bl_k_sol_pois[:,i] = tools.ifft(coulG_k, mesh).real / dvol    
-    #
+    #    
+    #    for j in range(bl_k_dens.shape[1]):
+    #        coulG_k = coulG * tools.fft(bl_k_dens[:,j], mesh) * dvol
+    #        bl_k_sol_pois[:,j] = tools.ifft(coulG_k, mesh).real / dvol
+    #    
+    #    del bl_k_dens
+    #    
+    #    # exploit symmetry in l:th block
+    #    idx_l_sym = dg_tools.get_red_idx(len(idx_l))
+    #    
     #    # Computing DG-basis product in l:th DG-block
     #    bl_l           = aoR[:,idx_l[0]:idx_l[-1]+1]
     #    bl_l_mat       = np.matlib.repmat(bl_l, 1, len(idx_l))
+    #    del bl_l
     #    idx_l_perm     = [j * len(idx_l) + i for i in range(len(idx_l))
     #                      for j in range(len(idx_l))]
     #    bl_l_mat_perm  = bl_l_mat[:,idx_l_perm]
-    #    bl_l_mat_prod  = bl_l_mat * bl_l_mat_perm
-    #    
+    #    bl_l_mat_prod  = bl_l_mat[:,idx_l_sym] * bl_l_mat_perm[:,idx_l_sym]
+    #    del bl_l_mat
+    #    del bl_l_mat_perm
+    #
     #    # Compute integral Pois. part and product part
     #    eri_kl  = np.dot(bl_l_mat_prod.T,bl_k_sol_pois) * dvol
-    #    eri_tsr = np.reshape(eri_kl, (len(idx_l),len(idx_l),len(idx_k),len(idx_k)))
-    #    eri_new[idx_l[0]:idx_l[-1]+1,idx_l[0]:idx_l[-1]+1,
-    #            idx_k[0]:idx_k[-1]+1,idx_k[0]:idx_k[-1]+1] = eri_tsr
+    #    del bl_l_mat_prod, bl_k_sol_pois
+    #    end_comp = time.time()
+    #    print("            Done! Elapsed time: ", end_comp - start_comp, 
+    #            "sec.")
+    #    print()
+    #
+    #    # Creating full kl-tensor:
+    #    #   Recreating neglected and kept indices 
+    #    print("            writing compressed kl-tensor to full tensor ...")
+    #    start_wrt = time.time()
+    #
+    #    neg_k     = np.arange(len(idx_k)**2).reshape(int(len(idx_k)), 
+    #            int(len(idx_k)))
+    #    neg_k_per = np.copy(neg_k)
+    #    neg_k_per = np.transpose(neg_k_per)
+    #
+    #    neg_k     = np.tril(neg_k,-1).reshape(-1)
+    #    neg_k     = neg_k[neg_k != 0]
+    #    neg_k_per = np.tril(neg_k_per,-1).reshape(-1)
+    #    neg_k_per = neg_k_per[neg_k_per != 0]
+    #    kep_k     = np.delete(np.arange(int(len(idx_k)**2)), neg_k)
     #    
+    #    neg_l     = np.arange(len(idx_l)**2).reshape(int(len(idx_l)), 
+    #            int(len(idx_l)))
+    #    neg_l_per = np.copy(neg_l)
+    #    neg_l_per = np.transpose(neg_l_per)
+    #
+    #    neg_l     = np.tril(neg_l,-1).reshape(-1)
+    #    neg_l     = neg_l[neg_l != 0]
+    #    neg_l_per = np.tril(neg_l_per,-1).reshape(-1)
+    #    neg_l_per = neg_l_per[neg_l_per != 0]
+    #    kep_l     = np.delete(np.arange(int(len(idx_l)**2)), neg_l) 
+    #
+    #    #   Generating mask for kept indices
+    #    kep_kl = [[x,y] for y in kep_k for x in kep_l]
+    #    mask = np.zeros((len(idx_l)**2, len(idx_k)**2), dtype=bool)
+    #    for idx in kep_kl:
+    #        mask[idx[0],idx[1]] = True
+    #    
+    #    eri_kl_full = np.zeros((len(idx_l)**2,len(idx_k)**2))
+    #    np.place(eri_kl_full, mask, eri_kl)
+    #    eri_kl_full[:,neg_k] = eri_kl_full[:,neg_k_per] 
+    #    eri_kl_full[neg_l,:] = eri_kl_full[neg_l_per,:]
+    #    
+    #    # store full kl-tensor 
+    #    eri_new_sym[idx_l[0]:idx_l[-1]+1,idx_l[0]:idx_l[-1]+1,
+    #            idx_k[0]:idx_k[-1]+1, idx_k[0]:idx_k[-1]+1] =\
+    #                    eri_kl_full.reshape((len(idx_l),len(idx_l),
+    #                        len(idx_k),len(idx_k))) 
+    #    if k != l:
+    #        eri_new_sym[idx_k[0]:idx_k[-1]+1,idx_k[0]:idx_k[-1]+1,
+    #                idx_l[0]:idx_l[-1]+1,idx_l[0]:idx_l[-1]+1] = np.transpose(eri_kl_full).reshape((len(idx_k),len(idx_k),len(idx_l),len(idx_l))) 
+    #    
+    #    end_wrt = time.time()
+    #    print("            Done! Elapsed time: ", end_wrt - start_wrt, 
+    #            "sec.")
+    #    print()
     #end = time.time()
     #print("        Done! Elapsed time: ", end - start, "sec.")
     #print()
 
-    #print("comparing output")
-    #print("[0,0,0,0]:")
-    #print(eri_new_sym[0,0,0,0])
-    #print(eri_new[0,0,0,0])
-    #print("[1,0,0,0]")
-    #print(eri_new_sym[1,0,0,0])
-    #print(eri_new[1,0,0,0])
-    #print("[0,1,0,0]:")                                                         
-    #print(eri_new_sym[0,1,0,0])                                                         
-    #print(eri_new[0,1,0,0])                                                     
-    #print("[0,0,1,0]")                                                          
-    #print(eri_new_sym[0,0,1,0])                                                         
-    #print(eri_new[0,0,1,0]) 
-    #print("[5,2,8,4]")
-    #print(eri_new_sym[5,2,8,4])                                                         
-    #print(eri_new[5,2,8,4])
-
-    #print("        primitive loops ...")
-    #start = time.time()
-    #for q in range(nao):
-    #    for s in range(nao):
-    #        aoR_qs = aoR[:,q] * aoR[:,s]
-    #        aoG_qs = tools.fft(aoR_qs, mesh) * dvol
-    #        vcoulG_qs = coulG * aoG_qs
-    #        vcoulR_pairs[:,q,s] = tools.ifft(vcoulG_qs, mesh).real / dvol
-    #end = time.time()
-    #print("        Done! Elapsed time: ", end - start, "sec.")
-    #print()
-    #print("        primitive loops, eneter contractions ...")
-    #start = time.time()
-    #eri = np.einsum('xp,xr,xqs->prqs', aoR, aoR, vcoulR_pairs) * dvol
-    #end = time.time()
-    #print("        Done! Elapsed time: ", end - start, "sec.")
-    #print()
+    #exit()
 
     #print("[0,0,0,0]:")
     #print(eri[0,0,0,0])

@@ -1,6 +1,1 @@
 Computing CH4 in optimal Geometry:
-AO Basis              : sto3g
-Mean-field energy     : -7.7831176981598205
-MP2 corr. energy      : -0.05738767036914019
-Mean-field energy (DG): -7.778493220177705
-MP2 corr. energy  (DG): -0.07584208067246097

@@ -205,6 +205,11 @@ def unfold_sym(n):
     l = n - (k-1)*k/2.0
     return int(k-1), int(l-1)
 
+def get_red_idxarr(n):
+    idxarr = []
+    for i in range(n):
+        idxarr.append(np.arange(i,n).tolist())
+    return idxarr
 def get_red_idx(n):
     idx_sym = np.zeros(int(n*(n+1)/2));
     count   = 0;

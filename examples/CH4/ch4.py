@@ -39,7 +39,7 @@ if __name__ == '__main__':
     log.write("Computing CH4 in optimal Geometry:\n")
 
     boxsizes   = [18] * 3
-    dgrid      = [5]  * 3
+    dgrid      = [10]  * 3
     bases      = 'sto3g'
     accuracies = .99
 

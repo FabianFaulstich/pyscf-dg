@@ -24,7 +24,7 @@ import dg_tools
 
 class dg_model_ham:
     def __init__(self, cell, dg_cuts = None, dg_trunc = 'abs_tol', svd_tol = 1e-3, 
-                    voronoi = False, v_cells = None, v_net = None, dg_on=True):
+                    voronoi = False, dg_on=True, gram = None):
         
         self.cell = copy.copy(cell)
         print('Unit: ', self.cell.unit)
@@ -39,7 +39,7 @@ class dg_model_ham:
         print("    Computing DG-Gramm matrix ...")
         start = time.time()
         self.dg_gramm, self.dg_idx = get_dg_gramm(self.cell, dg_cuts, dg_trunc,
-                svd_tol, voronoi, v_cells, v_net, dg_on)
+                svd_tol, voronoi, dg_on, gram)
         end = time.time()
         print("    Done! Elapsed time: ", end - start, "sec.")
         print()
@@ -460,9 +460,6 @@ def get_eri(cell, coords, aoR, b_idx, exx=False):
     print("        Done! Elapsed time: ", time.time() - start, "sec.")
     print()
 
-
-
-
     # Fully matricised loops with symmetrie -> can exceed memory
     #start = time.time()
     #for i in range(1,m+1):
@@ -596,7 +593,7 @@ def get_eri(cell, coords, aoR, b_idx, exx=False):
 #    return int(l), int(k)
 
 
-def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells, v_net, dg_on):
+def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, dg_on, gram):
     '''Generate the Gramm matrix for fake-DG basis
        Supports customized DG elements:
        dg_cuts: quasi 1D cuts
@@ -616,7 +613,13 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells, v_net, dg_o
     
     coords = cell.get_uniform_grids()
     # Fetching Gramm matrix
-    ao_values = dft.numint.eval_ao(cell, coords, deriv=0) # change to eval_gto?
+    if gram is None:
+        print("        Fetching Gram matrix from cell object ...")
+        ao_values = dft.numint.eval_ao(cell, coords, deriv=0) # change to eval_gto?
+        print("        Done!")
+    else:
+        print("        Utilizing customized Gram matrix!")
+        ao_values = gram
     dvol = cell.vol / np.prod(cell.mesh)
  
     if dg_on == False:
@@ -632,7 +635,7 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells, v_net, dg_o
         dz = cell.a[2][2]
         atoms  = [elem[1] for elem in cell.atom]       
         return get_vdg_basis(atoms, dx, dy, dz, dvol, ao_values, 
-                coords, v_cells, dg_trunc, svd_tol, v_net)
+                coords, dg_trunc, svd_tol)
     else:
         # Determine ideal DG-cuts for quasi-1D system along z-axis
         if dg_cuts is None:
@@ -650,7 +653,7 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, v_cells, v_net, dg_o
         return get_dg_basis(dvol, ao_values, DG_cut, dg_trunc, svd_tol)
 
 def get_vdg_basis(atoms, dx, dy, dz, dvol, ao_values, 
-        coords, v_cells, dg_trunc, svd_tol, v_net):
+        coords, dg_trunc, svd_tol):
     '''Creating (fake) DG basis based on a 
         given voronoi decomposition 
     '''

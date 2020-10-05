@@ -1,0 +1,7 @@
+Computing H2O rotation in x-y-plane:
+AO basis:augccpvdz
+Box size:
+15 x 15 x 15
+Box discretization:
+75 x 75 x 75
+SVD truncation:0.99

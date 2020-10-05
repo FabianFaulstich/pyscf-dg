@@ -61,8 +61,8 @@ if __name__ == '__main__':
     #test_rot()
     #exit()  
 
-    log = open("log.txt", "w")
-    f   = open("out.txt", "w")
+    log = open("log_321++g.txt", "w")
+    f   = open("out_321++g.txt", "w")
     f.write("Computing H2O rotation in x-y-plane:\n")
     log.write("Computing H2O in x-y-plane:\n")
     
@@ -79,18 +79,8 @@ if __name__ == '__main__':
     #angles = angles[0:2]
     angles = angles[0:16]
 
-    bases = ['augccpvdz', '6311++g', '631++g', '321++g', 
-             'ccpvdz'   , '6311g'  , '631g'  , '321g']
-    acc   = [[.99, .95, .9, .85, .8, .7, .6, .5],
-             [.99, .95, .9, .85, .8, .7, .6, .5],
-             [.99, .95, .9, .85, .8, .7, .6, .5],
-             [.99, .95, .9, .85, .8, .7, .6, .5],
-             [.99, .95, .9, .85, .8, .7, .6, .5],
-             [.99, .95, .9, .85, .8, .7, .6, .5],
-             [.99, .95, .9, .85, .8, .7, .6, .5],
-             [.99, .95, .9, .85, .8, .7, .6, .5],
-             [.99, .95, .9, .85, .8, .7, .6, .5],
-             [.99, .95, .9, .85, .8, .7, .6, .5]]
+    bases = ['321++g']
+    acc   = [[.99, .9, .8, .7]]
 
     #bases = ['sto3g', 'sto3g']
     #acc   = [[.4, .4], [.4, .4]]
@@ -210,7 +200,7 @@ if __name__ == '__main__':
                 print("Creating  " + cell.basis +  "-DG Hamiltonian ...")
                 start_dg = time.time()
                 
-                cell_dg  = dg.dg_model_ham(cell, None ,'rel_num', ac)
+                #cell_dg  = dg.dg_model_ham(cell, None ,'rel_num', ac)
                 
                 end_dg   = time.time()
                 print("Done! Elapsed time: ", end_dg - start_dg, "sec.")
@@ -255,7 +245,7 @@ if __name__ == '__main__':
                 #print("Done! Elapsed time: ", end_cc - start_cc, "sec.")
                 #print()
             
-                del cell_dg
+                #del cell_dg
                 # Pure PySCF
 
                 print("Computing HF in " + cell.basis +  " basis ...")

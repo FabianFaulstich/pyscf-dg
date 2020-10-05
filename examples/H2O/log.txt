@@ -1,0 +1,3 @@
+Computing H2O in x-y-plane:
+AO basis:augccpvdz
+SVD truncation:0.99

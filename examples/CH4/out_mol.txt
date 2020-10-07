@@ -1,0 +1,5 @@
+Computing CH4 in optimal Geometry:
+AO Basis              : sto3g
+Mean-field energy     : -39.72680897625944
+MP2 corr. energy      : -0.056257223411633035
+CCSD corr. energy      : -0.0786470292393525

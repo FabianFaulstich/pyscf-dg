@@ -74,6 +74,19 @@ if __name__ == '__main__':
     cell.atom    = Mol
     cell.build()
 
+    # HF in builtin
+    log.write("        Comuting HF using PyScf-PBC...\n")
+    start = time.time()
+
+    mf = scf.RHF(cell, exxdiv='ewald') # madelung correction
+    mf.kernel(dump_chk = False)
+    mfe = mf.e_tot
+
+    log.write("        Done! Elapsed time: " +
+              str(time.time() - start) + "sec.\n")
+
+    exit()
+
     cell_vdg = dg.dg_model_ham(cell, None ,'rel_num', accuracies, True)
     # HF in VDG
     log.write("        Computing HF in VDG Bases ...\n")

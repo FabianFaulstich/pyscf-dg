@@ -14,7 +14,7 @@ import numpy as np
 
 def read_sc():
     
-    f    = open('input_file.txt', 'r')
+    f    = open('input_file_small.txt', 'r')
     sc   = [] 
     sc_b = False
     for line in f:
@@ -29,7 +29,7 @@ def read_sc():
 
 def read_mol():
 
-    f   = open('input_file.txt', 'r')
+    f   = open('input_file_small.txt', 'r')
     mol = [] 
     for line in f:
         if 'atom:' in line:
@@ -56,22 +56,21 @@ if __name__ == '__main__':
     boxsizes   = []
     for i, elem in enumerate(cell_a):
         boxsizes.append(elem[i])
-    boxsizes[2] = 25
-    cell_a[2][2] = 25
     print(boxsizes)
-    dgrid      = [20, 20, 10]
+    dgrid      = [25, 25, 15]
 
     # discretization mesh
     mesh = [int(d * x) for d, x in zip(dgrid, boxsizes)]
-   
-    print(mesh)
+    #print(cell_a)
+    #print(mesh)
+    #exit()
 
     cell = pbcgto.Cell()
     cell.verbose = 3
     cell.atom = mol
     cell.a = cell_a
-    cell.dimension=2
-    cell.basis = 'gth-szv'
+    #cell.dimension=2
+    cell.basis = 'ccpvdz'
     cell.pseudo = 'gth-pade'
     cell.mesh = np.array(mesh)
     cell.build()
@@ -90,10 +89,10 @@ if __name__ == '__main__':
     
     mf.kernel()
     mfe = mf.e_tot
-    exit()
+    #exit()
 
     nelec = cell.tot_electrons()
-    bands = np.linspace(2, 32, num = 16)
+    bands = np.linspace(2, 40, num = 20)
     #bands = np.array([2, 4])
     mos = mf.mo_coeff 
 
@@ -105,8 +104,6 @@ if __name__ == '__main__':
 
     log.write("        Done! Elapsed time: " +
               str(time.time() - start) + "sec.\n")
-    
-
 
     mfe_dg = np.zeros(len(bands))
     mpe_dg = np.zeros(len(bands))

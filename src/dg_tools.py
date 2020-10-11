@@ -15,7 +15,7 @@ def naive_voronoi(grid, atoms, dx, dy, dz):
     for i, atom in enumerate(atoms):
         dist_atom_grid = np.sum(np.abs(grid - atom)**2,axis=-1)**(1./2)
         
-        #periodic distance
+        # periodic distance
         for x in per:
             for y in per:
                 for z in per:
@@ -26,7 +26,7 @@ def naive_voronoi(grid, atoms, dx, dy, dz):
                         dist_atom_grid_p = np.sum(np.abs(grid - atom_p)**2,
                                 axis=-1)**(1./2)
                         dist_atom_grid = np.minimum(dist_atom_grid, 
-                                dist_atom_grid_p)
+                               dist_atom_grid_p)
         if i == 0:
             distances = dist_atom_grid
         else:
@@ -108,9 +108,9 @@ def get_dg_nnz_eri(cell, aoR, b_idx, exx=False):
         idx_k = b_idx[k]
         idx_l = b_idx[l]
 
-        # exploit symmetry in k:th block
-        idx_k_sym = get_red_idx(len(idx_k))
-
+        # exploit symmetry in k:th block without diag
+        idx_k_sym = get_red_idx_nd(len(idx_k))
+        
         # Solving Poisson eq. in k:th DG-block
         bl_k       = aoR[:,idx_k[0]:idx_k[-1]+1]
         bl_k_mat   = np.matlib.repmat(bl_k, 1, len(idx_k))
@@ -130,8 +130,8 @@ def get_dg_nnz_eri(cell, aoR, b_idx, exx=False):
 
         del bl_k_dens
 
-        # exploit symmetry in l:th block
-        idx_l_sym = get_red_idx(len(idx_l))
+        # exploit symmetry in l:th block without diag
+        idx_l_sym = get_red_idx_nd(len(idx_l))
 
         # Computing DG-basis product in l:th DG-block
         bl_l = aoR[:,idx_l[0]:idx_l[-1]+1]
@@ -181,7 +181,8 @@ def get_dg_nnz_eri(cell, aoR, b_idx, exx=False):
         np.place(eri_kl_full, mask, eri_kl)
         eri_kl_full[:,neg_k] = eri_kl_full[:,neg_k_per]
         eri_kl_full[neg_l,:] = eri_kl_full[neg_l_per,:]
-        
+        eri_kl_full[np.abs(eri_kl_full) < 1e-6] = 0
+
         if k != l:
             nnz_eri  += 2*np.count_nonzero(eri_kl_full)
             n_lambda += 2*np.sum(np.abs(eri_kl_full))
@@ -205,11 +206,13 @@ def unfold_sym(n):
     l = n - (k-1)*k/2.0
     return int(k-1), int(l-1)
 
-def get_red_idxarr(n):
+def get_red_idx_nd(n):
     idxarr = []
-    for i in range(n):
-        idxarr.append(np.arange(i,n).tolist())
+    for i in range(n-1):
+        idx = i * n + np.arange(i+1,n)
+        idxarr += idx.tolist()
     return idxarr
+
 def get_red_idx(n):
     idx_sym = np.zeros(int(n*(n+1)/2));
     count   = 0;

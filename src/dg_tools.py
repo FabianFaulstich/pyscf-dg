@@ -91,7 +91,6 @@ def get_dg_nnz_eri(cell, aoR, b_idx, exx=False):
     nao = aoR.shape[1]
     print("No. of DG orbitals: ", nao)
     print("No. of grid points: ", ngrids)
-    vcoulR_pairs = np.zeros((ngrids,nao,nao))
 
     coulG = tools.get_coulG(cell, mesh=mesh, exx=exx)
 

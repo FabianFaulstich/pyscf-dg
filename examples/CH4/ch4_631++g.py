@@ -33,20 +33,15 @@ def mol_size(Mol):
 
 if __name__ == '__main__':
 
-    log = open("log.txt", "w")
-    f   = open("out.txt", "w")
+    log = open("log_631++g.txt", "w")
+    f   = open("out_631++g.txt", "w")
     f.write("Computing CH4 in optimal Geometry:\n")
     log.write("Computing CH4 in optimal Geometry:\n")
 
     boxsizes   = [15] * 3
     dgrid      = [8]  * 3
-    bases      = ['augccpvdz', '6311++g', '631++g', 'ccpvdz', '6311g', '631g']
-    accuracies = [[.99, .9, .8, .7],
-                  [.99, .9, .8, .7],
-                  [.99, .9, .8, .7],
-                  [.99, .9, .8, .7],
-                  [.99, .9, .8, .7],
-                  [.99, .9, .8, .7]]
+    bases      = ['631++g']
+    accuracies = [[.7]]
 
     #bases = ['sto3g', 'sto3g']
     #accuracies = [[.5, .5], [.5, .5]]
@@ -99,20 +94,30 @@ if __name__ == '__main__':
             log.write("        Computing HF in VDG Bases ...\n")
             start = time.time()
 
-            mfe_dg[k] = cell_vdg.run_RHF()
+            mfe_dg = cell_vdg.run_RHF()
 
             log.write("        Done! Elapsed time: " +
             str(time.time() - start) + "sec.\n")
 
             # MP2 in VDG
-            #log.write("        Computing MP2 in VDG Bases ...\n")
-            #start = time.time()
-            #
-            #mpe_dg, _ = cell_vdg.run_MP2()
-            #
-            #log.write("        Done! Elapsed time: " +
-            #          str(time.time() - start) + "sec.\n")
-            #
+            log.write("        Computing MP2 in VDG Bases ...\n")
+            start = time.time()
+            
+            mpe_dg, _ = cell_vdg.run_MP2()
+            
+            log.write("        Done! Elapsed time: " +
+                      str(time.time() - start) + "sec.\n")
+            
+             # CCSD in VDG
+            log.write("        Computing CCSD in VDG Bases ...\n")
+            start = time.time()
+            
+            cce_dg = cell_vdg.run_CC()
+            
+            log.write("        Done! Elapsed time: " +
+                      str(time.time() - start) + "sec.\n")
+            
+
             del cell_vdg
 
             # HF in builtin
@@ -121,30 +126,42 @@ if __name__ == '__main__':
 
             mf = scf.RHF(cell, exxdiv='ewald') # madelung correction
             mf.kernel(dump_chk = False)
-            mfe[k] = mf.e_tot
+            mfe = mf.e_tot
 
             log.write("        Done! Elapsed time: " +
                       str(time.time() - start) + "sec.\n")
 
             # MP2 in builtin
-            #log.write("        Comuting MP2 using PyScf-PBC...\n")
-            #start = time.time()
-            #
-            #mpe, _ = mp.MP2(mf).kernel()
-            #
-            #log.write("        Done! Elapsed time: " +
-            #          str(time.time() - start) + "sec.\n")
+            log.write("        Comuting MP2 using PyScf-PBC...\n")
+            start = time.time()
+            
+            mpe, _ = mp.MP2(mf).kernel()
+            
+            log.write("        Done! Elapsed time: " +
+                      str(time.time() - start) + "sec.\n")
+            
+            # CCSD in builtin
+            log.write("        Comuting CCSD using PyScf-PBC...\n")
+            start = time.time()
+            
+            cc_bi = cc.CCSD(mf)
+            cc_bi.kernel()
+            cce = cc_bi.e_corr
+            
+            log.write("        Done! Elapsed time: " +
+                      str(time.time() - start) + "sec.\n")
             
             del cell
 
             print('##################################')
             print('AO Basis              : ', basis)
             print('SVD tollerance        : ', acc)
-            print('Mean-field energy     : ', mfe[k])
-            #print('MP2 corr. energy      : ', mpe)
-            print('Mean-field energy (DG): ', mfe_dg[k])
-            #print('MP2 corr. energy  (DG): ', mpe_dg)
-
+            print('Mean-field energy     : ', mfe)
+            print('MP2 corr. energy      : ', mpe)
+            print('CCSD corr. energy     : ', cce)
+            print('Mean-field energy (DG): ', mfe_dg)
+            print('MP2 corr. energy  (DG): ', mpe_dg)
+            print('CCSD corr. energy (DG): ', cce_dg)
 
         f.write("AO Basis : " + basis   + "\n")
         f.write("SVD truncation :" + str(accuracies[i]) + "\n")

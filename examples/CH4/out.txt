@@ -1,1 +1,5 @@
 Computing CH4 in optimal Geometry:
+AO Basis : augccpvdz
+SVD truncation :[0.99, 0.9, 0.8, 0.7]
+Mean-field energy : [-7.85288907 -7.85288907 -7.85288907 -7.85288907]
+Mean-field energy (DG) : [-7.8715327  -7.86959592 -7.86399735 -7.85582746]

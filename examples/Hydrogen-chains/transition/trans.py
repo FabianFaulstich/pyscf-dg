@@ -46,10 +46,12 @@ if __name__ == '__main__':
     bond1 = np.array([3.6])
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
     atoms = np.flip(np.linspace(2,30,15, dtype = int))
+    #print(atoms)
+    #exit()
     #atoms = np.linspace(2,20,10, dtype = int)
     #atoms = np.array([26])
     
-    svd_tol = np.array([1e-1])
+    svd_tol = np.array([1e-3])
 
     nnz_eri     = np.zeros(len(atoms))
     nnz_eri_pw  = np.zeros(len(atoms))
@@ -62,7 +64,6 @@ if __name__ == '__main__':
     basis = 'ccpvdz'
    
     for tol in svd_tol:
-
         for i, no_atom in enumerate(atoms):
             print("Computing H", no_atom)
             print("SVD tolerance: ", tol)
@@ -113,8 +114,7 @@ if __name__ == '__main__':
             print("Computing Gram Matrix ...")
             start = time.time()
             dg_gramm, dg_idx = dg.get_dg_gramm(
-                    cell, None, 'abs_tol', tol, False, v_cells = None, 
-                    v_net = None, dg_on=True)
+                    cell, None, 'abs_tol', tol, False, dg_on=True, gram = None)
             print("Done! Elapsed time: ", time.time() - start)
             
             print("Computing DG NNZ-ERI and Lambda value ...")

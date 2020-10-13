@@ -17,9 +17,9 @@ if __name__ == '__main__':
     plt.rcParams["font.family"] = "serif"
     plt.rcParams["mathtext.fontset"] = "dejavuserif"
 
-    f = open("out_tol1e-3_n.txt", "r")
-    g = open("out_tol1e-2_n.txt", "r")
-    j = open("out_tol1e-1_n.txt", "r")
+    f = open("out_tol1e-3.txt", "r")
+    g = open("out_tol1e-2.txt", "r")
+    j = open("out_tol1e-1.txt", "r")
 
     fig1, arr1 = plt.subplots(nrows=1, ncols=3,  figsize=(15,6))
     fig2, arr2 = plt.subplots(nrows=1, ncols=1,  figsize=(7,6))
@@ -139,7 +139,6 @@ if __name__ == '__main__':
                 la_dg_b  = True
             else:
                 fl = [x for x in line.split()]
-                print(fl)
                 if fl[0][0] == '[':
                     if fl[0] == '[':
                         fl = fl[1:]
@@ -147,7 +146,6 @@ if __name__ == '__main__':
                         fl[0] = fl[0][1:]
                 elif fl[-1][-1] == ']':
                     fl[-1] = fl[-1][:-1]
-                print(fl[0] == '')
                 nnz_eri_dg1 += [float(x) for x in fl]
 
         if 'nnz_eri (DG):' in line:
@@ -210,8 +208,11 @@ if __name__ == '__main__':
                 fl = [x for x in line.split()]
                 if fl[0] == '[':
                     fl = fl[1:]
-                elif fl[-1] == ']':
-                    fl = fl[:-1]
+                elif fl[-1][-1] == ']':
+                    if fl[-1] == ']':
+                        fl = fl[:-1]
+                    else:
+                        fl[-1] = fl[-1][:-1]
                 la += [float(x) for x in fl]
 
         if nnz_b:
@@ -337,6 +338,8 @@ if __name__ == '__main__':
                     label = 'DG $10^{-3}$ (${\\alpha}$ = %5.3f)' % popt_eri_dg[0])
     arr2.set_xlabel('Number of hydrogens')
     arr2.set_ylabel('Non-zero two-electron integrals')
+    arr2.set_ylim(1e2,1e10)
+    arr2.set_xlim(2,32)
     arr2.legend()
 
 

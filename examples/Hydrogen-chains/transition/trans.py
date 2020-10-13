@@ -45,8 +45,8 @@ if __name__ == '__main__':
     bond  = np.array([1.4])
     bond1 = np.array([3.6])
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
-    atoms = np.flip(np.linspace(2,30,15, dtype = int))
-    #atoms = np.array([4])
+    #atoms = np.flip(np.linspace(2,30,15, dtype = int))
+    atoms = np.array([4])
     #print(atoms)
     #exit()
     #atoms = np.linspace(2,20,10, dtype = int)
@@ -127,22 +127,33 @@ if __name__ == '__main__':
             n_ao[i]    = cell.nao
             n_ao_dg[i] = np.size(dg_gramm, 1) 
 
-            print("Computing HF ...")
+            print("Computing Gram Matrix without DG ...")
             start = time.time()
-            fftdf = df.FFTDF(cell)
-            mf = scf.RHF(cell, exxdiv = 'ewald')
-            mf.kernel(dump_chk = False)
+            gramm, idx = dg.get_dg_gramm(
+                    cell, None, 'abs_tol', tol, False, dg_on=False, gram = None)
             print("Done! Elapsed time: ", time.time() - start)
-            
-            print('Computing ERI tensor...')            
+
+            print("Computing NNZ-ERI and Lambda value ...")
             start = time.time()
-            eri = ao2mo.restore(1, fftdf.get_eri(), cell.nao_nr()) #mf._eri 
-            print('Done! Elapsed time:', time.time() - start)
-            #h1e = mf.get_hcore()
-            eri[np.abs(eri) < 1e-6] = 0
+            n_lambda[i], nnz_eri[i] = dg_tools.get_dg_nnz_eri(
+                    cell, gramm, idx)
+            print("Done! Elapsed time: ", time.time() -start)
+
+            #print("Computing HF ...")
+            #start = time.time()
+            #fftdf = df.FFTDF(cell)
+            #mf = scf.RHF(cell, exxdiv = 'ewald')
+            #mf.kernel(dump_chk = False)
+            #print("Done! Elapsed time: ", time.time() - start)
             
-            nnz_eri[i]  = np.count_nonzero(eri) 
-            n_lambda[i] = np.sum(np.abs(eri))   
+            #print('Computing ERI tensor...')            
+            #start = time.time()
+            #eri = ao2mo.restore(1, fftdf.get_eri(), cell.nao_nr()) #mf._eri 
+            #print('Done! Elapsed time:', time.time() - start)
+            #eri[np.abs(eri) < 1e-6] = 0
+            
+            #nnz_eri[i]  = np.count_nonzero(eri) 
+            #n_lambda[i] = np.sum(np.abs(eri))   
 
             print("NNZ ERI: ", nnz_eri[i])
             print("NNZ ERI (DG): ", nnz_eri_dg[i])
@@ -150,7 +161,7 @@ if __name__ == '__main__':
             print("Lambda-value (DG): ", n_lambda_dg[i])
 
 
-            del cell, Mol, Mol1, fftdf, mf, eri
+            del cell, Mol, Mol1, #fftdf, mf, eri
 
         f.write("SV tolerance: " + str(tol) + "\n")
         f.write("Hydrogen chain to H" + str(atoms[0]) + "\n")

@@ -38,7 +38,7 @@ def mol_size(Mol):
 
 if __name__ == '__main__':
 
-    f   = open("out_tol1e-3.txt", "w")
+    f   = open("out_tol1e-3_n.txt", "w")
     bs  = 5
 
     dgrid = [2,2,2] # 

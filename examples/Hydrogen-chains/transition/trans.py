@@ -45,13 +45,14 @@ if __name__ == '__main__':
     bond  = np.array([1.4])
     bond1 = np.array([3.6])
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
-    atoms = np.flip(np.linspace(2,30,15, dtype = int))
+    #atoms = np.flip(np.linspace(2,30,15, dtype = int))
+    atoms = np.array([4])
     #print(atoms)
     #exit()
     #atoms = np.linspace(2,20,10, dtype = int)
     #atoms = np.array([26])
     
-    svd_tol = np.array([1e-3])
+    svd_tol = np.array([1e-1, 1e-2, 1e-3])
 
     nnz_eri     = np.zeros(len(atoms))
     nnz_eri_pw  = np.zeros(len(atoms))
@@ -138,6 +139,7 @@ if __name__ == '__main__':
             eri = ao2mo.restore(1, fftdf.get_eri(), cell.nao_nr()) #mf._eri 
             print('Done! Elapsed time:', time.time() - start)
             #h1e = mf.get_hcore()
+            eri[np.abs(eri) < 1e-6] = 0
             
             nnz_eri[i]  = np.count_nonzero(eri) 
             n_lambda[i] = np.sum(np.abs(eri))   

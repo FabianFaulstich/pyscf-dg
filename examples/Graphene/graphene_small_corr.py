@@ -14,8 +14,8 @@ import numpy as np
 
 def read_sc():
     
-    #f    = open('input_file_small.txt', 'r')
-    f    = open('input_file_mid.txt', 'r')
+    f    = open('input_file_small.txt', 'r')
+    #f    = open('input_file_mid.txt', 'r')
     #f    = open('input_file_large.txt', 'r')
     sc   = [] 
     sc_b = False
@@ -31,8 +31,8 @@ def read_sc():
 
 def read_mol():
 
-    #f   = open('input_file_small.txt', 'r')
-    f   = open('input_file_mid.txt', 'r')
+    f   = open('input_file_small.txt', 'r')
+    #f   = open('input_file_mid.txt', 'r')
     #f   = open('input_file_large.txt', 'r')
     mol = [] 
     for line in f:
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     cell_a = read_sc()
     
     log = open("log.txt", "w")
-    f   = open("out.txt", "w")
+    f   = open("out_small.txt", "w")
     
     boxsizes   = []
     for i, elem in enumerate(cell_a):
@@ -98,8 +98,52 @@ if __name__ == '__main__':
     
     mf.kernel()
     mfe = mf.e_tot/natom
-    left_bs = gram_mat.shape[1] - nelec/2  
-    bands = np.linspace(0, left_bs, num = left_bs+1)
+    mos = mf.mo_coeff
+    print(mos.shape)
+    bands = np.linspace(nelec, mos.shape[1], num = int(mos.shape[1] - nelec +1) )
+    print(bands)
+    exit()
+    nmos = int(nelec/2)
+    print("Kept MO's: ", nmos) 
+    gram_mo = np.dot(gram_mat, mos[:,: nmos])
+
+    print(gram_mo.shape)
+    print(gram_mat.shape)
+    print(mos.shape)
+
+    print("Creating  " + cell.basis +  "-DG Hamiltonian ...")
+    start_dg = time.time()
+    cell_vdg  = dg.dg_model_ham(cell, dg_cuts = None, dg_trunc = 'abs_tol',
+            svd_tol = 1e-3, voronoi = True, dg_on=True, gram = gram_mo)
+
+    # HF in VDG
+    log.write("        Computing HF in VDG Bases ...\n")
+    start = time.time()
+
+    mfe_dg = cell_vdg.run_RHF()/ natom
+    
+    log.write("        Done! Elapsed time: " +
+    str(time.time() - start) + "sec.\n")
+
+    # MP2 in VDG
+    log.write("        Computing MP2 in VDG Bases ...\n")
+    start = time.time()
+
+    mpe_dg[i], _ = cell_vdg.run_MP2()
+    mpe_dg[i] = mpe_dg[i]/natom
+    log.write("        Done! Elapsed time: " +
+              str(time.time() - start) + "sec.\n")
+    print('AO Basis              : ', cell.basis)
+    print('Mean-field energy     : ', mfe)
+    print('MP2 corr. energy      : ', mpe)
+    print('Kepts MOs             : ', nmos)
+    print('Mean-field energy (DG): ', mfe_dg[i])
+    print('MP2 corr. energy  (DG): ', mpe_dg[i])
+    del cell_vdg
+
+    
+    left_occs = nelec/natom  
+    occs = np.linspace(0, left_occs, num = left_occs+1)
     #bands = np.array([2, 4])
     mos = mf.mo_coeff
 
@@ -113,12 +157,11 @@ if __name__ == '__main__':
     log.write("        Done! Elapsed time: " +
               str(time.time() - start) + "sec.\n")
 
-    mfe_dg = np.zeros(len(bands))
-    mpe_dg = np.zeros(len(bands))
+    mfe_dg = np.zeros(len(occs))
+    mpe_dg = np.zeros(len(occs))
     
-    for i, bds in enumerate(bands):
-        nmos = int(nelec/2 + bds)
-        #nmos = 23
+    for i, noccs in enumerate(occs):
+        nmos = int(nelec/natom + noccs)
         print("Kept MO's: ", nmos) 
         gram_mo = np.dot(gram_mat, mos[:,: nmos])
 
@@ -154,13 +197,13 @@ if __name__ == '__main__':
         print('Kepts MOs             : ', nmos)
         print('Mean-field energy (DG): ', mfe_dg[i])
         print('MP2 corr. energy  (DG): ', mpe_dg[i])
-        #del cell_vdg
+        del cell_vdg
 
     f.write("AO Basis              : " + cell.basis   + "\n")
     f.write("Mean-field energy     : " + str(mfe)    + "\n")
     f.write("MP2 corr. energy      : " + str(mpe)    + "\n")
 
-    f.write("Bands included in DG  : " + str(bands) + "\n")
+    f.write("Bands included in DG  : " + str(occs) + "\n")
     f.write("Mean-field energy (DG): " + str(mfe_dg)    + "\n")
     f.write("MP2 corr. energy  (DG): " + str(mpe_dg)    + "\n")
 
@@ -169,6 +212,6 @@ if __name__ == '__main__':
     print('AO Basis              : ', cell.basis)
     print('Mean-field energy     : ', mfe)
     print('MP2 corr. energy      : ', mpe)
-    print('Kepts MOs             : ', bands)
+    print('Kepts MOs             : ', occs)
     print('Mean-field energy (DG): ', mfe_dg)
     print('MP2 corr. energy  (DG): ', mpe_dg)

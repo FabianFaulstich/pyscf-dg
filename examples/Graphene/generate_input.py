@@ -96,7 +96,7 @@ if __name__ == '__main__':
     #print(supercell.arrays)
 
     # generate a large supercell
-    supercell = supercell * [2,2,1]
+    supercell = supercell * [5,5,1]
     view(supercell)
 
     mol   = pyscf_ase.ase_atoms_to_pyscf(supercell)

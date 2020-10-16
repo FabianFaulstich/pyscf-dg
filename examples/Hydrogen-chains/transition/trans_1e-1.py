@@ -12,6 +12,7 @@ import dg_tools
 
 import pyscf
 from pyscf import lib
+from pyscf import gto as molgto
 from pyscf.pbc import dft as dft
 from pyscf.pbc import gto, df, scf, mp, cc
 from pyscf.pbc.gto import pseudo
@@ -42,17 +43,18 @@ if __name__ == '__main__':
     bs  = 5
 
     dgrid = [2,2,2] # 
-    bond  = np.array([1.4])
-    bond1 = np.array([3.6])
+    #bond  = np.array([1.7])
+    #bond1 = np.array([3.6])
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
     atoms = np.flip(np.linspace(2,30,15, dtype = int))
-    #atoms = np.array([4])
+    #atoms = np.array([16])
+    #atoms = np.linspace(2, 8, num = 4, dtype = int)
     #print(atoms)
     #exit()
     #atoms = np.linspace(2,20,10, dtype = int)
     #atoms = np.array([26])
     
-    svd_tol = np.array([1e-1])
+    svd_tol = np.array([1e-1]) # chenge back to 1e-1
 
     nnz_eri     = np.zeros(len(atoms))
     nnz_eri_pw  = np.zeros(len(atoms))
@@ -72,7 +74,7 @@ if __name__ == '__main__':
             Mol  = []
             Mol1 = []
             for n in range(no_atom):
-                Mol.append(['H', [n * 1.4, 0, 0]])
+                Mol.append(['H', [n * 1.7, 0, 0]]) #1.4
                 Mol1.append(['H', [n * 3.6, 0, 0]])
 
             # Centering Molecule in Box:
@@ -102,6 +104,7 @@ if __name__ == '__main__':
                             [0., 0., boxsize[2]]]
             cell.unit    = 'B'
             cell.verbose = 3
+            #cell.ke_cutoff = 20
             cell.basis   = basis
             cell.pseudo  = 'gth-pade'
             cell.mesh    = np.array(mesh)
@@ -109,6 +112,20 @@ if __name__ == '__main__':
             cell.build()
             
             nnz_eri_pw[i] = np.prod(mesh)**2
+            
+            # Creating mol object to fetch ao_projections
+
+            mol       = molgto.Mole()
+            mol.atom  = Mol
+            mol.basis = basis
+            mol.unit  = 'B'
+            mol.build()
+
+            coords = cell.get_uniform_grids()
+            ao_values = mol.eval_gto("GTOval_sph", coords)
+            U0, _, _ = la.svd(ao_values, full_matrices = False)
+            print(ao_values.shape)
+            print(U0.shape)
 
             del boxsize
             
@@ -135,8 +152,9 @@ if __name__ == '__main__':
 
             print("Computing NNZ-ERI and Lambda value ...")
             start = time.time()
+            print('Index: ',idx)
             n_lambda[i], nnz_eri[i] = dg_tools.get_dg_nnz_eri(
-                    cell, gramm, idx)
+                    cell, U0, idx)
             print("Done! Elapsed time: ", time.time() -start)
             
             #print("Computing HF ...")

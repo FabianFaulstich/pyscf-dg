@@ -39,22 +39,23 @@ def mol_size(Mol):
 
 if __name__ == '__main__':
 
-    f   = open("out_tol1e-2_n.txt", "w")
+    f   = open("out_tol1e-1.txt", "w")
     bs  = 5
 
     dgrid = [2,2,2] # 
-    #bond  = np.array([1.4])
+    #bond  = np.array([1.7])
     #bond1 = np.array([3.6])
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
     #atoms = np.flip(np.linspace(2,30,15, dtype = int))
     atoms = np.linspace(2,30,15, dtype = int)
-    #atoms = np.array([4])
+    #atoms = np.array([8])
+    #atoms = np.linspace(2, 8, num = 4, dtype = int)
     #print(atoms)
     #exit()
     #atoms = np.linspace(2,20,10, dtype = int)
     #atoms = np.array([26])
     
-    svd_tol = np.array([1e-2])
+    svd_tol = np.array([1e-1]) # chenge back to 1e-1
 
     nnz_eri     = np.zeros(len(atoms))
     nnz_eri_pw  = np.zeros(len(atoms))
@@ -74,7 +75,7 @@ if __name__ == '__main__':
             Mol  = []
             Mol1 = []
             for n in range(no_atom):
-                Mol.append(['H', [n * 1.7, 0, 0]])
+                Mol.append(['H', [n * 1.7, 0, 0]]) #1.4
                 Mol1.append(['H', [n * 3.6, 0, 0]])
 
             # Centering Molecule in Box:
@@ -104,42 +105,35 @@ if __name__ == '__main__':
                             [0., 0., boxsize[2]]]
             cell.unit    = 'B'
             cell.verbose = 3
+            #cell.ke_cutoff = 20
             cell.basis   = basis
             cell.pseudo  = 'gth-pade'
             cell.mesh    = np.array(mesh)
             cell.atom    = Mol
             cell.build()
-            
+           
             mesh = cell.mesh
             vol = cell.vol
             ngrids = np.prod(mesh)
             dvol = vol / ngrids
 
             nnz_eri_pw[i] = np.prod(mesh)**2
-
-            # Creating mol object
-
-            mol       = molgto.Mole()
-            mol.atom  = Mol
-            mol.basis = basis
-            mol.unit  = 'B'
-            mol.build()
+            
+            # Creating mol object to fetch ao_projections
 
             coords = cell.get_uniform_grids()
-            ao_values = mol.eval_gto("GTOval_sph", coords)
+            ao_values = dft.numint.eval_ao(cell, coords, deriv=0)
             U, _, VT = la.svd(ao_values, full_matrices = False)
-
+            
             # U0 describes L^2 normalized functions.
             # This is only necesary for using dg_tools.get_dg_nnz_eri(), because 
             # dg_model_ham.gram is stored in that way. This will be changed in 
             # future adaptation of the code. Direct input of the projections 
             # matrix should always only consist of the nodel values of the 
             # primitive basis. Note that the gram input for a dg_model_ham object             # takes the nodel values of the primitive basis as input for gram. 
-
-            U0 = np.dot(U, VT) / np.sqrt(dvol)
-            print(ao_values.shape)
-            print(U0.shape)
-
+                       
+            #U0 = np.dot(U, VT) / np.sqrt(dvol)
+            U0 = U / np.sqrt(dvol)
             del boxsize
             
             print("Computing Gram Matrix ...")
@@ -165,10 +159,11 @@ if __name__ == '__main__':
 
             print("Computing NNZ-ERI and Lambda value ...")
             start = time.time()
+            print('Index: ',idx)
             n_lambda[i], nnz_eri[i] = dg_tools.get_dg_nnz_eri(
                     cell, U0, idx)
             print("Done! Elapsed time: ", time.time() -start)
-
+            
             #print("Computing HF ...")
             #start = time.time()
             #fftdf = df.FFTDF(cell)

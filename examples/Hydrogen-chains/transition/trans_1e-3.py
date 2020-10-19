@@ -46,7 +46,8 @@ if __name__ == '__main__':
     #bond  = np.array([1.4])
     #bond1 = np.array([3.6])
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
-    atoms = np.flip(np.linspace(2,30,15, dtype = int))
+    #atoms = np.flip(np.linspace(2,30,15, dtype = int))
+    atoms = np.linspace(2,30,15, dtype = int)
     #atoms = np.array([4])
     #print(atoms)
     #exit()
@@ -108,7 +109,12 @@ if __name__ == '__main__':
             cell.mesh    = np.array(mesh)
             cell.atom    = Mol
             cell.build()
-            
+           
+            mesh = cell.mesh
+            vol = cell.vol
+            ngrids = np.prod(mesh)
+            dvol = vol / ngrids
+
             nnz_eri_pw[i] = np.prod(mesh)**2
 
             # creating mol object
@@ -121,10 +127,18 @@ if __name__ == '__main__':
 
             coords = cell.get_uniform_grids()
             ao_values = mol.eval_gto("GTOval_sph", coords)
-            U0, _, _ = la.svd(ao_values, full_matrices = False)
+            U, _, VT = la.svd(ao_values, full_matrices = False)
+
+            # U0 describes L^2 normalized functions.
+            # This is only necesary for using dg_tools.get_dg_nnz_eri(), because 
+            # dg_model_ham.gram is stored in that way. This will be changed in 
+            # future adaptation of the code. Direct input of the projections 
+            # matrix should always only consist of the nodel values of the 
+            # primitive basis. Note that the gram input for a dg_model_ham object             # takes the nodel values of the primitive basis as input for gram. 
+           
+            U0 = np.dot(U, VT) / np.sqrt(dvol)
             print(ao_values.shape)
             print(U0.shape)
-
             del boxsize
             
             print("Computing Gram Matrix ...")

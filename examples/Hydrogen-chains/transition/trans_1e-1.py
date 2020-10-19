@@ -39,7 +39,7 @@ def mol_size(Mol):
 
 if __name__ == '__main__':
 
-    f   = open("out_tol1e-1.txt", "w")
+    f   = open("out_tol1e-1_n.txt", "w")
     bs  = 5
 
     dgrid = [2,2,2] # 
@@ -47,7 +47,8 @@ if __name__ == '__main__':
     #bond1 = np.array([3.6])
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
     #atoms = np.flip(np.linspace(2,30,15, dtype = int))
-    atoms = np.array([8])
+    atoms = np.linspace(2,30,15, dtype = int)
+    #atoms = np.array([8])
     #atoms = np.linspace(2, 8, num = 4, dtype = int)
     #print(atoms)
     #exit()

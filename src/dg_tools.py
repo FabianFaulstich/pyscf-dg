@@ -75,6 +75,11 @@ def get_dg_nnz_eri(cell, aoR, b_idx, exx=False):
 
     This is only a proof of principle and the implementation is not 
     efficient in terms of either memory or speed
+
+    input:
+
+    aoR: (VdG) basis projection matrix and assumed to be 
+         columnwise L2-normalized 
     '''
 
     nnz_eri  = 0
@@ -83,14 +88,14 @@ def get_dg_nnz_eri(cell, aoR, b_idx, exx=False):
     coords = copy.copy(cell.get_uniform_grids())
 
     print("    Treating EXX:", exx)
-    mesh = cell.mesh
-    vol = cell.vol
+    mesh   = cell.mesh
+    vol    = cell.vol
     ngrids = np.prod(mesh)
     assert ngrids == aoR.shape[0]
-    dvol = vol / ngrids
-    nao = aoR.shape[1]
-    print("No. of DG orbitals: ", nao)
-    print("No. of grid points: ", ngrids)
+    dvol   = vol / ngrids
+    nao    = aoR.shape[1]
+    print("    No. of DG orbitals: ", nao)
+    print("    No. of grid points: ", ngrids)
 
     coulG = tools.get_coulG(cell, mesh=mesh, exx=exx)
 
@@ -100,18 +105,27 @@ def get_dg_nnz_eri(cell, aoR, b_idx, exx=False):
 
     print("        matricized loops with symmetry ...")
 
+    # number of block pairs (k,l) with k <= l
     m = int(len(b_idx) * (len(b_idx) + 1)/2.0)
+
     for i in range(1,m+1):
-        print("            Computing compressed kl-tensor: ", i, ' of ', m+1)
+        print("            Computing compressed kl-block tensor: ", i, 
+                ' of ', m+1)
+        
         k, l  = unfold_sym(i)
         idx_k = b_idx[k]
         idx_l = b_idx[l]
 
-        # exploit symmetry in k:th block without diag
-        idx_k_sym = get_red_idx_nd(len(idx_k))
+        # exploit symmetry in k:th block
+        idx_k_sym = get_red_idx(len(idx_k))
         
-        # Solving Poisson eq. in k:th DG-block
+        # Solving Poisson eq. in k:th VdG-element
+        # Extracting k:th VdG basis functions 
         bl_k       = aoR[:,idx_k[0]:idx_k[-1]+1]
+        
+        # Repeat k:th block to speed up the basis-pair access 
+        # bl_k_mat  = [1,...,N_k|1,...,N_k|...|1 ,...,N_k]
+        # bl_k_perm = [1 ,..., 1|2 ,..., 2|...|N_k,...N+k]
         bl_k_mat   = np.matlib.repmat(bl_k, 1, len(idx_k))
         del bl_k
         idx_k_perm = [j * len(idx_k) + i for i in range(len(idx_k)) 
@@ -129,8 +143,8 @@ def get_dg_nnz_eri(cell, aoR, b_idx, exx=False):
 
         del bl_k_dens
 
-        # exploit symmetry in l:th block without diag
-        idx_l_sym = get_red_idx_nd(len(idx_l))
+        # exploit symmetry in l:th block
+        idx_l_sym = get_red_idx(len(idx_l))
 
         # Computing DG-basis product in l:th DG-block
         bl_l = aoR[:,idx_l[0]:idx_l[-1]+1]
@@ -143,44 +157,89 @@ def get_dg_nnz_eri(cell, aoR, b_idx, exx=False):
         del bl_l_mat
         del bl_l_mat_perm
 
-        # Compute integral Pois. part and product part
+        # Compute integral of density times pair interaction
         eri_kl  = np.dot(bl_l_mat_prod.T,bl_k_sol_pois) * dvol
         del bl_l_mat_prod, bl_k_sol_pois
 
         # Creating full kl-tensor:
-        #   Recreating neglected and kept indices 
+        # Recreating neglected and kept indices in block k and l in 
+        # order to place and the computed elements in the k-l-block-tensor
 
-        neg_k     = np.arange(len(idx_k)**2).reshape(int(len(idx_k)), int(len(idx_k)))
+        # k:th block-size is (nao_k, nao_k)
+        nao_k = int(len(idx_k))
+
+        # Creating index for elements that were neglected (neg_k).
+        # At this point neg_k takes the form:
+        # neg_k = [[0     , ...,    nao_k -1],
+        #          [nao_k , ..., 2* nao_k -1],
+        #          ...,
+        #          [(nao_k-1)* nao_k, ..., nao_k**2 -1]]
+        neg_k     = np.arange(nao_k**2).reshape(nao_k, nao_k)
         neg_k_per = np.copy(neg_k)
         neg_k_per = np.transpose(neg_k_per)
 
+        # Extract lower triangular matrix of neg_k and vectorize 
+        # non-zero elements:
+        # neg_k = [nao_k, 
+        #          2* nao_k, 2* nao_k + 1, 
+        #          3* nao_k, 3* nao_k + 1, 3* nao_k + 3,  
+        #          ...,
+        #          (nao_k - 1)* nao_k, ...., nao_k**2 -2] 
         neg_k     = np.tril(neg_k,-1).reshape(-1)
         neg_k     = neg_k[neg_k != 0]
+
+        # Analogously to neg_k we compute the elements that were computed except
+        # the diagonal elements
+        # neg_k_perm = [1,
+        #               2, 102,
+        #               3, 103, 203'
+        #               ...,
+        #               nao_k -1, nao_k + (nao_k -1), ..., (nao_k -1)* nao_k -1]
         neg_k_per = np.tril(neg_k_per,-1).reshape(-1)
         neg_k_per = neg_k_per[neg_k_per != 0]
-        kep_k     = np.delete(np.arange(int(len(idx_k)**2)), neg_k)
 
-        neg_l     = np.arange(len(idx_l)**2).reshape(int(len(idx_l)), int(len(idx_l)))
+        # The indeces that were computed above are the `negative' of neg_k,
+        # the elements are the same as in neg_k_perm plus the diagonal elements.
+        # Note, however, that the ordering is different.
+        kep_k     = np.delete(np.arange(nao_k**2), neg_k)
+
+        # Perform analogous computations for l:th block
+        nao_l = int(len(idx_l))
+        
+        neg_l     = np.arange(nao_l**2).reshape((nao_l, nao_l))
         neg_l_per = np.copy(neg_l)
         neg_l_per = np.transpose(neg_l_per)
 
         neg_l     = np.tril(neg_l,-1).reshape(-1)
         neg_l     = neg_l[neg_l != 0]
+        
         neg_l_per = np.tril(neg_l_per,-1).reshape(-1)
         neg_l_per = neg_l_per[neg_l_per != 0]
-        kep_l     = np.delete(np.arange(int(len(idx_l)**2)), neg_l)
+        
+        kep_l     = np.delete(np.arange(nao_l**2), neg_l)
 
-        #   Generating mask for kept indices
+        # Generating mask for kept indices
+        # kep_kl is in x major 
         kep_kl = [[x,y] for y in kep_k for x in kep_l]
-        mask = np.zeros((len(idx_l)**2, len(idx_k)**2), dtype=bool)
+        mask = np.zeros((nao_l**2, nao_k**2), dtype=bool)
         for idx in kep_kl:
             mask[idx[0],idx[1]] = True
-
-        eri_kl_full = np.zeros((len(idx_l)**2,len(idx_k)**2))
+        
+        # Generate matrizised k-l-eri-block tensor 
+        eri_kl_full = np.zeros((nao_l**2, nao_k**2))
+        
+        # place the computed eri entries based at the positions defined mask
         np.place(eri_kl_full, mask, eri_kl)
+
+        # Copying elements that were not computed within k:th and l:th block,
+        # respectively. Note that neg_k_per/ neg_l_per does not include 
+        # diagonal elements, hence, no double counting.
         eri_kl_full[:,neg_k] = eri_kl_full[:,neg_k_per]
         eri_kl_full[neg_l,:] = eri_kl_full[neg_l_per,:]
-        eri_kl_full[np.abs(eri_kl_full) < 1e-6] = 0
+
+        # Neglect ERI that are absolute smaller than 1e-6 
+        eri_kl_full = np.abs(eri_kl_full)
+        eri_kl_full[eri_kl_full <= 1e-6] = 0
 
         if k != l:
             nnz_eri  += 2*np.count_nonzero(eri_kl_full)

@@ -23,8 +23,8 @@ from pyscf.fci import direct_spin0, direct_spin1
 import dg_tools
 
 class dg_model_ham:
-    def __init__(self, cell, dg_cuts = None, dg_trunc = 'abs_tol', svd_tol = 1e-3, 
-                    voronoi = False, dg_on=True, gram = None):
+    def __init__(self, cell, dg_cuts = None, dg_trunc = 'abs_tol', svd_tol = 1e-3,
+            voronoi = False, dg_on=True, gram = None):
         
         self.cell = copy.copy(cell)
         print('Unit: ', self.cell.unit)
@@ -350,7 +350,6 @@ def get_eri(cell, coords, aoR, b_idx, exx=False):
     print('Number DG AOs: ', nao)
     print('Number of grid points:, ', ngrids)
     eri = np.zeros((nao,nao,nao,nao))
-    vcoulR_pairs = np.zeros((ngrids,nao,nao))
 
     coulG = tools.get_coulG(cell, mesh=mesh, exx=exx)
 
@@ -609,45 +608,85 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, dg_on, gram):
        rel_cum:
 
        abs_cum:
+
+       gram is projection matrix storing nodel values and is columnwise 
+            L^2 normalized
+
+       returns (VdG) projection matrix that is columnswise L^2 normalized
     '''
     
     coords = cell.get_uniform_grids()
-    # Fetching Gramm matrix
+    dvol = cell.vol / np.prod(cell.mesh)
+    
+    #Projection matrix
     if gram is None:
         print("        Fetching Gram matrix from cell object ...")
-        ao_values = dft.numint.eval_ao(cell, coords, deriv=0) # change to eval_gto?
+        # change this to eval_gto?
+        ao_values = dft.numint.eval_ao(cell, coords, deriv=0) 
+        
+        # L2 normalization 
+        ao_values *= 1./ dvol
+
+        # Loewdin orthonormalization
+        U, S, VT = la.svd(ao_values, full_matrices = False)
+        ao_values = np.dot(U, VT)
+
         print("        Done!")
+
     else:
         print("        Utilizing customized Gram matrix!")
+        # Ensure that gram is L2 normalized when customizing the input
         ao_values = gram
-    dvol = cell.vol / np.prod(cell.mesh)
- 
+        
+    # Computing relative deviation from identity:
+    Id   = np.dot(ao_values.T, ao_values)* dvol 
+    diff = Id - np.eye(ao_values.shape[1])
+    res  = la.norm(diff, 2)#/ la.norm(Id)
+    print("        Checking for L2-Normalization:")
+    print("       ", res)
+    
+    # At this point ao_values *should* be L2-normalized.
+    # We count enforce this by setting a threshold for how much 
+    # `res' deviates from zero 
+     
+    # Potentially remove dg_on?
     if dg_on == False:
         print("        No DG-trunctaion performed!")
-        return ao_values, [[x for x in range(ao_values.shape[1])]] #* 1./np.sqrt(dvol)
+        print("        If gram is custamize, ensure L2-normalization at this point")
+        return ao_values, [[x for x in range(ao_values.shape[1])]] 
 
-    print("        Performing DG-truncation: ", dg_trunc, " with tolerance: ", svd_tol)
+    print("        Performing DG-truncation: ", dg_trunc, 
+            " with tolerance: ", svd_tol)
     
     if voronoi:
-        # For naive voronoi:
+        # Fetch boxsize for periodic voronoi:
+        # At this point only orthohombic supercells are possible
         dx = cell.a[0][0]
         dy = cell.a[1][1]
         dz = cell.a[2][2]
+
+        # Fetching nuclear positions
         atoms  = [elem[1] for elem in cell.atom]       
-        return get_vdg_basis(atoms, dx, dy, dz, dvol, ao_values, 
-                coords, dg_trunc, svd_tol)
+
+        return get_vdg_basis(atoms, dx, dy, dz, dvol, ao_values, coords, 
+                dg_trunc, svd_tol)
     else:
-        # Determine ideal DG-cuts for quasi-1D system along z-axis
+        # Performing linear decomposition of the supercell
         if dg_cuts is None:
+            # Determine ideal DG-cuts for quasi-1D system along X-axis, i.e., 
+            # the first entry of the nuclear position list    
             atom_pos = np.unique(np.array([x[1][0] for x in cell.atom]))
             iDG_cut  = atom_pos[0:-1] + np.diff(atom_pos)/2.0
         else:
+            # ideal DG cuts along the X-axis is customized 
             iDG_cut = dg_cuts
-        print("Q-1D DG: ", iDG_cut)
+
+        print("         Cuts along X-axis for linear DG: ", iDG_cut)
+        # Computing gridpoints closest to ideal DG cuts
         DG_cut = np.zeros(len(iDG_cut), dtype=int)
         x_dp   = np.array([x[0] for x in coords])
         for i in range(len(iDG_cut)):
-            DG_cut[i] = np.argmin(np.absolute(x_dp - iDG_cut[i])) # check for min being unambiguous
+            DG_cut[i] = np.argmin(np.absolute(x_dp - iDG_cut[i])) 
             
         DG_cut = np.append(0, np.append( DG_cut, len(x_dp)))
         return get_dg_basis(dvol, ao_values, DG_cut, dg_trunc, svd_tol)
@@ -658,7 +697,6 @@ def get_vdg_basis(atoms, dx, dy, dz, dvol, ao_values,
         given voronoi decomposition 
     '''
     print("            Computing voronoi-DG...")
-    print()
 
     U_out     = []
     index_out = []
@@ -698,7 +736,7 @@ def get_vdg_basis(atoms, dx, dy, dz, dvol, ao_values,
     #dg_tools.visualize(idx_mat, coords, atoms[0][2], v_net, atoms)  
 
     for k, idx in enumerate(idx_mat.transpose()):
-        U, S, _  = la.svd(ao_values[idx,:], full_matrices=False)
+        U, S, VT  = la.svd(ao_values[idx,:], full_matrices=False)
 
         # Basis compression
         S       = S[::]
@@ -744,7 +782,7 @@ def get_dg_basis(dvol, Gr_mat, DG_cut, dg_trunc, svd_tol):
 
         # Extracting DG-blocks of Gramm matrix
         dg_block = Gr_mat[DG_cut[i]:DG_cut[i+1]]
-        U, S, _  = la.svd(dg_block, full_matrices=False)
+        U, S, VT  = la.svd(dg_block, full_matrices=False)
 
         #U_Q, _   = scipy.linalg.qr(U, mode='economic', pivoting=False)
         #U = U_Q
@@ -772,6 +810,8 @@ def get_dg_basis(dvol, Gr_mat, DG_cut, dg_trunc, svd_tol):
 
 def SVD_trunc(S, dg_trunc, svd_tol):
     if dg_trunc == "abs_tol":
+        #print(S)
+        #print(S[S > svd_tol])
         return S[S > svd_tol]
     elif dg_trunc == "rel_tol":
         return S[S/np.amax(S) > svd_tol]

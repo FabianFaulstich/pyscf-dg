@@ -625,11 +625,14 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, dg_on, gram):
         ao_values = dft.numint.eval_ao(cell, coords, deriv=0) 
         
         # L2 normalization 
-        ao_values *= 1./ dvol
+        #ao_values *= 1./ np.sqrt(dvol)  
 
         # Loewdin orthonormalization
         U, S, VT = la.svd(ao_values, full_matrices = False)
         ao_values = np.dot(U, VT)
+
+        # L2 normalization 
+        ao_values *= 1./ np.sqrt(dvol)
 
         print("        Done!")
 
@@ -646,8 +649,9 @@ def get_dg_gramm(cell, dg_cuts, dg_trunc, svd_tol, voronoi, dg_on, gram):
     print("       ", res)
     
     # At this point ao_values *should* be L2-normalized.
-    # We count enforce this by setting a threshold for how much 
+    # We could enforce this by setting a threshold for how much 
     # `res' deviates from zero 
+
      
     # Potentially remove dg_on?
     if dg_on == False:
@@ -702,51 +706,14 @@ def get_vdg_basis(atoms, dx, dy, dz, dvol, ao_values,
     index_out = []
     offset    = 0
 
-    #print("            Starting naive Voronoi:")
-    #vstart = time.time()
-    #idx_mat = np.zeros((ao_values.shape[0],len(atoms)), dtype = bool)
-    #for j, point in enumerate(coords):
-    #    k = dg_tools.get_dist_atom(atoms, dx, dy, point)
-    #    idx_mat[j,k] = True
-    #vend = time.time()
-    #print(idx_mat.shape)
-    #print("Computational time for naive voronoi: ", vend - vstart)
-    #dg_tools.visualize(idx_mat, coords, atoms[0][2], v_net, atoms)
-
     idx_mat = dg_tools.naive_voronoi(coords, atoms, dx, dy, dz)
-
-    #coords_2d = np.array([ x[0:2] for x in coords])
-    #idx_mat = []
-    #vstart = time.time()
-    #for vcell in v_cells:
-    #    idx_mat.append(dg_tools.in_hull(coords_2d, vcell))
-    #idx_mat = np.array(idx_mat).transpose()
-
-    # Asigning boundary values to a cell
-    #for i, elem in enumerate(idx_mat):
-    #    if len(elem[elem == True]) == 0:
-    #        k = dg_tools.get_dist_atom(atoms, dx, dy, coords[i]) 
-    #        idx_mat[i,k] = True
-    #    elif len(elem[elem == True]) > 1:
-    #        elem_n = np.zeros_like(elem, dtype = bool)
-    #        elem_n[np.where(elem == True)[0][0]] = True
-    #        idx_mat[i,:] = elem_n
-    #vend = time.time()
-    #print("            Done! Elapsed time for mixed voronoi: ", vend - vstart)
-    #dg_tools.visualize(idx_mat, coords, atoms[0][2], v_net, atoms)  
 
     for k, idx in enumerate(idx_mat.transpose()):
         U, S, VT  = la.svd(ao_values[idx,:], full_matrices=False)
 
         # Basis compression
         S       = S[::]
-        #print("        Computed singular values:")
-        #print(S)
-        #print()
         S_block = SVD_trunc(S, dg_trunc, svd_tol)
-        #print("        Kept singular values: (", len(S_block) , ")" )
-        #print(S_block)
-        #print()
         U_block = U[:,0:len(S_block)]
 
         # Storing block indices
@@ -760,15 +727,10 @@ def get_vdg_basis(atoms, dx, dy, dz, dvol, ao_values,
             U_out = out_block
         else:
             U_out = np.hstack((U_out, out_block))
-    U_out *= 1/np.sqrt(dvol)
 
-        # Storing on block-diagonal form
-        # change to U_out = [U_block(1),...]
-        # U_out = block_diag(U_out, U_block)
-    #U_out = 1/np.sqrt(dvol) * np.array(U_out[1:,:])
-    #print(ao_values.shape)
-    #print(U_out.shape)
-    #print(U_out_o.shape)
+    # L2 Normalization of VdG block matrix
+    U_out *= 1/np.sqrt(dvol)
+    
     return U_out, index_out
 
 def get_dg_basis(dvol, Gr_mat, DG_cut, dg_trunc, svd_tol):
@@ -784,18 +746,9 @@ def get_dg_basis(dvol, Gr_mat, DG_cut, dg_trunc, svd_tol):
         dg_block = Gr_mat[DG_cut[i]:DG_cut[i+1]]
         U, S, VT  = la.svd(dg_block, full_matrices=False)
 
-        #U_Q, _   = scipy.linalg.qr(U, mode='economic', pivoting=False)
-        #U = U_Q
-
         # Basis compression
         S       = S[::]
-        #print("        Computed singular values:")
-        #print(S)
-        #print()
         S_block = SVD_trunc(S, dg_trunc, svd_tol)
-        #print("        Kept singular values:(", len(S_block) , ")")
-        #print(S_block)
-        #print()
         U_block = U[:,0:len(S_block)]
         
         # Storing block indices
@@ -805,6 +758,7 @@ def get_dg_basis(dvol, Gr_mat, DG_cut, dg_trunc, svd_tol):
         # Storing on block-diagonal form
         # change to U_out = [U_block(1),...]
         U_out = block_diag(U_out, U_block)
+    
     U_out = 1/np.sqrt(dvol) * np.array(U_out[1:,:])
     return U_out, index_out
 

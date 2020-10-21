@@ -1,0 +1,8 @@
+SVD tolerance: 0.001
+Hydrogen chain H16
+Number of AO's (VdG): 
+[ 358. 356. 362. ]
+Hartree--Fock energy: 
+[ -7.51672186157807  -8.182802866876173 -8.462527423379257 ]
+Hartree--Fock energy (VdG): 
+[ -7.5962380860619305 -8.220368030107053 -8.479641469306479 ]

@@ -39,7 +39,7 @@ def mol_size(Mol):
 
 if __name__ == '__main__':
 
-    f   = open("out_tol1e-2_loew.txt", "w")
+    f   = open("out_tol1e-2_no_loew.txt", "w")
     
     bs    = 5
     dgrid = [5,5,5] # 
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     #bond1 = np.array([3.6])
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
     #atoms = np.flip(np.linspace(2,30,15, dtype = int))
-    atoms = np.linspace(2,30,15, dtype = int)
+    atoms = np.linspace(20,30,6, dtype = int)
     #atoms = np.array([8])
     #atoms = np.linspace(2, 8, num = 4, dtype = int)
     #print(atoms)
@@ -139,7 +139,7 @@ if __name__ == '__main__':
             # matrix should always only consist of the nodel values of the 
             # primitive basis. Note that the gram input for a dg_model_ham object             # takes the nodel values of the primitive basis as input for gram. 
                        
-            U = np.dot(U,VT)/ np.sqrt(dvol)
+            U *= 1./ np.sqrt(dvol)
             del boxsize
             
             print("Computing Gram Matrix ...")
@@ -160,16 +160,16 @@ if __name__ == '__main__':
 
             print("Computing Gram Matrix without DG ...")
             start = time.time()
-            gramm, idx = dg.get_dg_gramm(cell, dg_cuts = None, 
-                    dg_trunc = 'abs_tol', svd_tol = tol, voronoi = False, 
-                    dg_on = False, gram = None )
+            #gramm, idx = dg.get_dg_gramm(cell, dg_cuts = None, 
+            #        dg_trunc = 'abs_tol', svd_tol = tol, voronoi = False, 
+            #        dg_on = False, gram = None )
             print("Done! Elapsed time: ", time.time() - start)
 
             print("Computing NNZ-ERI and Lambda value ...")
             start = time.time()
-            print('Index: ',idx)
-            n_lambda[i], nnz_eri[i] = dg_tools.get_dg_nnz_eri( cell, 
-                    aoR = U, b_idx = idx, exx = False)
+            #print('Index: ',idx)
+            #n_lambda[i], nnz_eri[i] = dg_tools.get_dg_nnz_eri( cell, 
+            #        aoR = U, b_idx = idx, exx = False)
             print("Done! Elapsed time: ", time.time() -start)
             
             #print("Computing HF ...")

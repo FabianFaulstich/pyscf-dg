@@ -39,15 +39,15 @@ def mol_size(Mol):
 
 if __name__ == '__main__':
 
-    f   = open("out_tol1e-2_loew.txt", "w")
+    f   = open("out_tol1e-1_op.txt", "w")
     
     bs    = 5
-    dgrid = [5,5,5] # 
+    dgrid = [2,2,2] # 
     #bond  = np.array([1.7])
     #bond1 = np.array([3.6])
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
     #atoms = np.flip(np.linspace(2,30,15, dtype = int))
-    atoms = np.linspace(2,30,15, dtype = int)
+    atoms = np.linspace(2, 30, 15, dtype = int)
     #atoms = np.array([8])
     #atoms = np.linspace(2, 8, num = 4, dtype = int)
     #print(atoms)
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     #atoms = np.linspace(2,20,10, dtype = int)
     #atoms = np.array([26])
     
-    svd_tol = np.array([1e-2]) # chenge back to 1e-1
+    svd_tol = np.array([1e-1]) # chenge back to 1e-1
 
     nnz_eri     = np.zeros(len(atoms))
     nnz_eri_pw  = np.zeros(len(atoms))
@@ -139,7 +139,7 @@ if __name__ == '__main__':
             # matrix should always only consist of the nodel values of the 
             # primitive basis. Note that the gram input for a dg_model_ham object             # takes the nodel values of the primitive basis as input for gram. 
                        
-            U = np.dot(U,VT)/ np.sqrt(dvol)
+            U *= 1./ np.sqrt(dvol)
             del boxsize
             
             print("Computing Gram Matrix ...")
@@ -151,7 +151,7 @@ if __name__ == '__main__':
             
             print("Computing DG NNZ-ERI and Lambda value ...")
             start = time.time()
-            n_lambda_dg[i], nnz_eri_dg[i] = dg_tools.get_dg_nnz_eri( cell, 
+            n_lambda_dg[i], nnz_eri_dg[i] = dg_tools.get_dg_nnz_eri_nd( cell, 
                     aoR = dg_gramm, b_idx = dg_idx, exx = False) 
             print("Done! Elapsed time: ", time.time() -start)
             
@@ -168,7 +168,7 @@ if __name__ == '__main__':
             print("Computing NNZ-ERI and Lambda value ...")
             start = time.time()
             print('Index: ',idx)
-            n_lambda[i], nnz_eri[i] = dg_tools.get_dg_nnz_eri( cell, 
+            n_lambda[i], nnz_eri[i] = dg_tools.get_dg_nnz_eri_nd( cell, 
                     aoR = U, b_idx = idx, exx = False)
             print("Done! Elapsed time: ", time.time() -start)
             

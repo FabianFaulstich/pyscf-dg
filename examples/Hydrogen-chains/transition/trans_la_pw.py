@@ -39,10 +39,10 @@ def mol_size(Mol):
 
 if __name__ == '__main__':
 
-    f   = open("out_tol1e-2_loew.txt", "w")
-    
-    bs    = 5
-    dgrid = [5,5,5] # 
+    f   = open("out_la_pw.txt", "w")
+    bs  = 5
+
+    dgrid = [2,2,2] # 
     #bond  = np.array([1.7])
     #bond1 = np.array([3.6])
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     n_ao        = np.zeros(len(atoms)) 
     n_ao_dg     = np.zeros(len(atoms))
     
-    basis = 'ccpvdz'
+    basis = '631++g**'
    
     for tol in svd_tol:
         for i, no_atom in enumerate(atoms):
@@ -83,7 +83,7 @@ if __name__ == '__main__':
             ms[0] += 3.6
             boxsize = [ np.ceil(2*bs + s) for s in ms]
             ms, mm = mol_size(Mol)
-            offset = np.array([(bs - s)/2.- m for bs, s, m in zip(boxsize,ms,mm)])
+            offset = np.array([ (bs - s)/2. - m for bs, s, m in zip(boxsize,ms,mm)])
             for k, off in enumerate(offset):
                 for j in range(len(Mol)):
                     Mol[j][1][k] += off
@@ -129,7 +129,6 @@ if __name__ == '__main__':
 
             coords = cell.get_uniform_grids()
             ao_values = mol.eval_gto("GTOval_sph", coords)
-            ao_values = dft.numint.eval_ao(cell, coords, deriv=0)
             U, _, VT = la.svd(ao_values, full_matrices = False)
             
             # U0 describes L^2 normalized functions.
@@ -139,78 +138,17 @@ if __name__ == '__main__':
             # matrix should always only consist of the nodel values of the 
             # primitive basis. Note that the gram input for a dg_model_ham object             # takes the nodel values of the primitive basis as input for gram. 
                        
-            U = np.dot(U,VT)/ np.sqrt(dvol)
+            U0 = np.dot(U, VT) / np.sqrt(dvol)
             del boxsize
-            
-            print("Computing Gram Matrix ...")
-            start = time.time()
-            dg_gramm, dg_idx = dg.get_dg_gramm(cell, dg_cuts = None, 
-                    dg_trunc = 'abs_tol', svd_tol = tol, voronoi = True, 
-                    dg_on = True, gram = U)
-            print("Done! Elapsed time: ", time.time() - start)
-            
-            print("Computing DG NNZ-ERI and Lambda value ...")
-            start = time.time()
-            n_lambda_dg[i], nnz_eri_dg[i] = dg_tools.get_dg_nnz_eri( cell, 
-                    aoR = dg_gramm, b_idx = dg_idx, exx = False) 
-            print("Done! Elapsed time: ", time.time() -start)
-            
-            n_ao[i]    = cell.nao
-            n_ao_dg[i] = np.size(dg_gramm, 1) 
-
-            print("Computing Gram Matrix without DG ...")
-            start = time.time()
-            gramm, idx = dg.get_dg_gramm(cell, dg_cuts = None, 
-                    dg_trunc = 'abs_tol', svd_tol = tol, voronoi = False, 
-                    dg_on = False, gram = None )
-            print("Done! Elapsed time: ", time.time() - start)
-
-            print("Computing NNZ-ERI and Lambda value ...")
-            start = time.time()
-            print('Index: ',idx)
-            n_lambda[i], nnz_eri[i] = dg_tools.get_dg_nnz_eri( cell, 
-                    aoR = U, b_idx = idx, exx = False)
-            print("Done! Elapsed time: ", time.time() -start)
-            
-            #print("Computing HF ...")
-            #start = time.time()
-            #fftdf = df.FFTDF(cell)
-            #mf = scf.RHF(cell, exxdiv = 'ewald')
-            #mf.kernel(dump_chk = False)
-            #print("Done! Elapsed time: ", time.time() - start)
-            
-            #print('Computing ERI tensor...')            
-            #start = time.time()
-            #eri = ao2mo.restore(1, fftdf.get_eri(), cell.nao_nr()) #mf._eri 
-            #print('Done! Elapsed time:', time.time() - start)
-            #eri[np.abs(eri) < 1e-6] = 0
-            
-            #nnz_eri[i]  = np.count_nonzero(eri) 
-            #n_lambda[i] = np.sum(np.abs(eri))   
-
-            print("NNZ ERI: ", nnz_eri[i])
-            print("NNZ ERI (DG): ", nnz_eri_dg[i])
-            print("Lambda-value: ", n_lambda[i])
-            print("Lambda-value (DG): ", n_lambda_dg[i])
-
+           
+            print('computing la for H', no_atom)
+            la[i] = dg_tools.get_la_pw(cell, cell.get_uniform_grids())
+            print('computed la: ', la[i])
 
             del cell, Mol, Mol1#, fftdf, mf, eri
 
-        f.write("SV tolerance: " + str(tol) + "\n")
         f.write("Hydrogen chain to H" + str(atoms[0]) + "\n")
-        f.write("Number of AO's: \n")
-        f.write(str(np.flip(n_ao)) + "\n")
-        f.write("nnz_eri: \n")
-        f.write(str(np.flip(nnz_eri)) + "\n")
-        f.write("Lambda: \n")
-        f.write(str(np.flip(n_lambda)) + "\n")
-        f.write("Number of AO's (DG): \n")
-        f.write(str(np.flip(n_ao_dg)) + "\n")
-        f.write("nnz_eri (DG): \n")
-        f.write(str(np.flip(nnz_eri_dg)) + "\n")
-        f.write("Lambda (DG): \n ")
-        f.write(str(np.flip(n_lambda_dg)) + "\n")
-        f.write("nnz_eri (PW): \n")
-        f.write(str(np.flip(nnz_eri_pw)) + "\n")
+        f.write("lambda value (PW): \n")
+        f.write(str(la))
 
     f.close()

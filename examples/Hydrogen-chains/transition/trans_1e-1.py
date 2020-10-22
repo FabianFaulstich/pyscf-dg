@@ -39,10 +39,10 @@ def mol_size(Mol):
 
 if __name__ == '__main__':
 
-    f   = open("out_tol1e-1_n.txt", "w")
-    bs  = 5
-
-    dgrid = [2,2,2] # 
+    f   = open("out_tol1e-1_loew.txt", "w")
+    
+    bs    = 5
+    dgrid = [5,5,5] # 
     #bond  = np.array([1.7])
     #bond1 = np.array([3.6])
     #atoms = np.flip(np.linspace(2, 4, 2, dtype = int))
@@ -83,7 +83,7 @@ if __name__ == '__main__':
             ms[0] += 3.6
             boxsize = [ np.ceil(2*bs + s) for s in ms]
             ms, mm = mol_size(Mol)
-            offset = np.array([ (bs - s)/2. - m for bs, s, m in zip(boxsize,ms,mm)])
+            offset = np.array([(bs - s)/2.- m for bs, s, m in zip(boxsize,ms,mm)])
             for k, off in enumerate(offset):
                 for j in range(len(Mol)):
                     Mol[j][1][k] += off
@@ -129,6 +129,7 @@ if __name__ == '__main__':
 
             coords = cell.get_uniform_grids()
             ao_values = mol.eval_gto("GTOval_sph", coords)
+            ao_values = dft.numint.eval_ao(cell, coords, deriv=0)
             U, _, VT = la.svd(ao_values, full_matrices = False)
             
             # U0 describes L^2 normalized functions.
@@ -137,20 +138,25 @@ if __name__ == '__main__':
             # future adaptation of the code. Direct input of the projections 
             # matrix should always only consist of the nodel values of the 
             # primitive basis. Note that the gram input for a dg_model_ham object             # takes the nodel values of the primitive basis as input for gram. 
-                       
-            U0 = np.dot(U, VT) / np.sqrt(dvol)
+                      
+            #print('Check for Loewdin orthonormalization:')
+            #print('aoR - U:', la.norm(ao_values - U))
+            #print('aoR - U0:', la.norm(ao_values - np.dot(U,VT)))
+
+            U = np.dot(U,VT)/ np.sqrt(dvol)
             del boxsize
             
             print("Computing Gram Matrix ...")
             start = time.time()
-            dg_gramm, dg_idx = dg.get_dg_gramm(
-                    cell, None, 'abs_tol', tol, False, dg_on=True, gram = None)
+            dg_gramm, dg_idx = dg.get_dg_gramm(cell, dg_cuts = None, 
+                    dg_trunc = 'abs_tol', svd_tol = tol, voronoi = True, 
+                    dg_on = True, gram = U)
             print("Done! Elapsed time: ", time.time() - start)
             
             print("Computing DG NNZ-ERI and Lambda value ...")
             start = time.time()
-            n_lambda_dg[i], nnz_eri_dg[i] = dg_tools.get_dg_nnz_eri(
-                    cell, dg_gramm, dg_idx) 
+            n_lambda_dg[i], nnz_eri_dg[i] = dg_tools.get_dg_nnz_eri( cell, 
+                    aoR = dg_gramm, b_idx = dg_idx, exx = False) 
             print("Done! Elapsed time: ", time.time() -start)
             
             n_ao[i]    = cell.nao
@@ -158,15 +164,16 @@ if __name__ == '__main__':
 
             print("Computing Gram Matrix without DG ...")
             start = time.time()
-            gramm, idx = dg.get_dg_gramm(
-                    cell, None, 'abs_tol', tol, False, dg_on=False, gram = None)
+            gramm, idx = dg.get_dg_gramm(cell, dg_cuts = None, 
+                    dg_trunc = 'abs_tol', svd_tol = tol, voronoi = False, 
+                    dg_on = False, gram = None )
             print("Done! Elapsed time: ", time.time() - start)
 
             print("Computing NNZ-ERI and Lambda value ...")
             start = time.time()
             print('Index: ',idx)
-            n_lambda[i], nnz_eri[i] = dg_tools.get_dg_nnz_eri(
-                    cell, U0, idx)
+            n_lambda[i], nnz_eri[i] = dg_tools.get_dg_nnz_eri( cell, 
+                    aoR = U, b_idx = idx, exx = False)
             print("Done! Elapsed time: ", time.time() -start)
             
             #print("Computing HF ...")

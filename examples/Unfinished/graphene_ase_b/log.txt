@@ -1,0 +1,12 @@
+Box size:
+9.259658010368804 x 16.038198134670914 x 18.89726124565062
+Box discretization:
+55 x 96 x 113
+    AO basis:
+    321g
+    Relative truncation in SVD:
+    0.99
+        Creating  VDG Hamiltonian ...
+            Creating Voronoi decomposition ... 
+            Done! Elapsed time: 0.017754554748535156sec.
+            VDG Hamiltonian ... 

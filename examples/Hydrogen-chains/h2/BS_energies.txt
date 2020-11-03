@@ -1,5 +1,0 @@
-Box size:
-12.0 x 10.0 x 10.0
-Box discretization:
-6 x 5 x 5
-    Bondlength: [1.2]

@@ -24,7 +24,7 @@ import dg_tools
 
 class dg_model_ham:
     def __init__(self, cell, dg_cuts = None, dg_trunc = 'abs_tol', svd_tol = 1e-3,
-            voronoi = False, dg_on=True, gram = None):
+            voronoi = True, dg_on=True, gram = None):
         
         self.cell = copy.copy(cell)
         print('Unit: ', self.cell.unit)

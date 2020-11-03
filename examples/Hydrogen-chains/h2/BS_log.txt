@@ -1,9 +1,0 @@
-Box size:
-12.0 x 10.0 x 10.0
-Box discretization:
-6 x 5 x 5
-    Computing PES:
-    Creating  VDG Hamiltonianis ...
-    Creating Voronoi decomposition ... 
-    Done! Elapsed time: 0.005605936050415039sec.
-        QZP-VDG Hamiltonian ... 

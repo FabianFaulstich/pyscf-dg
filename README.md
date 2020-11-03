@@ -47,6 +47,7 @@ Input:
 	      projecting the AO basis of the Cell object.
 
 Given a DG Hamiltonian, RHF, MP2 and CCSD can be executed through 
+	
 	dg_model_ham.run_RHF()
 	dg_model_ham.run_MP2()
 	dg_model_ham.run_CC()

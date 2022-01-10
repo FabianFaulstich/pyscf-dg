@@ -26,25 +26,19 @@ import os
 import shutil
 
 
-def plot(bonds, mfe, mfe_dgv, emp, emp_dgv, ecc, ecc_dgv, e_nuc):
+def plot(bonds, mfe, mfe_dgv, cce, cce_dvg, e_nuc):
 
-    fig, ax = plt.subplots(3)
+    fig, ax = plt.subplots(2)
 
-    ax[0].plot(bonds, mfe, label = 'RHF')
-    ax[0].plot(bonds, mfe_dgv, label = 'RHF (DG-V)')
+    ax[0].plot(bonds, mfe- e_nuc, label = 'RHF')
+    ax[0].plot(bonds, mfe_dgv- e_nuc, label = 'RHF (DG-V)')
+    #ax[0].plot(bonds, cce, label = 'RHF')           
+    #ax[0].plot(bonds, cce_dgv, label = 'RHF (DG-V)')
     ax[0].legend()
     ax[0].set_title('Meanfield Energy')
 
-
-    ax[1].plot(bonds, emp, label = 'MP2')
-    ax[1].plot(bonds, emp_dgv, label = 'MP2 (DG-V)')
-    ax[1].plot(bonds, ecc, label = 'CCSD')
-    ax[1].plot(bonds, ecc_dgv, label = 'CCSD (DG-V)')
-    ax[1].legend()
-    ax[1].set_title('Correlation Energies')
-
-    ax[2].plot(bonds, mfe_dgv+ ecc_dgv - e_nuc)
-    ax[2].set_title('Electronic CCSD energy (DG-V)')
+    ax[1].plot(bonds, mfe_dgv+ cce_dgv - e_nuc)
+    ax[1].set_title('Electronic CCSD energy (DG-V)')
 
     plt.show()
 
@@ -88,8 +82,11 @@ if __name__ == '__main__':
         mfe = np.zeros(len(angles))
         mfe_dgv = np.zeros(len(angles))
 
+        cce = np.zeros(len(angles))    
+        cce_dgv = np.zeros(len(angles))
+
         # Introducing lambda scaling factor for the ERI
-        l_fact= 0
+        l_fact= 0.01 # NOTE here is the lambda factor
     
         mad= np.zeros(len(angles))
         tes= np.zeros(len(angles)) 
@@ -105,7 +102,7 @@ if __name__ == '__main__':
         dgrid   = [5] * 3
 
         # active basis
-        basis   = '321g'
+        basis   = '321g' # NOTE AO basis set discretization
 
         # Initialize the H4 model (square geometry)
         # [Jankowski& Paldus, Int. J. of Quant. Chem., 18(5), 1243-1269 (1980)]
@@ -166,7 +163,7 @@ if __name__ == '__main__':
 
             # VDG calculations
             # Voronoi DG Hamiltonian
-            # NOTE The total number of DG-V basis functions per DG-V element
+            # NOTE The total number of DG-V basis functions per DG-V element/ cluster
             # can be directly controled by setting
             #
             #           dg_trunc = 'abs_num'
@@ -180,7 +177,7 @@ if __name__ == '__main__':
 
             print("Creating  DG-V-" + cell.basis +  " Hamiltonian ...")
             cell_dgv= dg.dg_model_ham(cell, dg_cuts = None,
-                                      dg_trunc = 'abs_num', svd_tol = 8,
+                                      dg_trunc = 'abs_num', svd_tol = 8, # NOTE scd_tol is the number of basis functions per cluster
                                       voronoi = True, dg_on=True,
                                       gram = None)
 
@@ -242,12 +239,14 @@ if __name__ == '__main__':
 
             # RHF
             mfe_dgv[n] = cell_dgv.run_RHF()
+            cce_dgv[n], _ = cell_dgv.run_CC(l_fact= l_fact)
+            
             # Computing energy with 1-rdm
             #rdm1_dgv = cell_dgv.mf_dg.make_rdm1()
             #print(np.trace(rdm1_dgv@ h1e_vdg) +cell.energy_nuc() \
             #      +cell_dgv.tes)
 
-            if True:            
+            if False:            
                 # computing the 1-rdm and energy directly from h1e_vdg
                 # NOTE this only works for the l_fact= 0 case 
                 rdm1_dgv = cell_dgv.mf_dg.make_rdm1()
@@ -266,7 +265,10 @@ if __name__ == '__main__':
                         +cell_dgv.tes)
             
             mfe[n]= cell_ref.run_RHF()
-       
+
+            # NOTE running mp2 before CCSD because of a bug!
+            cce[n], _ = cell_ref.run_CC(l_fact= l_fact)   
+ 
             # Finite-size corrections
             mad[n]= cell_dgv.madelung
             tes[n]= cell_dgv.tes
@@ -276,6 +278,13 @@ if __name__ == '__main__':
         print("Meanfield results:")
         print("Reference : ", mfe)
         print("DG-V      : ", mfe_dgv)
+        print(5* "#")
+        print('electronic meanfield result:')
+        print("Reference : ", mfe- e_nuc)     
+        print("DG-V      : ", mfe_dgv- e_nuc) 
+        print("CCSD results:")
+        print("Reference : ", cce)
+        print("DG-V      : ", cce_dgv)
         print('Madlung constant')
         print(mad)
         print('Total energy shift due to Ewald probe charge')
@@ -283,3 +292,6 @@ if __name__ == '__main__':
         print(tes)
         print('Nuclear energy')
         print(e_nuc)
+
+        plot(angles, mfe, mfe_dgv, cce, cce_dgv, e_nuc)
+

@@ -184,9 +184,9 @@ class dg_model_ham:
         self.emp_corr, _ = self.df.kernel()
         return self.emp_corr, self.emp_corr + self.emf
 
-    def run_CC(self):
+    def run_CC(self, l_fact=1):
 
-        self.mf_dg.with_df._numint.eval_ao = lambda *args:(self.dg_gramm,0)
+        self.mf_dg.with_df._numint.eval_ao = lambda *args:(l_fact* self.dg_gramm,0)
         self.mf_dg.with_df.mesh = self.cell.mesh # discretization points
    
         self.cc_dg = cc.CCSD(self.mf_dg)

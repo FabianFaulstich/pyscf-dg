@@ -170,7 +170,7 @@ class dg_model_ham:
         self.mf_dg.get_hcore = lambda *args: self.hcore_dg
         self.mf_dg.get_ovlp  = lambda *args: self.ovl_dg
         self.mf_dg._eri      = ao2mo.restore(8, self.eri, self.nao)
-
+        
         self.mf_dg.kernel(dm0 = dm, dump_chk=False)
         self.emf = self.mf_dg.e_tot
         return self.emf
@@ -186,6 +186,9 @@ class dg_model_ham:
 
     def run_CC(self):
 
+        self.mf_dg.with_df._numint.eval_ao = lambda *args:(self.dg_gramm,0)
+        self.mf_dg.with_df.mesh = self.cell.mesh # discretization points
+   
         self.cc_dg = cc.CCSD(self.mf_dg)
         self.cc_dg.kernel()
         self.ecc_corr = self.cc_dg.e_corr

@@ -111,7 +111,7 @@ if __name__ == '__main__':
         tes= np.zeros(len(bonds))
 
         # Introducing lambda scaling factor for the ERI
-        l_fact= 1 # NOTE here is the lambda factor
+        l_fact= 0.5 # NOTE here is the lambda factor
     
         for n, bd in enumerate(bonds):
 
@@ -217,7 +217,7 @@ if __name__ == '__main__':
 
             # RHF
             mfe_dgv[n] = cell_dgv.run_RHF()
-            cce_dgv[n], _ = cell_dgv.run_CC()
+            cce_dgv[n], _ = cell_dgv.run_CC(l_fact= l_fact)
             
             # Computing energy with 1-rdm
             #rdm1_dgv = cell_dgv.mf_dg.make_rdm1()
@@ -242,9 +242,9 @@ if __name__ == '__main__':
                         np.trace(dm_ref@ ham) +cell.energy_nuc() \
                         +cell_dgv.tes)
             
+            # Reference computation
             mfe[n]= cell_ref.run_RHF()
-
-            cce[n], _ = cell_ref.run_CC()      
+            cce[n], _ = cell_ref.run_CC(l_fact= l_fact)      
  
             # Finite-size corrections
             mad[n]= cell_dgv.madelung
